@@ -148,8 +148,8 @@ classDiagram
 **Plans**: 7 plans
 
 Plans:
-- [ ] 02-01-PLAN.md — NextAuth.js config: JWT strategy, CredentialsProvider + Google + Facebook, Prisma adapter, session callbacks, SessionProvider
-- [ ] 02-02-PLAN.md — Registration wizard: 3-step form (role, personal info, password/CGU), register server action, bcrypt hashing
+- [x] 02-01-PLAN.md — NextAuth.js config: JWT strategy, CredentialsProvider + Google + Facebook, Prisma adapter, session callbacks, SessionProvider
+- [x] 02-02-PLAN.md — Registration wizard: 3-step form (role, personal info, password/CGU), register server action, bcrypt hashing
 - [ ] 02-03-PLAN.md — Login page: email/password form, OAuth buttons, progressive lockout (CAPTCHA + 15min lock), OAuth role selection
 - [ ] 02-04-PLAN.md — Email verification (Resend magic link) + password reset flow (1h token expiry)
 - [ ] 02-05-PLAN.md — SMS OTP phone verification: ISmsService abstraction, simulated in dev, inline wizard step 4
@@ -597,7 +597,7 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation & Infrastructure | 7/7 | Complete    | 2026-02-22 |
-| 2. Authentification | 1/7 | In Progress|  |
+| 2. Authentification | 2/7 | In Progress|  |
 | 3. Verification KYC | 0/6 | Not started | - |
 | 4. Profil Prestataire & Services | 0/9 | Not started | - |
 | 5. Recherche & Decouverte | 0/7 | Not started | - |

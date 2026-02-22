@@ -5,36 +5,37 @@
 See: .planning/PROJECT.md (updated 2026-02-21)
 
 **Core value:** Clients can find, book, and pay a trusted local service provider in their city — and providers can get discovered and manage their business in one place.
-**Current focus:** Phase 2 — Authentication (Plan 01 complete, Plan 02 next)
+**Current focus:** Phase 2 — Authentication (Plans 01-02 complete, Plan 03 next)
 
 ## Current Position
 
 Phase: 2 of 11 (Authentification)
-Plan: 1 of 7 in current phase — COMPLETE
-Status: Phase 2 in progress — Plan 02-01 complete, ready for Plan 02-02 (registration)
-Last activity: 2026-02-22 — Plan 02-01 completed (NextAuth.js foundation: JWT, OAuth, SessionProvider, Prisma v7 adapter)
+Plan: 2 of 7 in current phase — COMPLETE
+Status: Phase 2 in progress — Plans 02-01 and 02-02 complete, ready for Plan 02-03 (login page)
+Last activity: 2026-02-22 — Plan 02-02 completed (registration wizard: 3-step wizard, bcrypt server action, role-based redirect)
 
-Progress: [####░░░░░] 10%
+Progress: [####░░░░░] 11%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 8 (all Phase 1 plans 01-01 through 01-07, plus 02-01)
-- Average duration: ~40 minutes
-- Total execution time: ~3.6h
+- Total plans completed: 9 (all Phase 1 plans 01-01 through 01-07, plus 02-01 and 02-02)
+- Average duration: ~36 minutes
+- Total execution time: ~3.7h
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 1. Foundation & Infrastructure | 7/7 | ~3.5h | ~45min |
-| 2. Authentification | 1/7 | ~5min | ~5min |
+| 2. Authentification | 2/7 | ~12min | ~6min |
 
 **Recent Trend:**
-- Last 5 plans: 01-03 (30min), 01-06 (75min), 01-07 (10min), 02-01 (5min)
-- Trend: Efficient execution as patterns established
+- Last 5 plans: 01-06 (75min), 01-07 (10min), 02-01 (5min), 02-02 (7min)
+- Trend: Very fast execution in Phase 2 as auth patterns established
 
 *Updated after each plan completion*
+| Phase 02-authentification P02 | 7 | 2 tasks | 10 files |
 | Phase 02-authentification P01 | 5 | 2 tasks | 9 files |
 | Phase 01-foundation-infrastructure P07 | 10 | 2 tasks | 47 files |
 | Phase 01-foundation-infrastructure P04 | 86 | 2 tasks | 28 files |
@@ -85,6 +86,12 @@ Recent decisions affecting current work:
 - [02-01]: Prisma v7 client engine requires database adapter — prisma.ts migrated to PrismaPg with pg driver
 - [02-01]: RESEND_API_KEY added to env.ts now to prepare for Plan 04 (email verification)
 - [02-01]: Database schema confirmed in sync (prisma db push: already synchronized)
+- [02-02]: registerSchema splits name into firstName + lastName (min 2, max 50) per CONTEXT.md wizard step 2 design
+- [02-02]: acceptCGU uses z.literal(true) — TypeScript enforces true not just boolean
+- [02-02]: CLIENT redirect goes to / (home) not /dashboard — dedicated client dashboard comes in Phase 4+
+- [02-02]: STEP_LABELS stored as Record<1|2|3, key> to satisfy noUncheckedIndexedAccess TypeScript strict mode
+- [02-02]: Toaster added to locale layout — toast infrastructure now wired app-wide
+- [02-02]: @hookform/resolvers installed — zodResolver pattern established for all future forms
 
 ### Pending Todos
 
@@ -92,10 +99,10 @@ None.
 
 ### Blockers/Concerns
 
-None. Plan 02-01 complete. Ready for Plan 02-02 (user registration flow).
+None. Plans 02-01 and 02-02 complete. Ready for Plan 02-03 (login page).
 
 ## Session Continuity
 
 Last session: 2026-02-22
-Stopped at: Completed .planning/phases/02-authentification/02-01-PLAN.md — NextAuth.js foundation, JWT sessions, OAuth providers, SessionProvider, Prisma v7 adapter fix
+Stopped at: Completed .planning/phases/02-authentification/02-02-PLAN.md — 3-step registration wizard, bcrypt server action, role-based redirect, @hookform/resolvers
 Resume file: None

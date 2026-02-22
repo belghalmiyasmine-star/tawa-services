@@ -9,14 +9,14 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Authentication
 
-- [ ] **AUTH-01**: User can create account with email and password (role selection: CLIENT or PROVIDER)
+- [x] **AUTH-01**: User can create account with email and password (role selection: CLIENT or PROVIDER)
 - [ ] **AUTH-02**: User receives email verification link after signup
 - [ ] **AUTH-03**: User can reset password via email link
 - [x] **AUTH-04**: User session persists across browser refresh (NextAuth.js sessions)
 - [x] **AUTH-05**: User can log in via Google or Facebook (NextAuth.js social providers)
 - [ ] **AUTH-06**: Role-based access control (CLIENT, PROVIDER, ADMIN) with route protection
 - [ ] **AUTH-07**: User must verify phone number via SMS (+216 format or 8 digits)
-- [ ] **AUTH-08**: Registration validates Tunisian phone format, unique email/phone, password 8+ chars
+- [x] **AUTH-08**: Registration validates Tunisian phone format, unique email/phone, password 8+ chars
 
 ### KYC Verification
 
@@ -162,14 +162,14 @@ Which phases cover which requirements. Updated during roadmap creation.
 | UI-02 | Phase 1 + Phase 11 | Complete |
 | UI-03 | Phase 1 + Phase 11 | Complete |
 | UI-04 | Phase 11 | Complete |
-| AUTH-01 | Phase 2 | Pending |
+| AUTH-01 | Phase 2 | Complete |
 | AUTH-02 | Phase 2 | Pending |
 | AUTH-03 | Phase 2 | Pending |
 | AUTH-04 | Phase 2 | Complete |
 | AUTH-05 | Phase 2 | Complete |
 | AUTH-06 | Phase 2 | Pending |
 | AUTH-07 | Phase 2 | Pending |
-| AUTH-08 | Phase 2 | Pending |
+| AUTH-08 | Phase 2 | Complete |
 | KYC-01 | Phase 3 | Pending |
 | KYC-02 | Phase 3 | Pending |
 | KYC-03 | Phase 3 | Pending |
