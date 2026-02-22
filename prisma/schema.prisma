@@ -1,0 +1,605 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============================================================
+// ENUMERATIONS
+// ============================================================
+
+enum Role {
+  CLIENT
+  PROVIDER
+  ADMIN
+}
+
+enum KYCStatus {
+  NOT_SUBMITTED
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum ServiceStatus {
+  DRAFT
+  PENDING_APPROVAL
+  ACTIVE
+  SUSPENDED
+  DELETED
+}
+
+enum PricingType {
+  FIXED
+  SUR_DEVIS
+}
+
+enum BookingStatus {
+  PENDING
+  ACCEPTED
+  IN_PROGRESS
+  COMPLETED
+  REJECTED
+  CANCELLED
+}
+
+enum QuoteStatus {
+  PENDING
+  RESPONDED
+  ACCEPTED
+  DECLINED
+  EXPIRED
+}
+
+enum PaymentStatus {
+  PENDING
+  HELD
+  RELEASED
+  REFUNDED
+  FAILED
+}
+
+enum PaymentMethod {
+  CARD
+  D17
+  FLOUCI
+  CASH
+}
+
+enum NotifType {
+  BOOKING_REQUEST
+  BOOKING_ACCEPTED
+  BOOKING_REJECTED
+  BOOKING_COMPLETED
+  BOOKING_CANCELLED
+  QUOTE_RECEIVED
+  QUOTE_RESPONDED
+  PAYMENT_RECEIVED
+  REVIEW_RECEIVED
+  KYC_APPROVED
+  KYC_REJECTED
+  NEW_MESSAGE
+  SYSTEM
+}
+
+// ============================================================
+// LOCALISATION
+// ============================================================
+
+model Gouvernorat {
+  id          String       @id @default(cuid())
+  name        String       @unique
+  nameAr      String?
+  code        String?      @unique
+  delegations Delegation[]
+  createdAt   DateTime     @default(now())
+  isDeleted   Boolean      @default(false)
+  deletedAt   DateTime?
+
+  @@map("gouvernorats")
+}
+
+model Delegation {
+  id            String               @id @default(cuid())
+  name          String
+  nameAr        String?
+  gouvernoratId String
+  gouvernorat   Gouvernorat          @relation(fields: [gouvernoratId], references: [id])
+  providers     ProviderDelegation[]
+  createdAt     DateTime             @default(now())
+  isDeleted     Boolean              @default(false)
+  deletedAt     DateTime?
+
+  @@unique([name, gouvernoratId])
+  @@map("delegations")
+}
+
+// ============================================================
+// USERS & AUTH
+// ============================================================
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  passwordHash  String?
+  phone         String?   @unique
+  role          Role      @default(CLIENT)
+  emailVerified Boolean   @default(false)
+  phoneVerified Boolean   @default(false)
+  name          String?
+  avatarUrl     String?
+  isActive      Boolean   @default(true)
+  isBanned      Boolean   @default(false)
+  bannedAt      DateTime?
+  bannedReason  String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  isDeleted     Boolean   @default(false)
+  deletedAt     DateTime?
+
+  // Relations
+  provider           Provider?
+  clientBookings     Booking[]              @relation("ClientBookings")
+  sentMessages       Message[]              @relation("SentMessages")
+  notifications      Notification[]
+  notificationPrefs  NotificationPreference?
+  accounts           Account[]
+  sessions           Session[]
+  emailVerifications EmailVerification[]
+  passwordResets     PasswordReset[]
+
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+model EmailVerification {
+  id        String    @id @default(cuid())
+  userId    String
+  token     String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("email_verifications")
+}
+
+model PasswordReset {
+  id        String    @id @default(cuid())
+  userId    String
+  token     String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("password_resets")
+}
+
+// ============================================================
+// PROVIDER PROFILE
+// ============================================================
+
+model Provider {
+  id                String               @id @default(cuid())
+  userId            String               @unique
+  user              User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  displayName       String
+  bio               String?              @db.Text
+  photoUrl          String?
+  phone             String?
+  kycStatus         KYCStatus            @default(NOT_SUBMITTED)
+  kycSubmittedAt    DateTime?
+  kycApprovedAt     DateTime?
+  kycRejectedAt     DateTime?
+  kycRejectedReason String?
+  yearsExperience   Int?
+  languages         String[]             @default([])
+  rating            Float                @default(0)
+  ratingCount       Int                  @default(0)
+  completedMissions Int                  @default(0)
+  responseTimeHours Float?
+  isActive          Boolean              @default(true)
+  isFeatured        Boolean              @default(false)
+  createdAt         DateTime             @default(now())
+  updatedAt         DateTime             @updatedAt
+  isDeleted         Boolean              @default(false)
+  deletedAt         DateTime?
+
+  // Relations
+  services         Service[]
+  availabilities   Availability[]
+  blockedDates     BlockedDate[]
+  certifications   Certification[]
+  kycDocuments     KYCDocument[]
+  delegations      ProviderDelegation[]
+  providerBookings Booking[]            @relation("ProviderBookings")
+  trustBadges      TrustBadge[]
+
+  @@map("providers")
+}
+
+model ProviderDelegation {
+  id           String     @id @default(cuid())
+  providerId   String
+  delegationId String
+  provider     Provider   @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  delegation   Delegation @relation(fields: [delegationId], references: [id])
+
+  @@unique([providerId, delegationId])
+  @@map("provider_delegations")
+}
+
+model TrustBadge {
+  id         String   @id @default(cuid())
+  providerId String
+  provider   Provider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  badgeType  String   // "IDENTITY_VERIFIED" | "QUICK_RESPONSE" | "TOP_PROVIDER"
+  awardedAt  DateTime @default(now())
+  isActive   Boolean  @default(true)
+
+  @@unique([providerId, badgeType])
+  @@map("trust_badges")
+}
+
+model Availability {
+  id         String   @id @default(cuid())
+  providerId String
+  provider   Provider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  dayOfWeek  Int      // 0=Sunday, 6=Saturday
+  startTime  String   // "HH:MM" format
+  endTime    String   // "HH:MM" format
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([providerId, dayOfWeek])
+  @@map("availabilities")
+}
+
+model BlockedDate {
+  id         String   @id @default(cuid())
+  providerId String
+  provider   Provider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  date       DateTime @db.Date
+  reason     String?
+  createdAt  DateTime @default(now())
+
+  @@unique([providerId, date])
+  @@map("blocked_dates")
+}
+
+model Certification {
+  id         String    @id @default(cuid())
+  providerId String
+  provider   Provider  @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  title      String
+  fileUrl    String
+  issuedAt   DateTime?
+  createdAt  DateTime  @default(now())
+  isDeleted  Boolean   @default(false)
+  deletedAt  DateTime?
+
+  @@map("certifications")
+}
+
+// ============================================================
+// KYC
+// ============================================================
+
+model KYCDocument {
+  id         String    @id @default(cuid())
+  providerId String
+  provider   Provider  @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  docType    String    // "CIN_PASSPORT" | "SELFIE" | "PROOF_OF_ADDRESS"
+  fileUrl    String
+  uploadedAt DateTime  @default(now())
+  adminNote  String?
+  isDeleted  Boolean   @default(false)
+  deletedAt  DateTime?
+
+  @@map("kyc_documents")
+}
+
+// ============================================================
+// CATEGORIES & SERVICES
+// ============================================================
+
+model Category {
+  id          String     @id @default(cuid())
+  name        String
+  nameAr      String?
+  slug        String     @unique
+  icon        String?    // lucide-react icon name
+  description String?
+  parentId    String?
+  parent      Category?  @relation("SubCategories", fields: [parentId], references: [id])
+  children    Category[] @relation("SubCategories")
+  isActive    Boolean    @default(true)
+  sortOrder   Int        @default(0)
+  services    Service[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  isDeleted   Boolean    @default(false)
+  deletedAt   DateTime?
+
+  @@map("categories")
+}
+
+model Service {
+  id              String        @id @default(cuid())
+  providerId      String
+  provider        Provider      @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  categoryId      String
+  category        Category      @relation(fields: [categoryId], references: [id])
+  title           String        @db.VarChar(80)
+  description     String        @db.Text
+  pricingType     PricingType
+  fixedPrice      Float?
+  durationMinutes Int?
+  inclusions      String[]      @default([])
+  exclusions      String[]      @default([])
+  conditions      String?       @db.Text
+  photoUrls       String[]      @default([])
+  status          ServiceStatus @default(DRAFT)
+  isFeatured      Boolean       @default(false)
+  viewCount       Int           @default(0)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  isDeleted       Boolean       @default(false)
+  deletedAt       DateTime?
+
+  // Relations
+  bookings Booking[]
+  quotes   Quote[]
+
+  @@map("services")
+}
+
+// ============================================================
+// BOOKINGS & QUOTES
+// ============================================================
+
+model Booking {
+  id           String        @id @default(cuid())
+  clientId     String
+  client       User          @relation("ClientBookings", fields: [clientId], references: [id])
+  providerId   String
+  provider     Provider      @relation("ProviderBookings", fields: [providerId], references: [id])
+  serviceId    String
+  service      Service       @relation(fields: [serviceId], references: [id])
+  status       BookingStatus @default(PENDING)
+  scheduledAt  DateTime?
+  completedAt  DateTime?
+  cancelledAt  DateTime?
+  cancelledBy  String?       // "CLIENT" | "PROVIDER"
+  cancelReason String?
+  totalAmount  Float
+  clientNote   String?       @db.Text
+  providerNote String?       @db.Text
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  isDeleted    Boolean       @default(false)
+  deletedAt    DateTime?
+
+  // Relations
+  payment      Payment?
+  reviews      Review[]
+  conversation Conversation?
+  quoteId      String?       @unique
+  quote        Quote?        @relation(fields: [quoteId], references: [id])
+
+  @@map("bookings")
+}
+
+model Quote {
+  id            String      @id @default(cuid())
+  clientId      String
+  serviceId     String
+  service       Service     @relation(fields: [serviceId], references: [id])
+  status        QuoteStatus @default(PENDING)
+  description   String      @db.Text
+  proposedPrice Float?
+  proposedDelay String?
+  expiresAt     DateTime
+  respondedAt   DateTime?
+  acceptedAt    DateTime?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  isDeleted     Boolean     @default(false)
+  deletedAt     DateTime?
+
+  // Relations
+  booking Booking?
+
+  @@map("quotes")
+}
+
+// ============================================================
+// PAYMENTS
+// ============================================================
+
+model Payment {
+  id              String        @id @default(cuid())
+  bookingId       String        @unique
+  booking         Booking       @relation(fields: [bookingId], references: [id])
+  method          PaymentMethod
+  status          PaymentStatus @default(PENDING)
+  amount          Float
+  commission      Float         @default(0)
+  providerEarning Float         @default(0)
+  paidAt          DateTime?
+  heldAt          DateTime?
+  releasedAt      DateTime?
+  refundedAt      DateTime?
+  refundAmount    Float?
+  invoiceUrl      String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  isDeleted       Boolean       @default(false)
+  deletedAt       DateTime?
+
+  // Relations
+  withdrawalRequest WithdrawalRequest?
+
+  @@map("payments")
+}
+
+model WithdrawalRequest {
+  id          String    @id @default(cuid())
+  providerId  String
+  paymentId   String    @unique
+  payment     Payment   @relation(fields: [paymentId], references: [id])
+  amount      Float
+  status      String    @default("PENDING") // "PENDING" | "APPROVED" | "REJECTED" | "PAID"
+  requestedAt DateTime  @default(now())
+  processedAt DateTime?
+  adminNote   String?
+  isDeleted   Boolean   @default(false)
+  deletedAt   DateTime?
+
+  @@map("withdrawal_requests")
+}
+
+// ============================================================
+// REVIEWS
+// ============================================================
+
+model Review {
+  id                  String    @id @default(cuid())
+  bookingId           String
+  booking             Booking   @relation(fields: [bookingId], references: [id])
+  authorId            String    // USER who wrote the review
+  targetId            String    // USER or PROVIDER being reviewed
+  authorRole          String    // "CLIENT" | "PROVIDER"
+  stars               Int
+  qualityRating       Int?      // 1-5 criteria
+  punctualityRating   Int?
+  communicationRating Int?
+  cleanlinessRating   Int?
+  text                String?   @db.Text
+  photoUrls           String[]  @default([])
+  published           Boolean   @default(false)
+  publishedAt         DateTime?
+  flagged             Boolean   @default(false)
+  flaggedReason       String?
+  moderatedAt         DateTime?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+  isDeleted           Boolean   @default(false)
+  deletedAt           DateTime?
+
+  @@unique([bookingId, authorId])
+  @@map("reviews")
+}
+
+// ============================================================
+// MESSAGING
+// ============================================================
+
+model Conversation {
+  id        String    @id @default(cuid())
+  bookingId String    @unique
+  booking   Booking   @relation(fields: [bookingId], references: [id])
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  isDeleted Boolean   @default(false)
+  deletedAt DateTime?
+
+  // Relations
+  messages Message[]
+
+  @@map("conversations")
+}
+
+model Message {
+  id             String       @id @default(cuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  senderId       String
+  sender         User         @relation("SentMessages", fields: [senderId], references: [id])
+  content        String       @db.Text
+  isRead         Boolean      @default(false)
+  readAt         DateTime?
+  flagged        Boolean      @default(false)
+  flaggedReason  String?
+  createdAt      DateTime     @default(now())
+  isDeleted      Boolean      @default(false)
+  deletedAt      DateTime?
+
+  @@map("messages")
+}
+
+// ============================================================
+// NOTIFICATIONS
+// ============================================================
+
+model Notification {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      NotifType
+  title     String
+  body      String?
+  read      Boolean   @default(false)
+  readAt    DateTime?
+  data      Json?     // Extra contextual data (bookingId, providerId, etc.)
+  createdAt DateTime  @default(now())
+  isDeleted Boolean   @default(false)
+  deletedAt DateTime?
+
+  @@map("notifications")
+}
+
+model NotificationPreference {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  emailEnabled    Boolean  @default(true)
+  inAppEnabled    Boolean  @default(true)
+  quietHoursStart String?  // "HH:MM"
+  quietHoursEnd   String?  // "HH:MM"
+  disabledTypes   String[] @default([])
+  updatedAt       DateTime @updatedAt
+
+  @@map("notification_preferences")
+}
