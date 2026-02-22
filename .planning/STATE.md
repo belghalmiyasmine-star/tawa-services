@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-21)
 
 **Core value:** Clients can find, book, and pay a trusted local service provider in their city — and providers can get discovered and manage their business in one place.
-**Current focus:** Phase 2 — Authentication (Plan 01 complete, Plan 02 next)
+**Current focus:** Phase 2 — Authentication (Plans 01 and 03 complete, Plan 02 next)
 
 ## Current Position
 
 Phase: 2 of 11 (Authentification)
-Plan: 1 of 7 in current phase — COMPLETE
-Status: Phase 2 in progress — Plan 02-01 complete, ready for Plan 02-02 (registration)
-Last activity: 2026-02-22 — Plan 02-01 completed (NextAuth.js foundation: JWT, OAuth, SessionProvider, Prisma v7 adapter)
+Plan: 3 of 7 in current phase — COMPLETE
+Status: Phase 2 in progress — Plans 02-01 and 02-03 complete, ready for Plan 02-02 (registration)
+Last activity: 2026-02-22 — Plan 02-03 completed (Login page: email/password form, OAuth buttons, progressive lockout, OAuth role selection)
 
-Progress: [####░░░░░] 10%
+Progress: [####░░░░░] 11%
 
 ## Performance Metrics
 
@@ -85,6 +85,11 @@ Recent decisions affecting current work:
 - [02-01]: Prisma v7 client engine requires database adapter — prisma.ts migrated to PrismaPg with pg driver
 - [02-01]: RESEND_API_KEY added to env.ts now to prepare for Plan 04 (email verification)
 - [02-01]: Database schema confirmed in sync (prisma db push: already synchronized)
+- [02-03]: Math CAPTCHA chosen over hCaptcha/reCAPTCHA — no external dependency, sufficient for PFE
+- [02-03]: Progressive lockout: 3 fails = CAPTCHA required, 8 total = 15-minute account lock (DB-backed)
+- [02-03]: Lockout error encoded as "LOCKED:N" string in NextAuth error — parsed client-side for localized message
+- [02-03]: OAuthButtons always redirects to /auth/oauth-role — that page handles new vs returning user redirect
+- [02-03]: User.failedLoginAttempts and User.lockedUntil added to Prisma schema for server-side brute-force protection
 
 ### Pending Todos
 
@@ -92,10 +97,10 @@ None.
 
 ### Blockers/Concerns
 
-None. Plan 02-01 complete. Ready for Plan 02-02 (user registration flow).
+None. Plans 02-01 and 02-03 complete. Ready for Plan 02-02 (user registration flow) — next in queue.
 
 ## Session Continuity
 
 Last session: 2026-02-22
-Stopped at: Completed .planning/phases/02-authentification/02-01-PLAN.md — NextAuth.js foundation, JWT sessions, OAuth providers, SessionProvider, Prisma v7 adapter fix
+Stopped at: Completed .planning/phases/02-authentification/02-03-PLAN.md — Login page, OAuth buttons, progressive lockout, OAuth role selection page
 Resume file: None
