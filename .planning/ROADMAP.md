@@ -597,7 +597,7 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation & Infrastructure | 7/7 | Complete   | 2026-02-22 |
+| 1. Foundation & Infrastructure | 7/7 | Complete    | 2026-02-22 |
 | 2. Authentification | 0/8 | Not started | - |
 | 3. Verification KYC | 0/6 | Not started | - |
 | 4. Profil Prestataire & Services | 0/9 | Not started | - |
