@@ -12,7 +12,7 @@ See: .planning/PROJECT.md (updated 2026-02-21)
 Phase: 1 of 11 (Foundation & Infrastructure)
 Plan: 6 of 7 in current phase
 Status: In progress
-Last activity: 2026-02-22 — Plan 01-06 completed (Global types, Zod validations, placeholder pages)
+Last activity: 2026-02-22 — Plan 01-02 completed (PostgreSQL + Prisma schema complet v1, 26 models)
 
 Progress: [####░░░░░] 8%
 
@@ -59,6 +59,10 @@ Recent decisions affecting current work:
 - [01-06]: Route groups (client)/, (provider)/, (admin)/ etablissent la structure de layouts par role
 - [01-06]: clsx + tailwind-merge (cn() helper) — standard shadcn/ui pour composition de classes
 - [Phase 01-04]: shadcn new-york style with CSS variables, ThemeProvider in locale layout, Inter font replaces Geist, success/warning custom tokens added
+- [01-02]: Prisma v7 breaking change — datasource url moved from schema.prisma to prisma.config.ts via defineConfig()
+- [01-02]: prisma.config.ts uses dotenv to bridge Next.js .env.local with Prisma's env loading system
+- [01-02]: 26 models covering all v1 domains with universal soft delete (isDeleted + deletedAt)
+- [01-02]: Migration PENDING — PostgreSQL credentials postgres/postgres rejected; db:migrate requires valid credentials
 
 ### Pending Todos
 
