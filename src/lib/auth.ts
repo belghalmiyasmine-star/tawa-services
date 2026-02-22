@@ -10,6 +10,11 @@ import { env } from "@/env";
 import { prisma } from "@/lib/prisma";
 import type { Role } from "@/types";
 
+// Lockout thresholds
+const CAPTCHA_THRESHOLD = 3; // After 3 failures, require CAPTCHA
+const LOCKOUT_THRESHOLD = 8; // After 8 total failures (3 + 5 with CAPTCHA), lock account
+const LOCKOUT_DURATION_MS = 15 * 60 * 1000; // 15 minutes
+
 // Build providers array — only include OAuth providers if env vars are set
 const providers: NextAuthOptions["providers"] = [
   CredentialsProvider({
@@ -17,6 +22,8 @@ const providers: NextAuthOptions["providers"] = [
     credentials: {
       email: { label: "Email", type: "email" },
       password: { label: "Password", type: "password" },
+      captchaAnswer: { label: "CAPTCHA Answer", type: "text" },
+      captchaExpected: { label: "CAPTCHA Expected", type: "text" },
     },
     async authorize(credentials) {
       if (!credentials?.email || !credentials?.password) {
@@ -35,6 +42,8 @@ const providers: NextAuthOptions["providers"] = [
           phoneVerified: true,
           isActive: true,
           isBanned: true,
+          failedLoginAttempts: true,
+          lockedUntil: true,
         },
       });
 
@@ -46,11 +55,63 @@ const providers: NextAuthOptions["providers"] = [
         return null;
       }
 
+      // Check if account is locked
+      if (user.lockedUntil && user.lockedUntil > new Date()) {
+        const minutesLeft = Math.ceil((user.lockedUntil.getTime() - Date.now()) / 60000);
+        throw new Error(`LOCKED:${minutesLeft}`);
+      }
+
+      // Reset lock if lockout period has expired
+      if (user.lockedUntil && user.lockedUntil <= new Date()) {
+        await prisma.user.update({
+          where: { id: user.id },
+          data: { failedLoginAttempts: 0, lockedUntil: null },
+        });
+        user.failedLoginAttempts = 0;
+        user.lockedUntil = null;
+      }
+
+      // Check CAPTCHA requirement (after 3 failed attempts)
+      if (user.failedLoginAttempts >= CAPTCHA_THRESHOLD) {
+        const captchaAnswer = credentials.captchaAnswer?.trim();
+        const captchaExpected = credentials.captchaExpected?.trim();
+
+        if (!captchaAnswer || !captchaExpected || captchaAnswer !== captchaExpected) {
+          throw new Error("CAPTCHA_REQUIRED");
+        }
+      }
+
       const isPasswordValid = await bcryptjs.compare(credentials.password, user.passwordHash);
 
       if (!isPasswordValid) {
+        const newAttempts = user.failedLoginAttempts + 1;
+
+        if (newAttempts >= LOCKOUT_THRESHOLD) {
+          // Lock the account
+          await prisma.user.update({
+            where: { id: user.id },
+            data: {
+              failedLoginAttempts: 0,
+              lockedUntil: new Date(Date.now() + LOCKOUT_DURATION_MS),
+            },
+          });
+          throw new Error("LOCKED:15");
+        } else {
+          // Increment failed attempts
+          await prisma.user.update({
+            where: { id: user.id },
+            data: { failedLoginAttempts: newAttempts },
+          });
+        }
+
         return null;
       }
+
+      // Successful login — reset failed attempts
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { failedLoginAttempts: 0, lockedUntil: null },
+      });
 
       return {
         id: user.id,
@@ -92,10 +153,10 @@ export const authOptions: NextAuthOptions = {
   },
   providers,
   callbacks: {
-    async signIn({ user, account }) {
+    async signIn({ user, account, profile }) {
       // For OAuth sign-ins, implement same-email auto-linking
       if (account && account.provider !== "credentials") {
-        const email = user.email;
+        const email = user.email ?? (profile as { email?: string } | undefined)?.email;
         if (!email) return true;
 
         // Check if a user with this email already exists
@@ -133,6 +194,11 @@ export const authOptions: NextAuthOptions = {
 
           // Override user id so NextAuth uses the existing user
           user.id = existingUser.id;
+        } else {
+          // Brand new OAuth user — mark as needing role selection
+          // We signal this via a special flag on the user object
+          // The jwt callback will detect this and set needsRoleSelection
+          (user as { isNewOAuthUser?: boolean }).isNewOAuthUser = true;
         }
       }
 
@@ -146,6 +212,10 @@ export const authOptions: NextAuthOptions = {
         token.role = (user as { role: Role }).role;
         token.emailVerified = (user as { emailVerified: boolean }).emailVerified;
         token.phoneVerified = (user as { phoneVerified: boolean }).phoneVerified;
+        // Flag new OAuth users who need role selection
+        if ((user as { isNewOAuthUser?: boolean }).isNewOAuthUser) {
+          token.needsRoleSelection = true;
+        }
       }
 
       // On session update or subsequent requests, refresh user data from DB
@@ -165,6 +235,10 @@ export const authOptions: NextAuthOptions = {
           token.role = dbUser.role as Role;
           token.emailVerified = dbUser.emailVerified;
           token.phoneVerified = dbUser.phoneVerified;
+          // Clear role selection flag after update (role has been set)
+          if (trigger === "update") {
+            token.needsRoleSelection = false;
+          }
         }
       }
 

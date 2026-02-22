@@ -5,14 +5,14 @@
 See: .planning/PROJECT.md (updated 2026-02-21)
 
 **Core value:** Clients can find, book, and pay a trusted local service provider in their city — and providers can get discovered and manage their business in one place.
-**Current focus:** Phase 2 — Authentication (Plans 01-02 complete, Plan 03 next)
+**Current focus:** Phase 2 — Authentication (Plans 01-03 complete, Plan 04 next)
 
 ## Current Position
 
 Phase: 2 of 11 (Authentification)
-Plan: 2 of 7 in current phase — COMPLETE
-Status: Phase 2 in progress — Plans 02-01 and 02-02 complete, ready for Plan 02-03 (login page)
-Last activity: 2026-02-22 — Plan 02-02 completed (registration wizard: 3-step wizard, bcrypt server action, role-based redirect)
+Plan: 3 of 7 in current phase — COMPLETE
+Status: Phase 2 in progress — Plans 02-01, 02-02, 02-03 complete, ready for Wave 3 (plans 04, 05, 06)
+Last activity: 2026-02-22 — Plans 02-02 and 02-03 completed in parallel (registration wizard + login page with OAuth)
 
 Progress: [####░░░░░] 11%
 
@@ -92,6 +92,11 @@ Recent decisions affecting current work:
 - [02-02]: STEP_LABELS stored as Record<1|2|3, key> to satisfy noUncheckedIndexedAccess TypeScript strict mode
 - [02-02]: Toaster added to locale layout — toast infrastructure now wired app-wide
 - [02-02]: @hookform/resolvers installed — zodResolver pattern established for all future forms
+- [02-03]: Math CAPTCHA chosen over hCaptcha/reCAPTCHA — no external dependency, sufficient for PFE
+- [02-03]: Progressive lockout: 3 fails = CAPTCHA required, 8 total = 15-minute account lock (DB-backed)
+- [02-03]: Lockout error encoded as "LOCKED:N" string in NextAuth error — parsed client-side for localized message
+- [02-03]: OAuthButtons always redirects to /auth/oauth-role — that page handles new vs returning user redirect
+- [02-03]: User.failedLoginAttempts and User.lockedUntil added to Prisma schema for server-side brute-force protection
 
 ### Pending Todos
 
@@ -99,10 +104,10 @@ None.
 
 ### Blockers/Concerns
 
-None. Plans 02-01 and 02-02 complete. Ready for Plan 02-03 (login page).
+None. Plans 02-01, 02-02, 02-03 complete. Ready for Wave 3 (plans 04, 05, 06).
 
 ## Session Continuity
 
 Last session: 2026-02-22
-Stopped at: Completed .planning/phases/02-authentification/02-02-PLAN.md — 3-step registration wizard, bcrypt server action, role-based redirect, @hookform/resolvers
+Stopped at: Completed Wave 2 (plans 02-02 + 02-03) — registration wizard + login page with OAuth
 Resume file: None
