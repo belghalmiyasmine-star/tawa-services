@@ -116,10 +116,8 @@ export function LoginForm() {
           setFailedAttempts(newAttempts);
           setErrorMessage(t("invalidCredentials"));
 
-          // Refresh captcha on each failed attempt if shown
-          if (captcha) {
-            refreshCaptcha();
-          }
+          // Don't refresh captcha on wrong password — the user already solved it.
+          // Keep the answer so they only need to fix their password.
         }
         setIsLoading(false);
         return;
