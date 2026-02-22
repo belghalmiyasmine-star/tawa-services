@@ -156,6 +156,10 @@ For full OAuth testing:
 - Plan 02-04 (email verification) can add verification banner to dashboard (login already redirects to /dashboard for CLIENT)
 - Plan 02-07 (RBAC middleware) will protect routes — authOptions.pages.signIn="/auth/login" is already configured
 
+## Self-Check: PASSED
+
+All created files exist on disk. All task commits (ebac61d, 692946a) verified in git log. Build passes with `npm run build`. Typecheck passes with `npm run typecheck`. Prisma schema valid.
+
 ---
 *Phase: 02-authentification*
 *Completed: 2026-02-22*
