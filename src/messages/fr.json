@@ -42,7 +42,10 @@
     "users": "Utilisateurs",
     "categories": "Categories",
     "reports": "Signalements",
-    "analytics": "Analytique"
+    "analytics": "Analytique",
+    "kyc": "Verification KYC",
+    "content": "Contenu",
+    "notifications": "Notifications"
   },
   "home": {
     "title": "Tawa Services",
