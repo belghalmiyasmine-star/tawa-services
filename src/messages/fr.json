@@ -124,7 +124,22 @@
     "oauthRoleClient": "Je cherche des services",
     "oauthRoleProvider": "Je propose des services",
     "oauthRoleClientDesc": "Trouvez et reservez des prestataires de confiance",
-    "oauthRoleProviderDesc": "Proposez vos services et developpez votre activite"
+    "oauthRoleProviderDesc": "Proposez vos services et developpez votre activite",
+    "accessDenied": "Acces refuse",
+    "accessDeniedMessage": "Vous n'avez pas les autorisations necessaires pour acceder a cette page.",
+    "backToDashboard": "Retour au tableau de bord",
+    "backToLogin": "Retour a la connexion",
+    "otpTitle": "Verification de votre telephone",
+    "otpSubtitle": "Un code a 6 chiffres a ete envoye au {phone}",
+    "otpPlaceholder": "Entrez le code",
+    "verifyCode": "Verifier",
+    "resendCode": "Renvoyer le code",
+    "resendIn": "Renvoyer dans {seconds}s",
+    "otpInvalid": "Code invalide ou expire",
+    "otpIncorrect": "Code incorrect",
+    "otpTooManyAttempts": "Trop de tentatives",
+    "otpSent": "Code envoye!",
+    "step4Title": "Verification"
   },
   "provider": {
     "profile": "Profil prestataire",
