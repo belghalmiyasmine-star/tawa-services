@@ -1,8 +1,24 @@
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
+
+import { authOptions } from "@/lib/auth";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { BottomNav } from "@/components/layout/BottomNav";
 
-export default function ProviderLayout({ children }: { children: React.ReactNode }) {
+export default async function ProviderLayout({ children }: { children: React.ReactNode }) {
+  const session = await getServerSession(authOptions);
+
+  // No session — redirect to login
+  if (!session) {
+    redirect("/auth/login");
+  }
+
+  // Wrong role — redirect to 403
+  if (session.user.role !== "PROVIDER" && session.user.role !== "ADMIN") {
+    redirect("/auth/403");
+  }
+
   return (
     <>
       <Navbar />
