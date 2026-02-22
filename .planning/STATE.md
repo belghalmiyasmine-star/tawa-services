@@ -34,6 +34,7 @@ Progress: [####░░░░░] 8%
 - Trend: Longer plans as complexity increases
 
 *Updated after each plan completion*
+| Phase 01-foundation-infrastructure P04 | 86 | 2 tasks | 28 files |
 
 ## Accumulated Context
 
@@ -57,6 +58,7 @@ Recent decisions affecting current work:
 - [01-06]: CATEGORY_ITEMS utilise slugs fr.json avec tCat(slug) — zero chaine hardcodee en francais
 - [01-06]: Route groups (client)/, (provider)/, (admin)/ etablissent la structure de layouts par role
 - [01-06]: clsx + tailwind-merge (cn() helper) — standard shadcn/ui pour composition de classes
+- [Phase 01-04]: shadcn new-york style with CSS variables, ThemeProvider in locale layout, Inter font replaces Geist, success/warning custom tokens added
 
 ### Pending Todos
 
@@ -69,5 +71,5 @@ None. Next: Execute plan 01-07 (CI pipeline or final plan for Phase 1).
 ## Session Continuity
 
 Last session: 2026-02-22
-Stopped at: Completed .planning/phases/01-foundation-infrastructure/01-06-PLAN.md — types globaux, schemas Zod, constantes metier, pages placeholder avec i18n
+Stopped at: Completed .planning/phases/01-foundation-infrastructure/01-04-PLAN.md — shadcn/ui design system, 19 components, Tawa Services color tokens, next-themes dark mode
 Resume file: None
