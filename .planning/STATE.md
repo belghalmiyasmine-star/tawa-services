@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-21)
 
 **Core value:** Clients can find, book, and pay a trusted local service provider in their city — and providers can get discovered and manage their business in one place.
-**Current focus:** Phase 2 — Authentication (Plans 01-03 complete, Plan 04 next)
+**Current focus:** Phase 2 — Authentication (Plans 01-03, 05, 06 complete, Plan 04 and 07 remaining)
 
 ## Current Position
 
 Phase: 2 of 11 (Authentification)
-Plan: 3 of 7 in current phase — COMPLETE
-Status: Phase 2 in progress — Plans 02-01, 02-02, 02-03 complete, ready for Wave 3 (plans 04, 05, 06)
-Last activity: 2026-02-22 — Plans 02-02 and 02-03 completed in parallel (registration wizard + login page with OAuth)
+Plan: 6 of 7 in current phase — COMPLETE
+Status: Phase 2 in progress — Plans 02-01, 02-02, 02-03, 02-05, 02-06 complete, plans 02-04, 02-07 remaining
+Last activity: 2026-02-22 — Plan 02-06 complete: RBAC middleware + RoleGuard + 403 page + protected layouts
 
-Progress: [####░░░░░] 11%
+Progress: [#####░░░░░] 14%
 
 ## Performance Metrics
 
@@ -40,6 +40,7 @@ Progress: [####░░░░░] 11%
 | Phase 01-foundation-infrastructure P07 | 10 | 2 tasks | 47 files |
 | Phase 01-foundation-infrastructure P04 | 86 | 2 tasks | 28 files |
 | Phase 01-foundation-infrastructure P03 | 45 | 2 tasks | 7 files |
+| Phase 02-authentification P06 | 5 | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -97,6 +98,9 @@ Recent decisions affecting current work:
 - [02-03]: Lockout error encoded as "LOCKED:N" string in NextAuth error — parsed client-side for localized message
 - [02-03]: OAuthButtons always redirects to /auth/oauth-role — that page handles new vs returning user redirect
 - [02-03]: User.failedLoginAttempts and User.lockedUntil added to Prisma schema for server-side brute-force protection
+- [Phase 02-06]: Defense-in-depth RBAC: middleware getToken + layout getServerSession + client useSession RoleGuard
+- [Phase 02-06]: 403 page placed in (client) route group — listed as public path in middleware so all users can access it
+- [Phase 02-06]: Provider layout allows PROVIDER and ADMIN roles — admin may need to inspect provider views
 
 ### Pending Todos
 
@@ -104,10 +108,10 @@ None.
 
 ### Blockers/Concerns
 
-None. Plans 02-01, 02-02, 02-03 complete. Ready for Wave 3 (plans 04, 05, 06).
+None. RBAC enforcement now complete. Plans 02-04 (email verification) and 02-07 (2FA/suspicious login) remaining.
 
 ## Session Continuity
 
 Last session: 2026-02-22
-Stopped at: Completed Wave 2 (plans 02-02 + 02-03) — registration wizard + login page with OAuth
+Stopped at: Completed 02-06-PLAN.md — RBAC middleware and route protection
 Resume file: None
