@@ -11,7 +11,7 @@ Tawa Services est une plateforme marketplace de services locaux tunisienne const
 - Decimal phases: Insertions urgentes (marque INSERTED)
 
 - [x] **Phase 1: Foundation & Infrastructure** - Scaffolding Next.js 15, schema Prisma, i18n next-intl, CI, layout global (completed 2026-02-22)
-- [ ] **Phase 2: Authentification** - Inscription, connexion, sessions, OAuth, RBAC, validation Tunisienne
+- [x] **Phase 2: Authentification** - Inscription, connexion, sessions, OAuth, RBAC, validation Tunisienne (completed 2026-02-22)
 - [ ] **Phase 3: Verification KYC** - Upload documents, workflow admin approval, trust badges prestataires
 - [ ] **Phase 4: Profil Prestataire & Services** - Profil, listing services, disponibilites, zone d'intervention, statistiques
 - [ ] **Phase 5: Recherche & Decouverte** - Parcourir par categorie, filtres ville/delegation, autocomplete, tri
@@ -597,7 +597,7 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation & Infrastructure | 7/7 | Complete    | 2026-02-22 |
-| 2. Authentification | 5/7 | In Progress|  |
+| 2. Authentification | 7/7 | Complete   | 2026-02-22 |
 | 3. Verification KYC | 0/6 | Not started | - |
 | 4. Profil Prestataire & Services | 0/9 | Not started | - |
 | 5. Recherche & Decouverte | 0/7 | Not started | - |

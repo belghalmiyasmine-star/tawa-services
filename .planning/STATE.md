@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-21)
 
 **Core value:** Clients can find, book, and pay a trusted local service provider in their city — and providers can get discovered and manage their business in one place.
-**Current focus:** Phase 2 — Authentication (Plans 01-06 complete, Plan 07 remaining)
+**Current focus:** Phase 2 — Authentication complete. All 7 plans done. Ready for Phase 3.
 
 ## Current Position
 
 Phase: 2 of 11 (Authentification)
-Plan: 7 of 7 in current phase — IN PROGRESS
-Status: Phase 2 in progress — Plans 02-01 through 02-06 complete, plan 02-07 remaining
-Last activity: 2026-02-22 — Plan 02-04 complete: email verification + password reset + EmailVerificationBanner
+Plan: 7 of 7 in current phase — COMPLETE (checkpoint:human-verify pending for Task 3)
+Status: Phase 2 complete — Plans 02-01 through 02-07 complete. Awaiting human verification at checkpoint.
+Last activity: 2026-02-22 — Plan 02-07 complete: 2FA TOTP/SMS, suspicious login detection, security settings page
 
-Progress: [#####░░░░░] 14%
+Progress: [######░░░░] 16%
 
 ## Performance Metrics
 
@@ -43,6 +43,7 @@ Progress: [#####░░░░░] 14%
 | Phase 02-authentification P06 | 5 | 2 tasks | 6 files |
 | Phase 02-authentification P05 | 5 | 2 tasks | 7 files |
 | Phase 02-authentification P04 | 8 | 2 tasks | 15 files |
+| Phase 02-authentification P07 | 8 | 2 tasks | 11 files |
 
 ## Accumulated Context
 
@@ -109,6 +110,10 @@ Recent decisions affecting current work:
 - [02-04]: forgotPasswordAction always returns success — never reveals if email is registered (security best practice)
 - [02-04]: EmailVerificationBanner reappears on navigation (usePathname reset) — persistent warning per CONTEXT.md design decision
 - [02-04]: Previous reset tokens invalidated before issuing new one — prevents token accumulation and replay
+- [Phase 02-07]: otpauth chosen over speakeasy/node-2fa — lightweight, no native deps, works in Edge runtime
+- [Phase 02-07]: totpSecretTemp stored in DB during setup, cleared after confirm2faAction validates code
+- [Phase 02-07]: Suspicious login requires BOTH new IP and new user-agent to reduce false positives
+- [Phase 02-07]: Login recording is fire-and-forget (void promise) — never blocks authentication flow
 
 ### Pending Todos
 
@@ -116,10 +121,10 @@ None.
 
 ### Blockers/Concerns
 
-None. Plans 02-01 through 02-06 complete. Only 02-07 (2FA/suspicious login detection) remaining.
+None. All Phase 2 plans complete. Checkpoint at 02-07 Task 3 for human verification of the full auth flow.
 
 ## Session Continuity
 
 Last session: 2026-02-22
-Stopped at: Completed 02-04-PLAN.md — email verification, password reset, EmailVerificationBanner
+Stopped at: 02-07 checkpoint:human-verify — complete auth system built, awaiting manual verification at localhost:3000
 Resume file: None
