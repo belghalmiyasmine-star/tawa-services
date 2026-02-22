@@ -136,6 +136,11 @@ model User {
   bannedReason          String?
   failedLoginAttempts   Int       @default(0)
   lockedUntil           DateTime?
+  // 2FA fields
+  twoFactorEnabled      Boolean   @default(false)
+  twoFactorMethod       String?   // "TOTP" | "SMS"
+  totpSecret            String?   // Encrypted TOTP secret
+  totpSecretTemp        String?   // Temporary secret during setup confirmation
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
   isDeleted             Boolean   @default(false)
@@ -151,6 +156,7 @@ model User {
   sessions           Session[]
   emailVerifications EmailVerification[]
   passwordResets     PasswordReset[]
+  loginRecords       LoginRecord[]
 
   @@map("users")
 }
@@ -230,6 +236,21 @@ model PhoneOtp {
   @@index([userId])
   @@index([phone, code])
   @@map("phone_otps")
+}
+
+model LoginRecord {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ip        String?
+  userAgent String?
+  country   String?
+  city      String?
+  isNew     Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@map("login_records")
 }
 
 // ============================================================

@@ -8,6 +8,7 @@ import GoogleProvider from "next-auth/providers/google";
 
 import { env } from "@/env";
 import { prisma } from "@/lib/prisma";
+import { checkSuspiciousLogin, recordLogin, sendSuspiciousLoginEmail } from "@/lib/suspicious-login";
 import type { Role } from "@/types";
 
 // Lockout thresholds
@@ -44,6 +45,9 @@ const providers: NextAuthOptions["providers"] = [
           isBanned: true,
           failedLoginAttempts: true,
           lockedUntil: true,
+          twoFactorEnabled: true,
+          twoFactorMethod: true,
+          phone: true,
         },
       });
 
@@ -120,6 +124,10 @@ const providers: NextAuthOptions["providers"] = [
         role: user.role as Role,
         emailVerified: user.emailVerified,
         phoneVerified: user.phoneVerified,
+        // Pass 2FA info so JWT callback can flag it
+        twoFactorEnabled: user.twoFactorEnabled,
+        twoFactorMethod: user.twoFactorMethod ?? undefined,
+        phone: user.phone ?? undefined,
       };
     },
   }),
@@ -153,7 +161,16 @@ export const authOptions: NextAuthOptions = {
   },
   providers,
   callbacks: {
-    async signIn({ user, account, profile }) {
+    async signIn({ user, account, profile, ...rest }) {
+      // Extract IP and user-agent from request headers (available via request context)
+      // In NextAuth v4, request is passed in the signIn callback params
+      const req = (rest as { req?: { headers?: Record<string, string | string[] | undefined> } }).req;
+      const ip =
+        (req?.headers?.["x-forwarded-for"] as string | undefined)?.split(",")[0]?.trim() ??
+        (req?.headers?.["x-real-ip"] as string | undefined) ??
+        "unknown";
+      const userAgent = (req?.headers?.["user-agent"] as string | undefined) ?? "unknown";
+
       // For OAuth sign-ins, implement same-email auto-linking
       if (account && account.provider !== "credentials") {
         const email = user.email ?? (profile as { email?: string } | undefined)?.email;
@@ -196,9 +213,31 @@ export const authOptions: NextAuthOptions = {
           user.id = existingUser.id;
         } else {
           // Brand new OAuth user — mark as needing role selection
-          // We signal this via a special flag on the user object
-          // The jwt callback will detect this and set needsRoleSelection
           (user as { isNewOAuthUser?: boolean }).isNewOAuthUser = true;
+        }
+
+        // Record login and check for suspicious activity (OAuth)
+        if (existingUser ?? user.id) {
+          const targetUserId = existingUser?.id ?? user.id;
+          if (targetUserId && email) {
+            // Fire-and-forget: don't block sign-in for logging
+            void recordLogin(targetUserId, ip, userAgent).catch(console.error);
+            void checkSuspiciousLogin(targetUserId, ip, userAgent).then(async (suspicious) => {
+              if (suspicious && email) {
+                await sendSuspiciousLoginEmail(email, ip, userAgent, "fr").catch(console.error);
+              }
+            });
+          }
+        }
+      } else if (account?.provider === "credentials") {
+        // Record login and check suspicious activity for credentials login
+        if (user.id && user.email) {
+          void recordLogin(user.id, ip, userAgent).catch(console.error);
+          void checkSuspiciousLogin(user.id, ip, userAgent).then(async (suspicious) => {
+            if (suspicious && user.email) {
+              await sendSuspiciousLoginEmail(user.email, ip, userAgent, "fr").catch(console.error);
+            }
+          });
         }
       }
 
@@ -215,6 +254,17 @@ export const authOptions: NextAuthOptions = {
         // Flag new OAuth users who need role selection
         if ((user as { isNewOAuthUser?: boolean }).isNewOAuthUser) {
           token.needsRoleSelection = true;
+        }
+        // Flag users who need 2FA challenge
+        const typedUser = user as {
+          twoFactorEnabled?: boolean;
+          twoFactorMethod?: string;
+          phone?: string;
+        };
+        if (typedUser.twoFactorEnabled) {
+          token.needs2fa = true;
+          token.twoFactorMethod = typedUser.twoFactorMethod;
+          token.phone = typedUser.phone;
         }
       }
 
@@ -238,6 +288,8 @@ export const authOptions: NextAuthOptions = {
           // Clear role selection flag after update (role has been set)
           if (trigger === "update") {
             token.needsRoleSelection = false;
+            // Clear 2FA pending flag after update (2FA has been verified)
+            token.needs2fa = false;
           }
         }
       }
