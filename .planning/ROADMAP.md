@@ -151,7 +151,7 @@ Plans:
 - [x] 02-01-PLAN.md — NextAuth.js config: JWT strategy, CredentialsProvider + Google + Facebook, Prisma adapter, session callbacks, SessionProvider
 - [x] 02-02-PLAN.md — Registration wizard: 3-step form (role, personal info, password/CGU), register server action, bcrypt hashing
 - [ ] 02-03-PLAN.md — Login page: email/password form, OAuth buttons, progressive lockout (CAPTCHA + 15min lock), OAuth role selection
-- [ ] 02-04-PLAN.md — Email verification (Resend magic link) + password reset flow (1h token expiry)
+- [x] 02-04-PLAN.md — Email verification (Resend magic link) + password reset flow (1h token expiry)
 - [ ] 02-05-PLAN.md — SMS OTP phone verification: ISmsService abstraction, simulated in dev, inline wizard step 4
 - [ ] 02-06-PLAN.md — RBAC middleware: next-intl + auth combined, RoleGuard component, 403 page, route group protection
 - [ ] 02-07-PLAN.md — Optional 2FA (TOTP + SMS), suspicious login detection, security settings page, final verification

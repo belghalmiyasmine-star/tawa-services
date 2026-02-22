@@ -5,14 +5,14 @@
 See: .planning/PROJECT.md (updated 2026-02-21)
 
 **Core value:** Clients can find, book, and pay a trusted local service provider in their city — and providers can get discovered and manage their business in one place.
-**Current focus:** Phase 2 — Authentication (Plans 01-03, 05, 06 complete, Plan 04 and 07 remaining)
+**Current focus:** Phase 2 — Authentication (Plans 01-06 complete, Plan 07 remaining)
 
 ## Current Position
 
 Phase: 2 of 11 (Authentification)
-Plan: 6 of 7 in current phase — COMPLETE
-Status: Phase 2 in progress — Plans 02-01, 02-02, 02-03, 02-05, 02-06 complete, plans 02-04, 02-07 remaining
-Last activity: 2026-02-22 — Plan 02-06 complete: RBAC middleware + RoleGuard + 403 page + protected layouts
+Plan: 7 of 7 in current phase — IN PROGRESS
+Status: Phase 2 in progress — Plans 02-01 through 02-06 complete, plan 02-07 remaining
+Last activity: 2026-02-22 — Plan 02-04 complete: email verification + password reset + EmailVerificationBanner
 
 Progress: [#####░░░░░] 14%
 
@@ -42,6 +42,7 @@ Progress: [#####░░░░░] 14%
 | Phase 01-foundation-infrastructure P03 | 45 | 2 tasks | 7 files |
 | Phase 02-authentification P06 | 5 | 2 tasks | 6 files |
 | Phase 02-authentification P05 | 5 | 2 tasks | 7 files |
+| Phase 02-authentification P04 | 8 | 2 tasks | 15 files |
 
 ## Accumulated Context
 
@@ -104,6 +105,10 @@ Recent decisions affecting current work:
 - [Phase 02-06]: Provider layout allows PROVIDER and ADMIN roles — admin may need to inspect provider views
 - [Phase 02-05]: ISmsService abstraction allows plugging Twilio/VonageSmsService without code changes — SimulatedSmsService logs to console in dev
 - [Phase 02-05]: PhoneOtp model persists OTP codes with 5-min expiry, max 5 attempts, and usedAt invalidation — OTP step is inline in wizard (step 4) not a separate page
+- [02-04]: Resend dev fallback logs magic link to console — no API key required in development
+- [02-04]: forgotPasswordAction always returns success — never reveals if email is registered (security best practice)
+- [02-04]: EmailVerificationBanner reappears on navigation (usePathname reset) — persistent warning per CONTEXT.md design decision
+- [02-04]: Previous reset tokens invalidated before issuing new one — prevents token accumulation and replay
 
 ### Pending Todos
 
@@ -111,10 +116,10 @@ None.
 
 ### Blockers/Concerns
 
-None. RBAC enforcement now complete. Plans 02-04 (email verification) and 02-07 (2FA/suspicious login) remaining.
+None. Plans 02-01 through 02-06 complete. Only 02-07 (2FA/suspicious login detection) remaining.
 
 ## Session Continuity
 
 Last session: 2026-02-22
-Stopped at: Completed 02-06-PLAN.md — RBAC middleware and route protection
+Stopped at: Completed 02-04-PLAN.md — email verification, password reset, EmailVerificationBanner
 Resume file: None

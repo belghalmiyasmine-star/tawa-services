@@ -10,8 +10,8 @@ Requirements for initial release. Each maps to roadmap phases.
 ### Authentication
 
 - [x] **AUTH-01**: User can create account with email and password (role selection: CLIENT or PROVIDER)
-- [ ] **AUTH-02**: User receives email verification link after signup
-- [ ] **AUTH-03**: User can reset password via email link
+- [x] **AUTH-02**: User receives email verification link after signup
+- [x] **AUTH-03**: User can reset password via email link
 - [x] **AUTH-04**: User session persists across browser refresh (NextAuth.js sessions)
 - [x] **AUTH-05**: User can log in via Google or Facebook (NextAuth.js social providers)
 - [x] **AUTH-06**: Role-based access control (CLIENT, PROVIDER, ADMIN) with route protection
@@ -163,8 +163,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | UI-03 | Phase 1 + Phase 11 | Complete |
 | UI-04 | Phase 11 | Complete |
 | AUTH-01 | Phase 2 | Complete |
-| AUTH-02 | Phase 2 | Pending |
-| AUTH-03 | Phase 2 | Pending |
+| AUTH-02 | Phase 2 | Complete |
+| AUTH-03 | Phase 2 | Complete |
 | AUTH-04 | Phase 2 | Complete |
 | AUTH-05 | Phase 2 | Complete |
 | AUTH-06 | Phase 2 | Complete |
