@@ -5,35 +5,37 @@
 See: .planning/PROJECT.md (updated 2026-02-21)
 
 **Core value:** Clients can find, book, and pay a trusted local service provider in their city — and providers can get discovered and manage their business in one place.
-**Current focus:** Phase 2 — Authentication (Phase 1 complete)
+**Current focus:** Phase 2 — Authentication (Plan 01 complete, Plan 02 next)
 
 ## Current Position
 
-Phase: 1 of 11 (Foundation & Infrastructure) — COMPLETE
-Plan: 7 of 7 in current phase — ALL COMPLETE
-Status: Phase 1 complete, ready for Phase 2
-Last activity: 2026-02-22 — Plan 01-07 completed (GitHub Actions CI pipeline: lint + typecheck + build + format + prisma validate)
+Phase: 2 of 11 (Authentification)
+Plan: 1 of 7 in current phase — COMPLETE
+Status: Phase 2 in progress — Plan 02-01 complete, ready for Plan 02-02 (registration)
+Last activity: 2026-02-22 — Plan 02-01 completed (NextAuth.js foundation: JWT, OAuth, SessionProvider, Prisma v7 adapter)
 
-Progress: [####░░░░░] 9%
+Progress: [####░░░░░] 10%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 7 (all Phase 1 plans: 01-01 through 01-07)
-- Average duration: ~45 minutes
-- Total execution time: ~3.5h
+- Total plans completed: 8 (all Phase 1 plans 01-01 through 01-07, plus 02-01)
+- Average duration: ~40 minutes
+- Total execution time: ~3.6h
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 1. Foundation & Infrastructure | 7/7 | ~3.5h | ~45min |
+| 2. Authentification | 1/7 | ~5min | ~5min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (25min), 01-03 (30min), 01-06 (75min), 01-07 (10min)
+- Last 5 plans: 01-03 (30min), 01-06 (75min), 01-07 (10min), 02-01 (5min)
 - Trend: Efficient execution as patterns established
 
 *Updated after each plan completion*
+| Phase 02-authentification P01 | 5 | 2 tasks | 9 files |
 | Phase 01-foundation-infrastructure P07 | 10 | 2 tasks | 47 files |
 | Phase 01-foundation-infrastructure P04 | 86 | 2 tasks | 28 files |
 | Phase 01-foundation-infrastructure P03 | 45 | 2 tasks | 7 files |
@@ -64,7 +66,6 @@ Recent decisions affecting current work:
 - [01-02]: Prisma v7 breaking change — datasource url moved from schema.prisma to prisma.config.ts via defineConfig()
 - [01-02]: prisma.config.ts uses dotenv to bridge Next.js .env.local with Prisma's env loading system
 - [01-02]: 26 models covering all v1 domains with universal soft delete (isDeleted + deletedAt)
-- [01-02]: Migration PENDING — PostgreSQL credentials postgres/postgres rejected; db:migrate requires valid credentials
 - [Phase 01-03]: middleware.ts must be in src/ not root — Next.js 15 with src/ directory requires middleware inside src/ for proper compilation
 - [Phase 01-03]: All navigation helpers from @/i18n/routing via createNavigation(routing) — type-safe locale-aware routing for all future components
 - [Phase 01-03]: fr.json organized by 14 domain namespaces — zero hardcoded French strings, all via useTranslations/getTranslations
@@ -77,6 +78,13 @@ Recent decisions affecting current work:
 - [Phase 01-05]: Route groups (client)/, (provider)/, (admin)/ establish role-based layout separation — each route group wraps all pages for that role with appropriate navigation
 - [Phase 01-05]: AdminSidebar uses client-side useState for collapse (w-64/w-16 toggle) — no server persistence needed for MVP
 - [Phase 01-05]: CATEGORIES in Navbar are static placeholders with emoji icons — will be replaced by DB-driven data in Phase 5
+- [02-01]: next-auth@4 chosen over v5 beta — v4 stable with Next.js 15 App Router and mature Prisma adapter
+- [02-01]: JWT strategy 30-day maxAge — per 02-CONTEXT.md session duration decision
+- [02-01]: Google/Facebook OAuth providers conditional — app works in dev without OAuth credentials
+- [02-01]: Same-email OAuth auto-linking in signIn callback — prevents duplicate accounts
+- [02-01]: Prisma v7 client engine requires database adapter — prisma.ts migrated to PrismaPg with pg driver
+- [02-01]: RESEND_API_KEY added to env.ts now to prepare for Plan 04 (email verification)
+- [02-01]: Database schema confirmed in sync (prisma db push: already synchronized)
 
 ### Pending Todos
 
@@ -84,10 +92,10 @@ None.
 
 ### Blockers/Concerns
 
-None. Phase 1 complete. Ready to begin Phase 2 (Authentication).
+None. Plan 02-01 complete. Ready for Plan 02-02 (user registration flow).
 
 ## Session Continuity
 
 Last session: 2026-02-22
-Stopped at: Completed .planning/phases/01-foundation-infrastructure/01-07-PLAN.md — GitHub Actions CI pipeline, npm scripts suite, prisma seed placeholder, dependabot
+Stopped at: Completed .planning/phases/02-authentification/02-01-PLAN.md — NextAuth.js foundation, JWT sessions, OAuth providers, SessionProvider, Prisma v7 adapter fix
 Resume file: None

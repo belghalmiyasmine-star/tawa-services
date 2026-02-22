@@ -12,8 +12,8 @@ Requirements for initial release. Each maps to roadmap phases.
 - [ ] **AUTH-01**: User can create account with email and password (role selection: CLIENT or PROVIDER)
 - [ ] **AUTH-02**: User receives email verification link after signup
 - [ ] **AUTH-03**: User can reset password via email link
-- [ ] **AUTH-04**: User session persists across browser refresh (NextAuth.js sessions)
-- [ ] **AUTH-05**: User can log in via Google or Facebook (NextAuth.js social providers)
+- [x] **AUTH-04**: User session persists across browser refresh (NextAuth.js sessions)
+- [x] **AUTH-05**: User can log in via Google or Facebook (NextAuth.js social providers)
 - [ ] **AUTH-06**: Role-based access control (CLIENT, PROVIDER, ADMIN) with route protection
 - [ ] **AUTH-07**: User must verify phone number via SMS (+216 format or 8 digits)
 - [ ] **AUTH-08**: Registration validates Tunisian phone format, unique email/phone, password 8+ chars
@@ -165,8 +165,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | AUTH-01 | Phase 2 | Pending |
 | AUTH-02 | Phase 2 | Pending |
 | AUTH-03 | Phase 2 | Pending |
-| AUTH-04 | Phase 2 | Pending |
-| AUTH-05 | Phase 2 | Pending |
+| AUTH-04 | Phase 2 | Complete |
+| AUTH-05 | Phase 2 | Complete |
 | AUTH-06 | Phase 2 | Pending |
 | AUTH-07 | Phase 2 | Pending |
 | AUTH-08 | Phase 2 | Pending |
