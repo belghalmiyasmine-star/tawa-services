@@ -217,6 +217,21 @@ model PasswordReset {
   @@map("password_resets")
 }
 
+model PhoneOtp {
+  id        String    @id @default(cuid())
+  userId    String
+  phone     String
+  code      String
+  expiresAt DateTime
+  usedAt    DateTime?
+  attempts  Int       @default(0)
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+  @@index([phone, code])
+  @@map("phone_otps")
+}
+
 // ============================================================
 // PROVIDER PROFILE
 // ============================================================
