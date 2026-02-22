@@ -10,28 +10,28 @@ See: .planning/PROJECT.md (updated 2026-02-21)
 ## Current Position
 
 Phase: 1 of 11 (Foundation & Infrastructure)
-Plan: 0 of 7 in current phase
-Status: Ready to plan
-Last activity: 2026-02-21 — Roadmap created (11 sprints, 60 requirements mapped)
+Plan: 1 of 7 in current phase
+Status: In progress
+Last activity: 2026-02-22 — Plan 01-01 completed (Next.js 15 scaffold + TypeScript + ESLint + Prettier)
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [#░░░░░░░░░] 2%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 0
-- Average duration: N/A
-- Total execution time: 0h
+- Total plans completed: 1
+- Average duration: ~25 minutes
+- Total execution time: 0.4h
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| - | - | - | - |
+| 1. Foundation & Infrastructure | 1/7 | ~25min | ~25min |
 
 **Recent Trend:**
-- Last 5 plans: N/A
-- Trend: N/A
+- Last 5 plans: 01-01 (25min)
+- Trend: N/A (first plan)
 
 *Updated after each plan completion*
 
@@ -46,17 +46,23 @@ Recent decisions affecting current work:
 - [Roadmap]: UI-01/02/03 couverts Phase 1 (infra) + Phase 11 (polish complet) — UI-04 (seed) uniquement Phase 11
 - [Roadmap]: Phase 9 regroupe MSG + NOTF (dependance commune: bookings Phase 6)
 - [Roadmap]: Chaque phase = 1 sprint Agile/Scrum — plans = user stories
+- [01-01]: Next.js 15.1.8 App Router (pas Pages Router) — fondation de tous les sprints
+- [01-01]: TypeScript strict + noUncheckedIndexedAccess: true pour securite maximale
+- [01-01]: exactOptionalPropertyTypes: false pour compatibilite libraries tierces (next-auth, prisma)
+- [01-01]: typedRoutes: true dans next.config.ts pour validation des routes au compile-time
+- [01-01]: Zod directement dans src/env.ts (pattern T3 simplifie, sans wrapper externe)
+- [01-01]: prettier-plugin-tailwindcss pour tri automatique classes Tailwind, evite conflits merge
 
 ### Pending Todos
 
-None yet.
+None.
 
 ### Blockers/Concerns
 
-None yet. Prochaine etape: `/gsd:plan-phase 1` pour decomposer Phase 1 en user stories detaillees.
+None. Next: Execute plan 01-02 (PostgreSQL + Prisma schema complet v1).
 
 ## Session Continuity
 
-Last session: 2026-02-21
-Stopped at: Roadmap 11 phases cree, STATE.md initialise, REQUIREMENTS.md traceabilite mise a jour
+Last session: 2026-02-22
+Stopped at: Plan 01-01 complete — Next.js 15 scaffold cree, ESLint strict + Prettier + env vars configures
 Resume file: None

@@ -44,7 +44,7 @@ Tawa Services est une plateforme marketplace de services locaux tunisienne const
 **Plans**: 7 plans
 
 Plans:
-- [ ] 01-01-PLAN.md — Initialisation Next.js 15 App Router + TypeScript strict + ESLint + Prettier + env vars typees
+- [x] 01-01-PLAN.md — Initialisation Next.js 15 App Router + TypeScript strict + ESLint + Prettier + env vars typees
 - [ ] 01-02-PLAN.md — PostgreSQL + Prisma ORM: schema complet v1 (20+ modeles, CUID2, soft delete, localisation normalisee)
 - [ ] 01-03-PLAN.md — next-intl: middleware routage par locale, dictionnaire fr.json, pattern t('key') global
 - [ ] 01-04-PLAN.md — shadcn/ui + Tailwind: tokens design (bleu primaire, orange accent, rounded), composants de base, dark mode
@@ -597,7 +597,7 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation & Infrastructure | 0/7 | Ready to execute | - |
+| 1. Foundation & Infrastructure | 1/7 | In Progress|  |
 | 2. Authentification | 0/8 | Not started | - |
 | 3. Verification KYC | 0/6 | Not started | - |
 | 4. Profil Prestataire & Services | 0/9 | Not started | - |
