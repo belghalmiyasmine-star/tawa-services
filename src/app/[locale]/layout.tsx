@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { ThemeProvider } from "@/components/shared/ThemeProvider";
 import { SessionProvider } from "@/components/providers/SessionProvider";
+import { Toaster } from "@/components/ui/toaster";
 import "../globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -56,6 +57,7 @@ export default async function LocaleLayout({
         >
           <NextIntlClientProvider messages={messages}>
             <SessionProvider>{children}</SessionProvider>
+            <Toaster />
           </NextIntlClientProvider>
         </ThemeProvider>
       </body>
