@@ -1,16 +1,26 @@
 import { z } from "zod";
 import { emailSchema, tunisianPhoneSchema, passwordSchema } from "./common";
 
-// Schema d'inscription
+// Schema d'inscription — wizard 3 etapes
 export const registerSchema = z
   .object({
-    name: z.string().min(2, "Le nom doit contenir au moins 2 caracteres").max(100),
+    firstName: z
+      .string()
+      .min(2, "Le prenom doit contenir au moins 2 caracteres")
+      .max(50, "Le prenom ne peut pas depasser 50 caracteres"),
+    lastName: z
+      .string()
+      .min(2, "Le nom doit contenir au moins 2 caracteres")
+      .max(50, "Le nom ne peut pas depasser 50 caracteres"),
     email: emailSchema,
     phone: tunisianPhoneSchema,
     password: passwordSchema,
     confirmPassword: z.string(),
     role: z.enum(["CLIENT", "PROVIDER"], {
       errorMap: () => ({ message: "Role invalide" }),
+    }),
+    acceptCGU: z.literal(true, {
+      errorMap: () => ({ message: "Vous devez accepter les CGU" }),
     }),
   })
   .refine((data) => data.password === data.confirmPassword, {
