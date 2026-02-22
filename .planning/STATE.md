@@ -74,6 +74,9 @@ Recent decisions affecting current work:
 - [01-07]: prisma/seed.ts is a placeholder — full seed data implementation deferred to Phase 11
 - [01-07]: tsx added as devDependency to execute TypeScript seed script directly
 - [01-07]: Unit tests deliberately excluded from CI Phase 1 — business logic begins Phase 2+
+- [Phase 01-05]: Route groups (client)/, (provider)/, (admin)/ establish role-based layout separation — each route group wraps all pages for that role with appropriate navigation
+- [Phase 01-05]: AdminSidebar uses client-side useState for collapse (w-64/w-16 toggle) — no server persistence needed for MVP
+- [Phase 01-05]: CATEGORIES in Navbar are static placeholders with emoji icons — will be replaced by DB-driven data in Phase 5
 
 ### Pending Todos
 
