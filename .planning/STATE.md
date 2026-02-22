@@ -41,6 +41,7 @@ Progress: [#####░░░░░] 14%
 | Phase 01-foundation-infrastructure P04 | 86 | 2 tasks | 28 files |
 | Phase 01-foundation-infrastructure P03 | 45 | 2 tasks | 7 files |
 | Phase 02-authentification P06 | 5 | 2 tasks | 6 files |
+| Phase 02-authentification P05 | 5 | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -101,6 +102,8 @@ Recent decisions affecting current work:
 - [Phase 02-06]: Defense-in-depth RBAC: middleware getToken + layout getServerSession + client useSession RoleGuard
 - [Phase 02-06]: 403 page placed in (client) route group — listed as public path in middleware so all users can access it
 - [Phase 02-06]: Provider layout allows PROVIDER and ADMIN roles — admin may need to inspect provider views
+- [Phase 02-05]: ISmsService abstraction allows plugging Twilio/VonageSmsService without code changes — SimulatedSmsService logs to console in dev
+- [Phase 02-05]: PhoneOtp model persists OTP codes with 5-min expiry, max 5 attempts, and usedAt invalidation — OTP step is inline in wizard (step 4) not a separate page
 
 ### Pending Todos
 
