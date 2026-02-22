@@ -597,7 +597,7 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation & Infrastructure | 5/7 | In Progress|  |
+| 1. Foundation & Infrastructure | 6/7 | In Progress|  |
 | 2. Authentification | 0/8 | Not started | - |
 | 3. Verification KYC | 0/6 | Not started | - |
 | 4. Profil Prestataire & Services | 0/9 | Not started | - |
