@@ -5,6 +5,7 @@ import { getMessages, getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { ThemeProvider } from "@/components/shared/ThemeProvider";
+import { SessionProvider } from "@/components/providers/SessionProvider";
 import "../globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -53,7 +54,9 @@ export default async function LocaleLayout({
           enableSystem={false}
           disableTransitionOnChange
         >
-          <NextIntlClientProvider messages={messages}>{children}</NextIntlClientProvider>
+          <NextIntlClientProvider messages={messages}>
+            <SessionProvider>{children}</SessionProvider>
+          </NextIntlClientProvider>
         </ThemeProvider>
       </body>
     </html>
