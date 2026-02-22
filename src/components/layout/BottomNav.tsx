@@ -51,8 +51,7 @@ export function BottomNav({ role = "CLIENT" }: BottomNavProps) {
       <div className="flex h-16 items-center justify-around px-2">
         {items.map((item) => {
           const Icon = item.icon;
-          const isActive =
-            pathname === item.href || pathname.startsWith(item.href + "/");
+          const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
 
           return (
             <Link
@@ -60,15 +59,11 @@ export function BottomNav({ role = "CLIENT" }: BottomNavProps) {
               href={item.href as never}
               className={cn(
                 "flex flex-1 flex-col items-center justify-center gap-1 py-2 text-xs transition-colors",
-                isActive
-                  ? "text-primary"
-                  : "text-muted-foreground hover:text-foreground"
+                isActive ? "text-primary" : "text-muted-foreground hover:text-foreground"
               )}
             >
               <Icon className={cn("h-5 w-5", isActive && "stroke-[2.5px]")} />
-              <span className={cn(isActive && "font-medium")}>
-                {t(item.labelKey)}
-              </span>
+              <span className={cn(isActive && "font-medium")}>{t(item.labelKey)}</span>
             </Link>
           );
         })}

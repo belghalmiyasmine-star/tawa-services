@@ -12,9 +12,7 @@ export function Footer() {
           <div className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-2">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-                <span className="text-sm font-bold text-primary-foreground">
-                  T
-                </span>
+                <span className="text-sm font-bold text-primary-foreground">T</span>
               </div>
               <span className="font-bold text-primary">Tawa Services</span>
             </div>
@@ -26,26 +24,17 @@ export function Footer() {
             <h3 className="mb-4 text-sm font-semibold">{t("forClients")}</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
-                <Link
-                  href="/services"
-                  className="hover:text-foreground transition-colors"
-                >
+                <Link href="/services" className="transition-colors hover:text-foreground">
                   {t("findProvider")}
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/how-it-works"
-                  className="hover:text-foreground transition-colors"
-                >
+                <Link href="/how-it-works" className="transition-colors hover:text-foreground">
                   {t("howItWorks")}
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/categories"
-                  className="hover:text-foreground transition-colors"
-                >
+                <Link href="/categories" className="transition-colors hover:text-foreground">
                   {t("serviceCategories")}
                 </Link>
               </li>
@@ -57,26 +46,20 @@ export function Footer() {
             <h3 className="mb-4 text-sm font-semibold">{t("forProviders")}</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
-                <Link
-                  href="/become-provider"
-                  className="hover:text-foreground transition-colors"
-                >
+                <Link href="/become-provider" className="transition-colors hover:text-foreground">
                   {t("becomeProvider")}
                 </Link>
               </li>
               <li>
                 <Link
                   href="/provider/dashboard"
-                  className="hover:text-foreground transition-colors"
+                  className="transition-colors hover:text-foreground"
                 >
                   {t("dashboard")}
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/provider/kyc"
-                  className="hover:text-foreground transition-colors"
-                >
+                <Link href="/provider/kyc" className="transition-colors hover:text-foreground">
                   {t("kycVerification")}
                 </Link>
               </li>
@@ -88,26 +71,17 @@ export function Footer() {
             <h3 className="mb-4 text-sm font-semibold">{t("help")}</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
-                <Link
-                  href="/faq"
-                  className="hover:text-foreground transition-colors"
-                >
+                <Link href="/faq" className="transition-colors hover:text-foreground">
                   {t("faq")}
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/contact"
-                  className="hover:text-foreground transition-colors"
-                >
+                <Link href="/contact" className="transition-colors hover:text-foreground">
                   {t("contact")}
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/support"
-                  className="hover:text-foreground transition-colors"
-                >
+                <Link href="/support" className="transition-colors hover:text-foreground">
                   {t("support")}
                 </Link>
               </li>
@@ -119,18 +93,12 @@ export function Footer() {
             <h3 className="mb-4 text-sm font-semibold">{t("legal")}</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
-                <Link
-                  href="/terms"
-                  className="hover:text-foreground transition-colors"
-                >
+                <Link href="/terms" className="transition-colors hover:text-foreground">
                   {t("terms")}
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/privacy"
-                  className="hover:text-foreground transition-colors"
-                >
+                <Link href="/privacy" className="transition-colors hover:text-foreground">
                   {t("privacy")}
                 </Link>
               </li>

@@ -55,10 +55,7 @@ export function Navbar() {
           <DropdownMenuContent className="w-56">
             {CATEGORIES.map((cat) => (
               <DropdownMenuItem key={cat.slug} asChild>
-                <Link
-                  href={`/services/${cat.slug}` as never}
-                  className="flex items-center gap-2"
-                >
+                <Link href={`/services/${cat.slug}` as never} className="flex items-center gap-2">
                   <span>{cat.icon}</span>
                   <span>{tCat(cat.labelKey)}</span>
                 </Link>
@@ -71,10 +68,7 @@ export function Navbar() {
         <div className="hidden w-72 md:block lg:w-96">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              placeholder={tCommon("search")}
-              className="pl-9 rounded-full"
-            />
+            <Input placeholder={tCommon("search")} className="rounded-full pl-9" />
           </div>
         </div>
 

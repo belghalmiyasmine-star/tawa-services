@@ -25,9 +25,7 @@ export default function ClientHomePage() {
         <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
           {t("heroTitle")}
         </h1>
-        <p className="mx-auto mt-6 max-w-2xl text-lg text-gray-600">
-          {t("heroSubtitle")}
-        </p>
+        <p className="mx-auto mt-6 max-w-2xl text-lg text-gray-600">{t("heroSubtitle")}</p>
         <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
           <Link
             href="/services"

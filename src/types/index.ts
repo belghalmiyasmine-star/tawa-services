@@ -4,18 +4,9 @@
 
 export type Role = "CLIENT" | "PROVIDER" | "ADMIN";
 
-export type KYCStatus =
-  | "NOT_SUBMITTED"
-  | "PENDING"
-  | "APPROVED"
-  | "REJECTED";
+export type KYCStatus = "NOT_SUBMITTED" | "PENDING" | "APPROVED" | "REJECTED";
 
-export type ServiceStatus =
-  | "DRAFT"
-  | "PENDING_APPROVAL"
-  | "ACTIVE"
-  | "SUSPENDED"
-  | "DELETED";
+export type ServiceStatus = "DRAFT" | "PENDING_APPROVAL" | "ACTIVE" | "SUSPENDED" | "DELETED";
 
 export type PricingType = "FIXED" | "SUR_DEVIS";
 
@@ -27,19 +18,9 @@ export type BookingStatus =
   | "REJECTED"
   | "CANCELLED";
 
-export type QuoteStatus =
-  | "PENDING"
-  | "RESPONDED"
-  | "ACCEPTED"
-  | "DECLINED"
-  | "EXPIRED";
+export type QuoteStatus = "PENDING" | "RESPONDED" | "ACCEPTED" | "DECLINED" | "EXPIRED";
 
-export type PaymentStatus =
-  | "PENDING"
-  | "HELD"
-  | "RELEASED"
-  | "REFUNDED"
-  | "FAILED";
+export type PaymentStatus = "PENDING" | "HELD" | "RELEASED" | "REFUNDED" | "FAILED";
 
 export type PaymentMethod = "CARD" | "D17" | "FLOUCI" | "CASH";
 
@@ -58,10 +39,7 @@ export type NotifType =
   | "NEW_MESSAGE"
   | "SYSTEM";
 
-export type TrustBadgeType =
-  | "IDENTITY_VERIFIED"
-  | "QUICK_RESPONSE"
-  | "TOP_PROVIDER";
+export type TrustBadgeType = "IDENTITY_VERIFIED" | "QUICK_RESPONSE" | "TOP_PROVIDER";
 
 // ============================================================
 // ENTITES PRINCIPALES
