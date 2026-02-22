@@ -20,6 +20,7 @@ declare module "next-auth" {
     role: Role;
     emailVerified: boolean;
     phoneVerified: boolean;
+    isNewOAuthUser?: boolean;
   }
 }
 
@@ -29,5 +30,6 @@ declare module "next-auth/jwt" {
     role: Role;
     emailVerified: boolean;
     phoneVerified: boolean;
+    needsRoleSelection?: boolean;
   }
 }
