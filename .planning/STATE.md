@@ -35,6 +35,7 @@ Progress: [####░░░░░] 8%
 
 *Updated after each plan completion*
 | Phase 01-foundation-infrastructure P04 | 86 | 2 tasks | 28 files |
+| Phase 01-foundation-infrastructure P03 | 45 | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -63,6 +64,9 @@ Recent decisions affecting current work:
 - [01-02]: prisma.config.ts uses dotenv to bridge Next.js .env.local with Prisma's env loading system
 - [01-02]: 26 models covering all v1 domains with universal soft delete (isDeleted + deletedAt)
 - [01-02]: Migration PENDING — PostgreSQL credentials postgres/postgres rejected; db:migrate requires valid credentials
+- [Phase 01-03]: middleware.ts must be in src/ not root — Next.js 15 with src/ directory requires middleware inside src/ for proper compilation
+- [Phase 01-03]: All navigation helpers from @/i18n/routing via createNavigation(routing) — type-safe locale-aware routing for all future components
+- [Phase 01-03]: fr.json organized by 14 domain namespaces — zero hardcoded French strings, all via useTranslations/getTranslations
 
 ### Pending Todos
 
