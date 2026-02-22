@@ -10,7 +10,7 @@ Tawa Services est une plateforme marketplace de services locaux tunisienne const
 - Integer phases (1..11): Sprints planifies
 - Decimal phases: Insertions urgentes (marque INSERTED)
 
-- [x] **Phase 1: Foundation & Infrastructure** - Scaffolding Next.js 15, schema Prisma, i18n next-intl, CI, layout global (completed 2026-02-22)
+- [x] **Phase 1: Foundation & Infrastructure** - Scaffolding Next.js 15, schema Prisma, i18n next-intl, CI, layout global (completed 2026-02-22)
 - [ ] **Phase 2: Authentification** - Inscription, connexion, sessions, OAuth, RBAC, validation Tunisienne
 - [ ] **Phase 3: Verification KYC** - Upload documents, workflow admin approval, trust badges prestataires
 - [ ] **Phase 4: Profil Prestataire & Services** - Profil, listing services, disponibilites, zone d'intervention, statistiques
@@ -145,17 +145,16 @@ classDiagram
   4. Un numero de telephone tunisien invalide (hors format +216 ou 8 chiffres) est rejete a l'inscription avec message d'erreur clair
   5. Un ADMIN accedant a `/admin`, un CLIENT accedant a `/provider/dashboard`, ou un PROVIDER accedant a `/admin` est redirige vers une page 403 ou la page de connexion appropriee
 
-**Plans**: TBD (environ 7-9 plans)
+**Plans**: 7 plans
 
 Plans:
-- [ ] 02-01: Configuration NextAuth.js — providers CredentialsProvider, GoogleProvider, FacebookProvider, callbacks session/jwt
-- [ ] 02-02: Page inscription — formulaire react-hook-form + Zod, validation email unique, phone tunisien, password 8+ chars, choix role
-- [ ] 02-03: Page connexion — formulaire, gestion erreurs, redirect post-login par role
-- [ ] 02-04: Email verification — generation token, envoi email (Nodemailer/Resend), route verification `/api/auth/verify`
-- [ ] 02-05: Reset password — formulaire demande, email avec lien, formulaire nouveau mot de passe, expiration token 1h
-- [ ] 02-06: Verification telephone — envoi SMS OTP (+216), saisie code, confirmation
-- [ ] 02-07: RBAC middleware — protection routes par role, redirections, composants `<RoleGuard>`
-- [ ] 02-08: Session persistence — test cross-tab, cross-session, refresh token
+- [ ] 02-01-PLAN.md — NextAuth.js config: JWT strategy, CredentialsProvider + Google + Facebook, Prisma adapter, session callbacks, SessionProvider
+- [ ] 02-02-PLAN.md — Registration wizard: 3-step form (role, personal info, password/CGU), register server action, bcrypt hashing
+- [ ] 02-03-PLAN.md — Login page: email/password form, OAuth buttons, progressive lockout (CAPTCHA + 15min lock), OAuth role selection
+- [ ] 02-04-PLAN.md — Email verification (Resend magic link) + password reset flow (1h token expiry)
+- [ ] 02-05-PLAN.md — SMS OTP phone verification: ISmsService abstraction, simulated in dev, inline wizard step 4
+- [ ] 02-06-PLAN.md — RBAC middleware: next-intl + auth combined, RoleGuard component, 403 page, route group protection
+- [ ] 02-07-PLAN.md — Optional 2FA (TOTP + SMS), suspicious login detection, security settings page, final verification
 
 ```mermaid
 sequenceDiagram
@@ -326,7 +325,7 @@ classDiagram
 **Plans**: TBD (environ 5-7 plans)
 
 Plans:
-- [ ] 05-01: Page categories — grille categories (icones lucide-react), navigation vers resultats filtrés
+- [ ] 05-01: Page categories — grille categories (icones lucide-react), navigation vers resultats filtres
 - [ ] 05-02: Page resultats recherche — liste cartes prestataires, URL params pour filtres persistants
 - [ ] 05-03: Composant filtres — ville/delegation, plage prix, statut verifie, disponibilite
 - [ ] 05-04: Tri resultats — note, prix, disponibilite avec mise a jour instantanee
@@ -563,7 +562,7 @@ graph TD
 
 ### Phase 11: Demo Data, Polish & PFE Readiness
 
-**Sprint Goal**: La plateforme est completement prete pour la soutenance PFE : donnees de demo realistes seedees (prestataires, clients, services, reservations, avis, transactions en TND), toutes les pages sont responsives mobile-first, les flows E2E critiques sont testes et documentés, les performances Lighthouse sont acceptables, et le rapport technique peut referencer l'implementation reelle.
+**Sprint Goal**: La plateforme est completement prete pour la soutenance PFE : donnees de demo realistes seedees (prestataires, clients, services, reservations, avis, transactions en TND), toutes les pages sont responsives mobile-first, les flows E2E critiques sont testes et documentes, les performances Lighthouse sont acceptables, et le rapport technique peut referencer l'implementation reelle.
 
 **Depends on**: Phase 10
 
@@ -598,7 +597,7 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation & Infrastructure | 7/7 | Complete    | 2026-02-22 |
-| 2. Authentification | 0/8 | Not started | - |
+| 2. Authentification | 0/7 | Not started | - |
 | 3. Verification KYC | 0/6 | Not started | - |
 | 4. Profil Prestataire & Services | 0/9 | Not started | - |
 | 5. Recherche & Decouverte | 0/7 | Not started | - |
@@ -609,4 +608,4 @@ Plans:
 | 10. Panneau d'Administration | 0/9 | Not started | - |
 | 11. Demo Data, Polish & PFE Readiness | 0/7 | Not started | - |
 
-**Total plans estimated:** ~85 plans across 11 sprints
+**Total plans estimated:** ~84 plans across 11 sprints
