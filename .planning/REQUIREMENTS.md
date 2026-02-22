@@ -106,9 +106,9 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### UI/UX & Infrastructure
 
-- [ ] **UI-01**: Mobile-first responsive design (80% mobile, 20% desktop)
+- [x] **UI-01**: Mobile-first responsive design (80% mobile, 20% desktop)
 - [ ] **UI-02**: Bottom navigation bar for mobile, card-based scrolling
-- [ ] **UI-03**: i18n infrastructure with next-intl (French primary, translation keys for all strings, language switcher ready)
+- [x] **UI-03**: i18n infrastructure with next-intl (French primary, translation keys for all strings, language switcher ready)
 - [ ] **UI-04**: Seeded demo data for PFE presentation
 
 ## v2 Requirements
@@ -158,9 +158,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| UI-01 | Phase 1 + Phase 11 | Pending |
+| UI-01 | Phase 1 + Phase 11 | Complete |
 | UI-02 | Phase 1 + Phase 11 | Pending |
-| UI-03 | Phase 1 + Phase 11 | Pending |
+| UI-03 | Phase 1 + Phase 11 | Complete |
 | UI-04 | Phase 11 | Pending |
 | AUTH-01 | Phase 2 | Pending |
 | AUTH-02 | Phase 2 | Pending |
