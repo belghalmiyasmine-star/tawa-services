@@ -161,91 +161,76 @@ export const authOptions: NextAuthOptions = {
   },
   providers,
   callbacks: {
-    async signIn({ user, account, profile, ...rest }) {
-      // Extract IP and user-agent from request headers (available via request context)
-      // In NextAuth v4, request is passed in the signIn callback params
-      const req = (rest as { req?: { headers?: Record<string, string | string[] | undefined> } }).req;
-      const ip =
-        (req?.headers?.["x-forwarded-for"] as string | undefined)?.split(",")[0]?.trim() ??
-        (req?.headers?.["x-real-ip"] as string | undefined) ??
-        "unknown";
-      const userAgent = (req?.headers?.["user-agent"] as string | undefined) ?? "unknown";
+    async signIn({ user, account, profile }) {
+      try {
+        // For OAuth sign-ins, implement same-email auto-linking
+        if (account && account.provider !== "credentials") {
+          const email = user.email ?? (profile as { email?: string } | undefined)?.email;
+          if (!email) return true;
 
-      // For OAuth sign-ins, implement same-email auto-linking
-      if (account && account.provider !== "credentials") {
-        const email = user.email ?? (profile as { email?: string } | undefined)?.email;
-        if (!email) return true;
-
-        // Check if a user with this email already exists
-        const existingUser = await prisma.user.findUnique({
-          where: { email },
-          include: { accounts: true },
-        });
-
-        if (existingUser) {
-          // Check if this OAuth account is already linked
-          const alreadyLinked = existingUser.accounts.some(
-            (acc) =>
-              acc.provider === account.provider &&
-              acc.providerAccountId === account.providerAccountId,
-          );
-
-          if (!alreadyLinked) {
-            // Link the OAuth account to the existing user
-            await prisma.account.create({
-              data: {
-                userId: existingUser.id,
-                type: account.type,
-                provider: account.provider,
-                providerAccountId: account.providerAccountId,
-                refresh_token: account.refresh_token,
-                access_token: account.access_token,
-                expires_at: account.expires_at,
-                token_type: account.token_type,
-                scope: account.scope,
-                id_token: account.id_token,
-                session_state: account.session_state as string | undefined,
-              },
-            });
-          }
-
-          // Override user id so NextAuth uses the existing user
-          user.id = existingUser.id;
-        } else {
-          // Brand new OAuth user — mark as needing role selection
-          (user as { isNewOAuthUser?: boolean }).isNewOAuthUser = true;
-        }
-
-        // Record login and check for suspicious activity (OAuth)
-        if (existingUser ?? user.id) {
-          const targetUserId = existingUser?.id ?? user.id;
-          if (targetUserId && email) {
-            // Fire-and-forget: don't block sign-in for logging
-            void recordLogin(targetUserId, ip, userAgent).catch(console.error);
-            void checkSuspiciousLogin(targetUserId, ip, userAgent).then(async (suspicious) => {
-              if (suspicious && email) {
-                await sendSuspiciousLoginEmail(email, ip, userAgent, "fr").catch(console.error);
-              }
-            });
-          }
-        }
-      } else if (account?.provider === "credentials") {
-        // Record login and check suspicious activity for credentials login
-        if (user.id && user.email) {
-          void recordLogin(user.id, ip, userAgent).catch(console.error);
-          void checkSuspiciousLogin(user.id, ip, userAgent).then(async (suspicious) => {
-            if (suspicious && user.email) {
-              await sendSuspiciousLoginEmail(user.email, ip, userAgent, "fr").catch(console.error);
-            }
+          // Check if a user with this email already exists
+          const existingUser = await prisma.user.findUnique({
+            where: { email },
+            include: { accounts: true },
           });
-        }
-      }
 
-      return true;
+          if (existingUser) {
+            // Check if this OAuth account is already linked
+            const alreadyLinked = existingUser.accounts.some(
+              (acc) =>
+                acc.provider === account.provider &&
+                acc.providerAccountId === account.providerAccountId,
+            );
+
+            if (!alreadyLinked) {
+              // Link the OAuth account to the existing user
+              await prisma.account.create({
+                data: {
+                  userId: existingUser.id,
+                  type: account.type,
+                  provider: account.provider,
+                  providerAccountId: account.providerAccountId,
+                  refresh_token: account.refresh_token,
+                  access_token: account.access_token,
+                  expires_at: account.expires_at,
+                  token_type: account.token_type,
+                  scope: account.scope,
+                  id_token: account.id_token,
+                  session_state: account.session_state as string | undefined,
+                },
+              });
+            }
+
+            // Override user id so NextAuth uses the existing user
+            user.id = existingUser.id;
+          } else {
+            // Brand new OAuth user — mark as needing role selection
+            (user as { isNewOAuthUser?: boolean }).isNewOAuthUser = true;
+          }
+        }
+
+        // Record login for suspicious login detection (fire-and-forget)
+        if (user.id && user.email) {
+          void recordLogin(user.id, "unknown", "unknown").catch(console.error);
+          void checkSuspiciousLogin(user.id, "unknown", "unknown")
+            .then(async (suspicious) => {
+              if (suspicious && user.email) {
+                await sendSuspiciousLoginEmail(user.email, "unknown", "unknown", "fr").catch(console.error);
+              }
+            })
+            .catch(console.error);
+        }
+
+        return true;
+      } catch (error) {
+        console.error("[signIn callback] Error:", error);
+        // Don't block sign-in on callback errors
+        return true;
+      }
     },
 
     async jwt({ token, user, trigger }) {
-      // On initial sign-in, user object is available — fetch full data and attach to token
+      // On initial sign-in, user object is available — attach data to token
       if (user) {
         token.id = user.id;
         token.role = (user as { role: Role }).role;
@@ -268,29 +253,30 @@ export const authOptions: NextAuthOptions = {
         }
       }
 
-      // On session update or subsequent requests, refresh user data from DB
-      if (trigger === "update" || (!user && token.id)) {
-        const dbUser = await prisma.user.findUnique({
-          where: { id: token.id as string },
-          select: {
-            id: true,
-            role: true,
-            emailVerified: true,
-            phoneVerified: true,
-          },
-        });
+      // Only refresh from DB on explicit session update (e.g. after role change, email verify)
+      // This avoids a DB query on every single request
+      if (trigger === "update" && token.id) {
+        try {
+          const dbUser = await prisma.user.findUnique({
+            where: { id: token.id as string },
+            select: {
+              id: true,
+              role: true,
+              emailVerified: true,
+              phoneVerified: true,
+            },
+          });
 
-        if (dbUser) {
-          token.id = dbUser.id;
-          token.role = dbUser.role as Role;
-          token.emailVerified = dbUser.emailVerified;
-          token.phoneVerified = dbUser.phoneVerified;
-          // Clear role selection flag after update (role has been set)
-          if (trigger === "update") {
+          if (dbUser) {
+            token.role = dbUser.role as Role;
+            token.emailVerified = dbUser.emailVerified;
+            token.phoneVerified = dbUser.phoneVerified;
             token.needsRoleSelection = false;
-            // Clear 2FA pending flag after update (2FA has been verified)
             token.needs2fa = false;
           }
+        } catch (error) {
+          console.error("[jwt callback] DB refresh failed:", error);
+          // Keep existing token data — don't break the session
         }
       }
 

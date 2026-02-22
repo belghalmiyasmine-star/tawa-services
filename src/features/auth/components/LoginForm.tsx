@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn } from "next-auth/react";
@@ -11,8 +11,6 @@ import { loginSchema, type LoginFormData } from "@/lib/validations/auth";
 import { useRouter, Link } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
   FormControl,
@@ -56,12 +54,14 @@ export function LoginForm() {
     },
   });
 
-  // Generate a new CAPTCHA when threshold is reached
-  useEffect(() => {
-    if (failedAttempts >= CAPTCHA_THRESHOLD && !captcha) {
+  const showCaptchaNeeded = failedAttempts >= CAPTCHA_THRESHOLD;
+
+  // Generate CAPTCHA when first needed
+  const ensureCaptcha = useCallback(() => {
+    if (!captcha) {
       setCaptcha(generateCaptcha());
     }
-  }, [failedAttempts, captcha]);
+  }, [captcha]);
 
   const refreshCaptcha = () => {
     setCaptcha(generateCaptcha());
@@ -74,8 +74,8 @@ export function LoginForm() {
     setErrorMessage(null);
     setCaptchaError(null);
 
-    // Validate CAPTCHA if shown
-    if (captcha) {
+    // Validate CAPTCHA if required
+    if (showCaptchaNeeded && captcha) {
       if (!captchaAnswer.trim()) {
         setCaptchaError(t("captchaRequired"));
         setIsLoading(false);
@@ -83,7 +83,6 @@ export function LoginForm() {
       }
       if (captchaAnswer.trim() !== captcha.expected) {
         setCaptchaError(t("captchaWrong"));
-        setFailedAttempts((prev) => prev + 1);
         refreshCaptcha();
         setIsLoading(false);
         return;
@@ -99,7 +98,13 @@ export function LoginForm() {
         redirect: false,
       });
 
-      if (result?.error) {
+      if (!result) {
+        setErrorMessage(tErrors("serverError"));
+        setIsLoading(false);
+        return;
+      }
+
+      if (result.error) {
         // Parse lockout errors from the server
         if (result.error.startsWith("LOCKED:")) {
           const minutes = result.error.split(":")[1];
@@ -107,23 +112,27 @@ export function LoginForm() {
             t("accountLocked", { minutes: minutes ?? "15" }),
           );
         } else if (result.error === "CAPTCHA_REQUIRED") {
-          // CAPTCHA required but not shown yet — show it now
+          // Server says CAPTCHA required — show it
           setFailedAttempts(CAPTCHA_THRESHOLD);
-          setErrorMessage(t("captchaRequired"));
+          ensureCaptcha();
+          setErrorMessage(t("captchaTitle"));
         } else {
-          // Wrong password or other credential error
+          // Wrong password or other credential error (CredentialsSignin, etc.)
           const newAttempts = failedAttempts + 1;
           setFailedAttempts(newAttempts);
           setErrorMessage(t("invalidCredentials"));
 
-          // Don't refresh captcha on wrong password — the user already solved it.
-          // Keep the answer so they only need to fix their password.
+          // If we just crossed the CAPTCHA threshold, show CAPTCHA
+          if (newAttempts >= CAPTCHA_THRESHOLD && !captcha) {
+            setCaptcha(generateCaptcha());
+          }
+          // Don't refresh captcha on wrong password — user already solved it
         }
         setIsLoading(false);
         return;
       }
 
-      if (result?.ok) {
+      if (result.ok) {
         // Successful login — fetch session to determine role-based redirect
         const sessionResponse = await fetch("/api/auth/session");
         const session = (await sessionResponse.json()) as {
@@ -136,10 +145,11 @@ export function LoginForm() {
         } else if (role === "ADMIN") {
           router.push("/admin");
         } else {
-          router.push("/dashboard");
+          router.push("/");
         }
       }
-    } catch {
+    } catch (error) {
+      console.error("[LoginForm] signIn error:", error);
       setErrorMessage(tErrors("serverError"));
       setIsLoading(false);
     }
@@ -222,20 +232,22 @@ export function LoginForm() {
         />
 
         {/* Remember me */}
-        <div className="flex items-center space-x-2">
-          <Checkbox
+        <label htmlFor="rememberMe" className="flex cursor-pointer items-center gap-2">
+          <input
+            type="checkbox"
             id="rememberMe"
             checked={rememberMe}
-            onCheckedChange={(checked) => setRememberMe(checked === true)}
+            onChange={(e) => setRememberMe(e.target.checked)}
             disabled={isLoading}
+            className="h-4 w-4 rounded border-input accent-primary"
           />
-          <Label htmlFor="rememberMe" className="cursor-pointer text-sm font-normal">
+          <span className="text-sm font-normal">
             {t("rememberMe")}
-          </Label>
-        </div>
+          </span>
+        </label>
 
         {/* CAPTCHA challenge — shown after 3 failed attempts */}
-        {captcha && failedAttempts >= CAPTCHA_THRESHOLD && (
+        {showCaptchaNeeded && captcha && (
           <div className="rounded-md border border-orange-200 bg-orange-50 p-4 dark:border-orange-800 dark:bg-orange-950">
             <p className="mb-2 text-sm font-medium text-orange-800 dark:text-orange-200">
               {t("captchaTitle")}
