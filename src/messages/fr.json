@@ -370,6 +370,9 @@
     "badgeIdentityVerified": "Identite Verifiee",
     "badgeQuickResponse": "Reponse Rapide",
     "badgeTopProvider": "Top Prestataire",
-    "badgeTooltip": "Ce prestataire a verifie son identite aupres de Tawa Services"
+    "badgeTooltip": "Ce prestataire a verifie son identite aupres de Tawa Services",
+    "badgeTooltipQuickResponse": "Ce prestataire repond en moyenne en moins d'une heure",
+    "badgeTooltipTopProvider": "Note superieure a 4.5 avec plus de 10 missions terminees",
+    "badgeNonVerified": "Non verifie"
   }
 }
