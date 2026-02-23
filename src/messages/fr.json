@@ -290,7 +290,15 @@
   },
   "placeholder": {
     "adminDescription": "Panneau d'administration — Phase 10",
-    "providerDashboardDescription": "Tableau de bord prestataire — Phase 4"
+    "providerDashboardDescription": "Tableau de bord prestataire — Phase 4",
+    "comingSoon": "A venir",
+    "comingSoonDescription": "Cette fonctionnalite est en cours de developpement et sera disponible prochainement.",
+    "usersDescription": "Gestion des utilisateurs — clients et prestataires",
+    "categoriesDescription": "Gestion des categories de services",
+    "reportsDescription": "Moderation et gestion des signalements",
+    "analyticsDescription": "Statistiques et metriques de la plateforme",
+    "contentDescription": "Gestion du contenu de la plateforme",
+    "notificationsDescription": "Gestion des notifications systeme"
   },
   "footer": {
     "tagline": "La plateforme de services locaux de confiance en Tunisie.",
