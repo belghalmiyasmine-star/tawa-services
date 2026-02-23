@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { signOut } from "next-auth/react";
 import { Link, usePathname } from "@/i18n/routing";
 import {
   LayoutDashboard,
@@ -14,6 +15,7 @@ import {
   Bell,
   ChevronLeft,
   ChevronRight,
+  LogOut,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -36,6 +38,7 @@ export function AdminSidebar() {
   const t = useTranslations("navigation");
   // "layout" namespace pour les labels generiques de la sidebar (collapse, expand, aria-labels)
   const tLayout = useTranslations("layout");
+  const tAuth = useTranslations("auth");
 
   return (
     <aside
@@ -90,6 +93,23 @@ export function AdminSidebar() {
       </nav>
 
       <Separator />
+
+      {/* Logout */}
+      <div className="p-3 pb-0">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => signOut({ callbackUrl: "/" })}
+          className={cn(
+            "w-full text-destructive hover:bg-destructive/10 hover:text-destructive",
+            collapsed && "px-2"
+          )}
+          title={collapsed ? tAuth("logout") : undefined}
+        >
+          <LogOut className={cn("h-4 w-4", !collapsed && "mr-2")} />
+          {!collapsed && <span>{tAuth("logout")}</span>}
+        </Button>
+      </div>
 
       {/* Collapse Toggle */}
       <div className="p-3">
