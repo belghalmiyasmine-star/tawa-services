@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-21)
 
 **Core value:** Clients can find, book, and pay a trusted local service provider in their city — and providers can get discovered and manage their business in one place.
-**Current focus:** Phase 3 — Verification KYC. Plans 01, 02, and 03 complete. Plans 04, 05 remaining.
+**Current focus:** Phase 3 — Verification KYC. Plans 01, 02, 03, and 04 complete. Plan 05 remaining.
 
 ## Current Position
 
 Phase: 3 of 11 (Verification KYC)
-Plan: 3 of 5 in current phase — COMPLETE (03-01, 03-02, 03-03 done)
-Status: Phase 3 in progress — Plans 03-01, 03-02, and 03-03 complete. Ready for Plan 03-04 (KYC banner + blocking).
-Last activity: 2026-02-23 — Plan 03-02 complete: KYC wizard UI (4-step upload wizard, status page, /provider/kyc route)
+Plan: 4 of 5 in current phase — COMPLETE (03-01, 03-02, 03-03, 03-04 done)
+Status: Phase 3 in progress — Plans 03-01 through 03-04 complete. Ready for Plan 03-05 (KYC banner + blocking).
+Last activity: 2026-02-23 — Plan 03-04 complete: TrustBadges component + badge computation logic (computeAndAwardBadges, getProviderBadges)
 
-Progress: [######░░░░] 21%
+Progress: [######░░░░] 24%
 
 ## Performance Metrics
 
@@ -45,6 +45,7 @@ Progress: [######░░░░] 21%
 | Phase 02-authentification P05 | 5 | 2 tasks | 7 files |
 | Phase 02-authentification P04 | 8 | 2 tasks | 15 files |
 | Phase 02-authentification P07 | 8 | 2 tasks | 11 files |
+| Phase 03-verification-kyc P04 | 8 | 1 task | 3 files |
 | Phase 03-verification-kyc P03 | 4 | 2 tasks | 6 files |
 | Phase 03-verification-kyc P01 | 3 | 2 tasks | 4 files |
 
@@ -124,6 +125,10 @@ Recent decisions affecting current work:
 - [03-02]: useToast (shadcn @radix-ui/react-toast) used instead of sonner — project uses @radix-ui/react-toast not sonner package
 - [03-02]: KycPageClient client wrapper pattern chosen over URL search params (?resubmit=true) for simpler resubmission state management
 - [03-02]: Native HTML5 drag events (onDragOver, onDragLeave, onDrop) — no external DnD library per plan spec
+- [03-04]: TrustBadges uses native HTML title attribute for tooltips — shadcn Tooltip not installed, avoids unnecessary dependency
+- [03-04]: computeAndAwardBadges handles only QUICK_RESPONSE and TOP_PROVIDER — IDENTITY_VERIFIED managed by approveKycAction (single responsibility)
+- [03-04]: Badge upsert pattern sets isActive true or false — never deletes rows, always updates (avoids unique constraint issues)
+- [03-04]: getProviderBadges returns only isActive=true badges — callers never need to filter
 
 ### Pending Todos
 
@@ -136,5 +141,5 @@ None. Phase 3 Plans 01, 02, and 03 complete. KYC provider wizard UI and admin re
 ## Session Continuity
 
 Last session: 2026-02-23
-Stopped at: Completed 03-02-PLAN.md — KYC wizard UI (4-step upload wizard, KycDocumentUpload, KycWizard, KycStatusPage, /provider/kyc route)
+Stopped at: Completed 03-04-PLAN.md — TrustBadges component (blue/green/gold badges), computeAndAwardBadges server action, getProviderBadges helper
 Resume file: None

@@ -597,7 +597,7 @@ Plans:
 |-------|----------------|--------|-----------|
 | 1. Foundation & Infrastructure | 7/7 | Complete    | 2026-02-22 |
 | 2. Authentification | 7/7 | Complete   | 2026-02-22 |
-| 3. Verification KYC | 3/5 | In Progress|  |
+| 3. Verification KYC | 4/5 | In Progress|  |
 | 4. Profil Prestataire & Services | 0/9 | Not started | - |
 | 5. Recherche & Decouverte | 0/7 | Not started | - |
 | 6. Systeme de Reservation | 0/9 | Not started | - |
