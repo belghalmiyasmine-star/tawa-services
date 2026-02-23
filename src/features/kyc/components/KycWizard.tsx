@@ -110,6 +110,7 @@ export function KycWizard({ providerId: _providerId, onComplete }: KycWizardProp
             </h2>
           </div>
           <KycDocumentUpload
+            key={currentWizardStep.docType}
             docType={currentWizardStep.docType}
             label={t(`${currentWizardStep.translationKey}Title` as Parameters<typeof t>[0])}
             description={t(`${currentWizardStep.translationKey}Description` as Parameters<typeof t>[0])}

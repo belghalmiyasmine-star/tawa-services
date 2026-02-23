@@ -133,8 +133,6 @@ export function Navbar() {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-          ) : status === "loading" ? (
-            <div className="h-8 w-8 animate-pulse rounded-full bg-muted" />
           ) : (
             <>
               <Button variant="ghost" asChild>
