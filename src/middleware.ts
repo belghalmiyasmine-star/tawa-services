@@ -19,6 +19,9 @@ const PUBLIC_PATHS = [
   "/auth/403",
   "/auth/error",
   "/",
+  "/providers",
+  "/services",
+  "/become-provider",
 ];
 
 // Provider routes — require PROVIDER or ADMIN role

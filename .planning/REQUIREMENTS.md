@@ -35,7 +35,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **PROF-04**: Provider can set availability calendar (weekly schedule + blocked dates)
 - [x] **PROF-05**: Provider can specify languages spoken, years of experience, hourly and fixed rates
 - [x] **PROF-06**: Provider can define intervention zone (city/delegation list)
-- [ ] **PROF-07**: Provider profile displays statistics (completed missions, average rating, total reviews, response time)
+- [x] **PROF-07**: Provider profile displays statistics (completed missions, average rating, total reviews, response time)
 - [x] **PROF-08**: Service listing includes inclusions/exclusions lists and conditions
 
 ### Search & Discovery
@@ -182,7 +182,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PROF-04 | Phase 4 | Complete |
 | PROF-05 | Phase 4 | Complete |
 | PROF-06 | Phase 4 | Complete |
-| PROF-07 | Phase 4 | Pending |
+| PROF-07 | Phase 4 | Complete |
 | PROF-08 | Phase 4 | Complete |
 | SRCH-01 | Phase 5 | Pending |
 | SRCH-02 | Phase 5 | Pending |
