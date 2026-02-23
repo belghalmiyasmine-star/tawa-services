@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-21)
 
 **Core value:** Clients can find, book, and pay a trusted local service provider in their city — and providers can get discovered and manage their business in one place.
-**Current focus:** Phase 4 — Profil Prestataire & Services. Plans 01, 02, 03, and 04 complete. Plan 05 (certifications UI) remaining.
+**Current focus:** Phase 4 — Profil Prestataire & Services. All 5 plans complete (Tasks 1-2 of plan 05 done; Task 3 is checkpoint:human-verify awaiting user confirmation).
 
 ## Current Position
 
 Phase: 4 of 11 (Profil Prestataire & Services)
-Plan: 4 of 5 in current phase — COMPLETE (Plans 01+02+03+04 done)
-Status: Phase 4 Plan 04 complete — service management UI: ServiceForm, ServicePhotoUploader, InclusionsExclusionsEditor, ServiceCard, ServicesGrid, My Services page, create/edit service pages with KYC guard.
-Last activity: 2026-02-23 — Plan 04-04 complete: 9 files created (5 components, 3 pages, 1 UI component), 1 file modified (PhotoUpload bug fix)
+Plan: 5 of 5 in current phase — TASKS 1-2 COMPLETE, awaiting Task 3 (checkpoint:human-verify)
+Status: Phase 4 Plan 05 tasks 1-2 complete — public provider profile page, 5 stat components, certification management UI. Awaiting human verification of complete Phase 4 E2E flow.
+Last activity: 2026-02-23 — Plan 04-05 tasks 1-2 complete: 8 files created (6 public profile components + 2 certification components), 2 files modified (edit profile page + fr.json)
 
-Progress: [#######░░░] 35%
+Progress: [########░░] 38%
 
 ## Performance Metrics
 
@@ -52,6 +52,7 @@ Progress: [#######░░░] 35%
 | Phase 04-profil-prestataire-services P02 | 15 | 2 tasks | 4 files |
 | Phase 04-profil-prestataire-services P03 | 8 | 2 tasks | 8 files |
 | Phase 04-profil-prestataire-services P04 | 8 | 2 tasks | 9 files |
+| Phase 04-profil-prestataire-services P05 | 6 | 2 tasks (checkpoint pending) | 8 files |
 
 ## Accumulated Context
 
@@ -155,6 +156,10 @@ Recent decisions affecting current work:
 - [Phase 04-04]: ActionCreateData/ActionUpdateData imported from action file to resolve null vs undefined type mismatch between validation and action schemas
 - [Phase 04-04]: AlertDialog installed via shadcn (alert-dialog.tsx) for ServiceCard delete confirmation
 - [Phase 04-04]: ServicePhotoUploader disabled when serviceId is null — create-then-edit flow for photos
+- [04-05]: PublicServiceCard uses div instead of Link — /services/[id] route does not exist until Phase 05
+- [04-05]: CertificationUploader POSTs to /api/provider/certification only — addCertificationAction not called to prevent duplicate DB writes
+- [04-05]: PortfolioGallery returns null when no photos — section hidden rather than empty state
+- [04-05]: PublicProfileStats grid: 2-col mobile, 5-col desktop (5th card wraps on tablet)
 
 ### Pending Todos
 
@@ -167,5 +172,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-23
-Stopped at: Completed 04-profil-prestataire-services/04-03-PLAN.md
+Stopped at: Checkpoint Task 3 (human-verify) in 04-profil-prestataire-services/04-05-PLAN.md
 Resume file: None
