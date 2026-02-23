@@ -278,7 +278,21 @@
     "validationPhoneInvalid": "Numero de telephone invalide",
     "validationExperienceTooHigh": "Le nombre d'annees d'experience ne peut pas depasser 50",
     "validationZoneRequired": "Selectionnez au moins une zone d'intervention",
-    "validationTimeInvalid": "L'heure de fin doit etre superieure a l'heure de debut"
+    "validationTimeInvalid": "L'heure de fin doit etre superieure a l'heure de debut",
+    "certificationSection": "Mes certifications et diplomes",
+    "certificationEmpty": "Aucune certification ajoutee",
+    "certificationTitle": "Titre de la certification",
+    "certificationTitlePlaceholder": "Ex: Diplome de plomberie, Certification ISO...",
+    "certificationFile": "Fichier (PDF ou image)",
+    "certificationAdd": "Ajouter une certification",
+    "certificationUploading": "Upload en cours...",
+    "certificationAdded": "Certification ajoutee avec succes",
+    "certificationUploadError": "Erreur lors de l'upload",
+    "certificationDelete": "Supprimer",
+    "certificationDeleteConfirm": "Etes-vous sur de vouloir supprimer cette certification ?",
+    "certificationDeleted": "Certification supprimee",
+    "certificationDeleteError": "Erreur lors de la suppression",
+    "certificationView": "Voir le fichier"
   },
   "service": {
     "book": "Reserver",

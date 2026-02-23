@@ -9,6 +9,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { AvailabilityEditor } from "@/features/provider/components/AvailabilityEditor";
 import { BlockedDatesEditor } from "@/features/provider/components/BlockedDatesEditor";
+import { CertificationsList } from "@/features/provider/components/CertificationsList";
 import { PortfolioUploader } from "@/features/provider/components/PortfolioUploader";
 import { ProfileEditForm } from "@/features/provider/components/ProfileEditForm";
 import { ZoneSelector } from "@/features/provider/components/ZoneSelector";
@@ -118,6 +119,19 @@ export default async function ProviderProfileEditPage() {
     },
   });
 
+  // Fetch certifications
+  const certifications = await prisma.certification.findMany({
+    where: { providerId: provider.id, isDeleted: false },
+    orderBy: { createdAt: "desc" },
+    select: {
+      id: true,
+      title: true,
+      fileUrl: true,
+      issuedAt: true,
+      createdAt: true,
+    },
+  });
+
   // Extract initial delegation IDs
   const initialDelegationIds = provider.delegations.map((d) => d.delegationId);
 
@@ -190,12 +204,13 @@ export default async function ProviderProfileEditPage() {
           </div>
         </TabsContent>
 
-        {/* Tab 5: Certifications (implemented in Plan 05) */}
+        {/* Tab 5: Certifications */}
         <TabsContent value="certifications">
           <div className="rounded-xl border bg-card p-6 shadow-sm">
-            <p className="text-muted-foreground">
-              La gestion des certifications sera disponible dans la prochaine version.
-            </p>
+            <CertificationsList
+              initialCertifications={certifications}
+              providerId={provider.id}
+            />
           </div>
         </TabsContent>
       </Tabs>
