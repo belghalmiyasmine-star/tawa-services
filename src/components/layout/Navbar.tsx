@@ -1,14 +1,17 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Search, Menu, Bell, ChevronDown } from "lucide-react";
+import { signOut, useSession } from "next-auth/react";
+import { Search, Menu, Bell, ChevronDown, LogOut, Settings, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
   DropdownMenuItem,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ThemeToggle } from "@/components/shared/ThemeToggle";
 import { LocaleSwitcher } from "@/components/shared/LocaleSwitcher";
 import { Input } from "@/components/ui/input";
@@ -25,7 +28,18 @@ const CATEGORIES = [
   { slug: "peinture", icon: "🎨", labelKey: "peinture" },
 ];
 
+function getInitials(name?: string | null, email?: string | null): string {
+  if (name) {
+    const parts = name.split(" ").filter(Boolean);
+    if (parts.length >= 2) return (parts[0]![0]! + parts[1]![0]!).toUpperCase();
+    return name.slice(0, 2).toUpperCase();
+  }
+  if (email) return email.slice(0, 2).toUpperCase();
+  return "U";
+}
+
 export function Navbar() {
+  const { data: session, status } = useSession();
   const t = useTranslations("navigation");
   const tAuth = useTranslations("auth");
   const tCommon = useTranslations("common");
@@ -80,13 +94,57 @@ export function Navbar() {
           <Button variant="ghost" size="icon" aria-label="Notifications">
             <Bell className="h-5 w-5" />
           </Button>
-          {/* Auth placeholder — Phase 2 */}
-          <Button variant="ghost" asChild>
-            <Link href="/auth/login">{tAuth("login")}</Link>
-          </Button>
-          <Button asChild className="rounded-full">
-            <Link href="/auth/register">{tAuth("register")}</Link>
-          </Button>
+          {/* Auth / User menu */}
+          {status === "authenticated" && session?.user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="flex items-center gap-2 px-2">
+                  <Avatar className="h-8 w-8">
+                    <AvatarFallback className="bg-primary text-xs text-primary-foreground">
+                      {getInitials(session.user.name, session.user.email)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="hidden max-w-[120px] truncate text-sm font-medium lg:inline">
+                    {session.user.name ?? session.user.email}
+                  </span>
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem asChild>
+                  <Link href={session.user.role === "PROVIDER" ? "/provider/dashboard" : "/"} className="flex items-center gap-2">
+                    <User className="h-4 w-4" />
+                    <span>{t("dashboard")}</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/settings/security" className="flex items-center gap-2">
+                    <Settings className="h-4 w-4" />
+                    <span>{t("settings")}</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  className="flex items-center gap-2 text-destructive focus:text-destructive"
+                  onClick={() => signOut({ callbackUrl: "/" })}
+                >
+                  <LogOut className="h-4 w-4" />
+                  <span>{tAuth("logout")}</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : status === "loading" ? (
+            <div className="h-8 w-8 animate-pulse rounded-full bg-muted" />
+          ) : (
+            <>
+              <Button variant="ghost" asChild>
+                <Link href="/auth/login">{tAuth("login")}</Link>
+              </Button>
+              <Button asChild className="rounded-full">
+                <Link href="/auth/register">{tAuth("register")}</Link>
+              </Button>
+            </>
+          )}
         </div>
       </div>
     </header>
