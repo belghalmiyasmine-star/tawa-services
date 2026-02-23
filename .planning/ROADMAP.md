@@ -194,15 +194,14 @@ sequenceDiagram
   4. Si un prestataire KYC non-approuve tente d'acceder a la page de creation de service, il est redirige vers la page de statut KYC avec message explicatif
   5. Le workflow KYC complet (soumission → approbation → badge) est tracable via les statuts PENDING, APPROVED, REJECTED en base de donnees
 
-**Plans**: TBD (environ 5-7 plans)
+**Plans**: 5 plans
 
 Plans:
-- [ ] 03-01: Upload documents — composant upload fichier (image/PDF), stockage local ou S3-compatible, validation type/taille
-- [ ] 03-02: Dashboard prestataire KYC — wizard 3 etapes (CIN → selfie → adresse), progress indicator, statut soumission
-- [ ] 03-03: Interface admin KYC review — liste soumissions, visualiseur documents, boutons Approuver/Rejeter, commentaire
-- [ ] 03-04: Workflow approbation — mise a jour KYCStatus, attribution trust badges, notification prestataire
-- [ ] 03-05: Guard KYC — middleware bloquant creation service si kycStatus !== APPROVED
-- [ ] 03-06: Trust badges composant — affichage conditionnel "Identite Verifiee", "Reponse Rapide", "Top Prestataire"
+- [ ] 03-01-PLAN.md — KYC upload API route, submission server action, Zod schemas, i18n translations
+- [ ] 03-02-PLAN.md — Provider KYC 4-step wizard (CIN recto/verso, selfie, justificatif) + status page
+- [ ] 03-03-PLAN.md — Admin KYC review interface (list, document viewer, approve/reject with reasons)
+- [ ] 03-04-PLAN.md — Trust badges component + badge computation logic (identity, quick response, top provider)
+- [ ] 03-05-PLAN.md — KYC guard banner on provider dashboard, admin KYC pending count, end-to-end verification
 
 ```mermaid
 sequenceDiagram
@@ -598,7 +597,7 @@ Plans:
 |-------|----------------|--------|-----------|
 | 1. Foundation & Infrastructure | 7/7 | Complete    | 2026-02-22 |
 | 2. Authentification | 7/7 | Complete   | 2026-02-22 |
-| 3. Verification KYC | 0/6 | Not started | - |
+| 3. Verification KYC | 0/5 | Not started | - |
 | 4. Profil Prestataire & Services | 0/9 | Not started | - |
 | 5. Recherche & Decouverte | 0/7 | Not started | - |
 | 6. Systeme de Reservation | 0/9 | Not started | - |
