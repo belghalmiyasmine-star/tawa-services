@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-21)
 
 **Core value:** Clients can find, book, and pay a trusted local service provider in their city — and providers can get discovered and manage their business in one place.
-**Current focus:** Phase 2 — Authentication complete. All 7 plans done. Ready for Phase 3.
+**Current focus:** Phase 3 — Verification KYC. Plan 01 complete (upload API + submission action + i18n). Plans 02-05 remaining.
 
 ## Current Position
 
-Phase: 2 of 11 (Authentification)
-Plan: 7 of 7 in current phase — COMPLETE (checkpoint:human-verify pending for Task 3)
-Status: Phase 2 complete — Plans 02-01 through 02-07 complete. Awaiting human verification at checkpoint.
-Last activity: 2026-02-22 — Plan 02-07 complete: 2FA TOTP/SMS, suspicious login detection, security settings page
+Phase: 3 of 11 (Verification KYC)
+Plan: 1 of 5 in current phase — COMPLETE
+Status: Phase 3 in progress — Plan 03-01 complete. Ready for Plan 03-02 (KYC wizard UI).
+Last activity: 2026-02-23 — Plan 03-01 complete: KYC upload API, submission server action, Zod validation schemas, French translations
 
-Progress: [######░░░░] 16%
+Progress: [######░░░░] 18%
 
 ## Performance Metrics
 
@@ -44,6 +44,7 @@ Progress: [######░░░░] 16%
 | Phase 02-authentification P05 | 5 | 2 tasks | 7 files |
 | Phase 02-authentification P04 | 8 | 2 tasks | 15 files |
 | Phase 02-authentification P07 | 8 | 2 tasks | 11 files |
+| Phase 03-verification-kyc P01 | 3 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -114,6 +115,7 @@ Recent decisions affecting current work:
 - [Phase 02-07]: totpSecretTemp stored in DB during setup, cleared after confirm2faAction validates code
 - [Phase 02-07]: Suspicious login requires BOTH new IP and new user-agent to reduce false positives
 - [Phase 02-07]: Login recording is fire-and-forget (void promise) — never blocks authentication flow
+- [Phase 03-01]: KYC_DOC_TYPES uses 4-step array per CONTEXT.md; kycSubmissionSchema validates array+refine for all 4 types; upload stores to /public/uploads/kyc/[userId]/uuid.ext; atomic transaction for KYC submission with re-submission support
 
 ### Pending Todos
 
@@ -121,10 +123,10 @@ None.
 
 ### Blockers/Concerns
 
-None. All Phase 2 plans complete. Checkpoint at 02-07 Task 3 for human verification of the full auth flow.
+None. Phase 3 Plan 01 complete. KYC backend foundation ready for Plan 02 (provider wizard UI).
 
 ## Session Continuity
 
-Last session: 2026-02-22
-Stopped at: 02-07 checkpoint:human-verify — complete auth system built, awaiting manual verification at localhost:3000
+Last session: 2026-02-23
+Stopped at: Completed 03-01-PLAN.md — KYC upload API, submission action, validation schemas, and i18n translations
 Resume file: None

@@ -20,9 +20,9 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### KYC Verification
 
-- [ ] **KYC-01**: Provider can upload CIN/passport photo for identity verification
-- [ ] **KYC-02**: Provider can upload selfie for identity match
-- [ ] **KYC-03**: Provider can upload proof of address document
+- [x] **KYC-01**: Provider can upload CIN/passport photo for identity verification
+- [x] **KYC-02**: Provider can upload selfie for identity match
+- [x] **KYC-03**: Provider can upload proof of address document
 - [ ] **KYC-04**: Admin reviews and approves/rejects KYC within 48h, trust badges awarded on approval
 - [ ] **KYC-05**: Provider cannot list services until KYC is approved
 - [ ] **KYC-06**: Trust badges displayed on profile: "Identite Verifiee", "Reponse Rapide", "Top Prestataire"
@@ -170,9 +170,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | AUTH-06 | Phase 2 | Complete |
 | AUTH-07 | Phase 2 | Complete |
 | AUTH-08 | Phase 2 | Complete |
-| KYC-01 | Phase 3 | Pending |
-| KYC-02 | Phase 3 | Pending |
-| KYC-03 | Phase 3 | Pending |
+| KYC-01 | Phase 3 | Complete |
+| KYC-02 | Phase 3 | Complete |
+| KYC-03 | Phase 3 | Complete |
 | KYC-04 | Phase 3 | Pending |
 | KYC-05 | Phase 3 | Pending |
 | KYC-06 | Phase 3 | Pending |
