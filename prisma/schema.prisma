@@ -276,6 +276,7 @@ model Provider {
   ratingCount       Int                  @default(0)
   completedMissions Int                  @default(0)
   responseTimeHours Float?
+  responseRate      Float?               // Percentage of requests responded to (0-100)
   isActive          Boolean              @default(true)
   isFeatured        Boolean              @default(false)
   createdAt         DateTime             @default(now())
@@ -292,6 +293,7 @@ model Provider {
   delegations      ProviderDelegation[]
   providerBookings Booking[]            @relation("ProviderBookings")
   trustBadges      TrustBadge[]
+  portfolioPhotos  PortfolioPhoto[]
 
   @@map("providers")
 }
@@ -358,6 +360,20 @@ model Certification {
   deletedAt  DateTime?
 
   @@map("certifications")
+}
+
+model PortfolioPhoto {
+  id         String    @id @default(cuid())
+  providerId String
+  provider   Provider  @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  photoUrl   String
+  caption    String?   @db.VarChar(200)
+  sortOrder  Int       @default(0)
+  createdAt  DateTime  @default(now())
+  isDeleted  Boolean   @default(false)
+  deletedAt  DateTime?
+
+  @@map("portfolio_photos")
 }
 
 // ============================================================
