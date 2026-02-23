@@ -163,3 +163,24 @@ None — no external service configuration required. All components use existing
 ---
 *Phase: 04-profil-prestataire-services*
 *Completed: 2026-02-23*
+
+## Self-Check: PASSED
+
+All files verified:
+- FOUND: src/features/provider/components/ServiceForm.tsx
+- FOUND: src/features/provider/components/ServicePhotoUploader.tsx
+- FOUND: src/features/provider/components/InclusionsExclusionsEditor.tsx
+- FOUND: src/features/provider/components/ServiceCard.tsx
+- FOUND: src/features/provider/components/ServicesGrid.tsx
+- FOUND: src/app/[locale]/(provider)/provider/services/page.tsx
+- FOUND: src/app/[locale]/(provider)/provider/services/new/page.tsx
+- FOUND: src/app/[locale]/(provider)/provider/services/[serviceId]/edit/page.tsx
+- FOUND: src/components/ui/alert-dialog.tsx
+- FOUND: .planning/phases/04-profil-prestataire-services/04-04-SUMMARY.md
+
+All commits verified:
+- FOUND: 8228dd6 (Task 1)
+- FOUND: dd9057c (Task 2, committed by prior session)
+- FOUND: 033c9c1 (Plan metadata)
+
+TypeScript: `npx tsc --noEmit` exits 0 — zero errors.
