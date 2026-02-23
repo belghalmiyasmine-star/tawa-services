@@ -22,6 +22,14 @@ export default async function ProviderLayout({ children }: { children: React.Rea
     return redirect({ href: "/auth/403", locale });
   }
 
+  // KYC guard: Phase 4 service creation pages must check provider.kycStatus === "APPROVED"
+  // before allowing access to service creation/listing flows.
+  // The guard is page-level (not middleware-level) because:
+  // - Provider CAN access dashboard and messaging before KYC approval
+  // - Only service listing/creation is blocked for non-approved providers
+  // Implementation: in Phase 4, service creation page server component must query
+  // prisma.provider.findUnique and redirect to /provider/kyc if kycStatus !== "APPROVED"
+
   return (
     <>
       <Navbar />
