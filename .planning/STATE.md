@@ -5,14 +5,14 @@
 See: .planning/PROJECT.md (updated 2026-02-21)
 
 **Core value:** Clients can find, book, and pay a trusted local service provider in their city — and providers can get discovered and manage their business in one place.
-**Current focus:** Phase 3 — Verification KYC. Plans 01 and 03 complete. Plans 02, 04, 05 remaining.
+**Current focus:** Phase 3 — Verification KYC. Plans 01, 02, and 03 complete. Plans 04, 05 remaining.
 
 ## Current Position
 
 Phase: 3 of 11 (Verification KYC)
-Plan: 3 of 5 in current phase — COMPLETE
-Status: Phase 3 in progress — Plans 03-01 and 03-03 complete. Ready for Plan 03-02 (KYC wizard UI).
-Last activity: 2026-02-23 — Plan 03-03 complete: Admin KYC review interface (list page, detail page, approve/reject actions)
+Plan: 3 of 5 in current phase — COMPLETE (03-01, 03-02, 03-03 done)
+Status: Phase 3 in progress — Plans 03-01, 03-02, and 03-03 complete. Ready for Plan 03-04 (KYC banner + blocking).
+Last activity: 2026-02-23 — Plan 03-02 complete: KYC wizard UI (4-step upload wizard, status page, /provider/kyc route)
 
 Progress: [######░░░░] 21%
 
@@ -35,6 +35,7 @@ Progress: [######░░░░] 21%
 - Trend: Very fast execution in Phase 2 as auth patterns established
 
 *Updated after each plan completion*
+| Phase 03-verification-kyc P02 | 20 | 2 tasks | 5 files |
 | Phase 02-authentification P02 | 7 | 2 tasks | 10 files |
 | Phase 02-authentification P01 | 5 | 2 tasks | 9 files |
 | Phase 01-foundation-infrastructure P07 | 10 | 2 tasks | 47 files |
@@ -120,6 +121,9 @@ Recent decisions affecting current work:
 - [Phase 03-03]: trustBadge.upsert used instead of create to prevent duplicate IDENTITY_VERIFIED badge on re-approval
 - [Phase 03-03]: shadcn Table component installed (was missing from components/ui/) using npx shadcn@latest add table
 - [Phase 03-03]: useRouter from @/i18n/routing used in client components for locale-aware redirects
+- [03-02]: useToast (shadcn @radix-ui/react-toast) used instead of sonner — project uses @radix-ui/react-toast not sonner package
+- [03-02]: KycPageClient client wrapper pattern chosen over URL search params (?resubmit=true) for simpler resubmission state management
+- [03-02]: Native HTML5 drag events (onDragOver, onDragLeave, onDrop) — no external DnD library per plan spec
 
 ### Pending Todos
 
@@ -127,10 +131,10 @@ None.
 
 ### Blockers/Concerns
 
-None. Phase 3 Plans 01 and 03 complete. KYC admin review interface ready. Plans 02, 04, 05 remaining.
+None. Phase 3 Plans 01, 02, and 03 complete. KYC provider wizard UI and admin review interface ready. Plans 04, 05 remaining.
 
 ## Session Continuity
 
 Last session: 2026-02-23
-Stopped at: Completed 03-03-PLAN.md — Admin KYC review interface (list page, detail page, approve/reject server actions)
+Stopped at: Completed 03-02-PLAN.md — KYC wizard UI (4-step upload wizard, KycDocumentUpload, KycWizard, KycStatusPage, /provider/kyc route)
 Resume file: None
