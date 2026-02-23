@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-21)
 
 **Core value:** Clients can find, book, and pay a trusted local service provider in their city — and providers can get discovered and manage their business in one place.
-**Current focus:** Phase 3 — Verification KYC. Plans 01, 02, 03, and 04 complete. Plan 05 remaining.
+**Current focus:** Phase 3 — Verification KYC. All 5 plans complete. Awaiting human E2E verification (03-05 Task 2 checkpoint).
 
 ## Current Position
 
 Phase: 3 of 11 (Verification KYC)
-Plan: 4 of 5 in current phase — COMPLETE (03-01, 03-02, 03-03, 03-04 done)
-Status: Phase 3 in progress — Plans 03-01 through 03-04 complete. Ready for Plan 03-05 (KYC banner + blocking).
-Last activity: 2026-02-23 — Plan 03-04 complete: TrustBadges component + badge computation logic (computeAndAwardBadges, getProviderBadges)
+Plan: 5 of 5 in current phase — Task 1 COMPLETE, awaiting human verification checkpoint (Task 2)
+Status: Phase 3 auto tasks complete — KYC banner, provider dashboard with TrustBadges, admin KYC widget done. Human verification checkpoint pending.
+Last activity: 2026-02-23 — Plan 03-05 complete: KycBanner server component, provider dashboard server component with KycBanner + TrustBadges, admin dashboard with real kycPendingCount
 
-Progress: [######░░░░] 24%
+Progress: [######░░░░] 27%
 
 ## Performance Metrics
 
@@ -48,6 +48,7 @@ Progress: [######░░░░] 24%
 | Phase 03-verification-kyc P04 | 8 | 1 task | 3 files |
 | Phase 03-verification-kyc P03 | 4 | 2 tasks | 6 files |
 | Phase 03-verification-kyc P01 | 3 | 2 tasks | 4 files |
+| Phase Phase 03-verification-kyc P05 P03-05 | 2 | 1 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -129,6 +130,9 @@ Recent decisions affecting current work:
 - [03-04]: computeAndAwardBadges handles only QUICK_RESPONSE and TOP_PROVIDER — IDENTITY_VERIFIED managed by approveKycAction (single responsibility)
 - [03-04]: Badge upsert pattern sets isActive true or false — never deletes rows, always updates (avoids unique constraint issues)
 - [03-04]: getProviderBadges returns only isActive=true badges — callers never need to filter
+- [Phase 03-05]: KycBanner is pure server component using getTranslations — no client bundle overhead
+- [Phase 03-05]: KYC guard is page-level (not middleware) — providers can access dashboard/messaging before KYC approval, only service listing is blocked
+- [Phase 03-05]: Admin KYC KPI card: real prisma.provider.count(PENDING) with amber dot indicator and Link to /admin/kyc
 
 ### Pending Todos
 
@@ -136,10 +140,10 @@ None.
 
 ### Blockers/Concerns
 
-None. Phase 3 Plans 01, 02, and 03 complete. KYC provider wizard UI and admin review interface ready. Plans 04, 05 remaining.
+None. Phase 3 all plans complete. Awaiting human E2E verification of full KYC workflow.
 
 ## Session Continuity
 
 Last session: 2026-02-23
-Stopped at: Completed 03-04-PLAN.md — TrustBadges component (blue/green/gold badges), computeAndAwardBadges server action, getProviderBadges helper
+Stopped at: 03-05 Task 1 complete — awaiting human verification checkpoint (Task 2: E2E KYC workflow verification)
 Resume file: None
