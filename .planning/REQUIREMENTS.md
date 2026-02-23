@@ -30,13 +30,13 @@ Requirements for initial release. Each maps to roadmap phases.
 ### Provider Profile
 
 - [ ] **PROF-01**: Provider can create profile with display name, bio, photo, contact info, cities covered
-- [ ] **PROF-02**: Provider can list services with title (80 chars max), description (150-1000 chars), pricing (fixed or sur devis), category, duration
-- [ ] **PROF-03**: Provider can upload work photos (max 5 per service), professional certifications, diplomas
+- [x] **PROF-02**: Provider can list services with title (80 chars max), description (150-1000 chars), pricing (fixed or sur devis), category, duration
+- [x] **PROF-03**: Provider can upload work photos (max 5 per service), professional certifications, diplomas
 - [ ] **PROF-04**: Provider can set availability calendar (weekly schedule + blocked dates)
 - [ ] **PROF-05**: Provider can specify languages spoken, years of experience, hourly and fixed rates
 - [ ] **PROF-06**: Provider can define intervention zone (city/delegation list)
 - [ ] **PROF-07**: Provider profile displays statistics (completed missions, average rating, total reviews, response time)
-- [ ] **PROF-08**: Service listing includes inclusions/exclusions lists and conditions
+- [x] **PROF-08**: Service listing includes inclusions/exclusions lists and conditions
 
 ### Search & Discovery
 
@@ -177,13 +177,13 @@ Which phases cover which requirements. Updated during roadmap creation.
 | KYC-05 | Phase 3 | Complete |
 | KYC-06 | Phase 3 | Complete |
 | PROF-01 | Phase 4 | Pending |
-| PROF-02 | Phase 4 | Pending |
-| PROF-03 | Phase 4 | Pending |
+| PROF-02 | Phase 4 | Complete |
+| PROF-03 | Phase 4 | Complete |
 | PROF-04 | Phase 4 | Pending |
 | PROF-05 | Phase 4 | Pending |
 | PROF-06 | Phase 4 | Pending |
 | PROF-07 | Phase 4 | Pending |
-| PROF-08 | Phase 4 | Pending |
+| PROF-08 | Phase 4 | Complete |
 | SRCH-01 | Phase 5 | Pending |
 | SRCH-02 | Phase 5 | Pending |
 | SRCH-03 | Phase 5 | Pending |

@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-21)
 
 **Core value:** Clients can find, book, and pay a trusted local service provider in their city — and providers can get discovered and manage their business in one place.
-**Current focus:** Phase 3 — Verification KYC. All 5 plans complete. Awaiting human E2E verification (03-05 Task 2 checkpoint).
+**Current focus:** Phase 4 — Profil Prestataire & Services. Plan 02 complete (service backend). Plans 01, 03, 04, 05 remaining.
 
 ## Current Position
 
-Phase: 3 of 11 (Verification KYC)
-Plan: 5 of 5 in current phase — Task 1 COMPLETE, awaiting human verification checkpoint (Task 2)
-Status: Phase 3 auto tasks complete — KYC banner, provider dashboard with TrustBadges, admin KYC widget done. Human verification checkpoint pending.
-Last activity: 2026-02-23 — Plan 03-05 complete: KycBanner server component, provider dashboard server component with KycBanner + TrustBadges, admin dashboard with real kycPendingCount
+Phase: 4 of 11 (Profil Prestataire & Services)
+Plan: 2 of 5 in current phase — COMPLETE
+Status: Phase 4 Plan 02 complete — service CRUD actions (KYC guard), photo upload API (max 5/service), certification upload API (PDF+images), certification management actions.
+Last activity: 2026-02-23 — Plan 04-02 complete: manage-services.ts, service/photos route, provider/certification route, manage-certifications.ts
 
-Progress: [######░░░░] 27%
+Progress: [######░░░░] 29%
 
 ## Performance Metrics
 
@@ -49,6 +49,7 @@ Progress: [######░░░░] 27%
 | Phase 03-verification-kyc P03 | 4 | 2 tasks | 6 files |
 | Phase 03-verification-kyc P01 | 3 | 2 tasks | 4 files |
 | Phase Phase 03-verification-kyc P05 P03-05 | 2 | 1 tasks | 4 files |
+| Phase 04-profil-prestataire-services P02 | 15 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -133,6 +134,11 @@ Recent decisions affecting current work:
 - [Phase 03-05]: KycBanner is pure server component using getTranslations — no client bundle overhead
 - [Phase 03-05]: KYC guard is page-level (not middleware) — providers can access dashboard/messaging before KYC approval, only service listing is blocked
 - [Phase 03-05]: Admin KYC KPI card: real prisma.provider.count(PENDING) with amber dot indicator and Link to /admin/kyc
+- [04-02]: Service CRUD actions use inline Zod schemas (Plan 04-01 not yet executed) — TODO comment left for import migration to service.ts
+- [04-02]: HOURLY pricingType maps to FIXED in DB (Prisma enum only has FIXED/SUR_DEVIS) — fixedPrice stores hourly rate value
+- [04-02]: KYC guard helper checkKycApproved(userId) returns error string or null — used by create/update actions
+- [04-02]: Photo delete uses best-effort physical file removal — fs.unlink failure is caught/logged, does not fail HTTP response
+- [04-02]: Certification upload accepts application/pdf + images with 10MB limit (vs 5MB for service photos)
 
 ### Pending Todos
 
@@ -140,10 +146,10 @@ None.
 
 ### Blockers/Concerns
 
-None. Phase 3 all plans complete. Awaiting human E2E verification of full KYC workflow.
+None.
 
 ## Session Continuity
 
 Last session: 2026-02-23
-Stopped at: 03-05 Task 1 complete — awaiting human verification checkpoint (Task 2: E2E KYC workflow verification)
+Stopped at: Completed Phase 04-profil-prestataire-services Plan 02 (04-02-PLAN.md)
 Resume file: None
