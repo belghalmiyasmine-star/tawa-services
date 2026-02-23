@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import Image from "next/image";
 import { useRouter } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import { CheckCircle2, XCircle, ZoomIn, Loader2, AlertCircle } from "lucide-react";
@@ -59,12 +58,11 @@ function DocumentCard({ docType, fileUrl }: { docType: string; fileUrl: string }
           <span className="text-sm font-medium">{label}</span>
         </div>
         <div className="relative h-40 w-full">
-          <Image
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
             src={fileUrl}
             alt={label}
-            fill
-            className="object-cover"
-            sizes="(max-width: 768px) 100vw, 50vw"
+            className="absolute inset-0 h-full w-full object-cover"
           />
           <DialogTrigger asChild>
             <button
@@ -81,12 +79,11 @@ function DocumentCard({ docType, fileUrl }: { docType: string; fileUrl: string }
           <DialogTitle>{label}</DialogTitle>
         </DialogHeader>
         <div className="relative h-[70vh] w-full">
-          <Image
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
             src={fileUrl}
             alt={label}
-            fill
-            className="object-contain"
-            sizes="100vw"
+            className="absolute inset-0 h-full w-full object-contain"
           />
         </div>
       </DialogContent>

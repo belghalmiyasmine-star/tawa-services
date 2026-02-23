@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import { CheckCircle2, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 
@@ -298,12 +297,11 @@ function ReviewScreen({ uploadedFiles, steps, t }: ReviewScreenProps) {
               </p>
               {fileUrl ? (
                 <div className="relative aspect-[4/3] w-full overflow-hidden rounded-lg border border-border bg-muted">
-                  <Image
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
                     src={fileUrl}
                     alt={t(titleKey)}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 50vw, 200px"
+                    className="absolute inset-0 h-full w-full object-cover"
                   />
                 </div>
               ) : (

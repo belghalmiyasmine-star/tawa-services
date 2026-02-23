@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef, useState } from "react";
-import Image from "next/image";
 import { Camera, FileUp, Loader2, RefreshCw, UploadCloud } from "lucide-react";
 import { useTranslations } from "next-intl";
 
@@ -162,12 +161,11 @@ export function KycDocumentUpload({
       {uploadState === "uploaded" && previewUrl ? (
         <div className="space-y-2">
           <div className="relative aspect-[4/3] w-full overflow-hidden rounded-lg border border-border bg-muted">
-            <Image
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
               src={previewUrl}
               alt={label}
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, 400px"
+              className="absolute inset-0 h-full w-full object-cover"
             />
           </div>
           {!disabled && (
