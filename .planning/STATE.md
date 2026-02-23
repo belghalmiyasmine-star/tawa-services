@@ -5,14 +5,14 @@
 See: .planning/PROJECT.md (updated 2026-02-21)
 
 **Core value:** Clients can find, book, and pay a trusted local service provider in their city — and providers can get discovered and manage their business in one place.
-**Current focus:** Phase 4 — Profil Prestataire & Services. Plans 01, 02, and 03 complete. Plan 04 (service CRUD UI) already executed. Plan 05 (certifications) remaining.
+**Current focus:** Phase 4 — Profil Prestataire & Services. Plans 01, 02, 03, and 04 complete. Plan 05 (certifications UI) remaining.
 
 ## Current Position
 
 Phase: 4 of 11 (Profil Prestataire & Services)
-Plan: 3 of 5 in current phase — COMPLETE (Plans 01+02+03 done; 04 pre-executed)
-Status: Phase 4 Plan 03 complete — provider profile edit page with 5-tab layout, ProfileEditForm (react-hook-form/zod), PhotoUpload, ZoneSelector (gouvernorat accordion), PortfolioUploader (10-slot grid), AvailabilityEditor (7-day schedule), BlockedDatesEditor.
-Last activity: 2026-02-23 — Plan 04-03 complete: 8 files created (6 components, 1 page, 1 Switch UI component)
+Plan: 4 of 5 in current phase — COMPLETE (Plans 01+02+03+04 done)
+Status: Phase 4 Plan 04 complete — service management UI: ServiceForm, ServicePhotoUploader, InclusionsExclusionsEditor, ServiceCard, ServicesGrid, My Services page, create/edit service pages with KYC guard.
+Last activity: 2026-02-23 — Plan 04-04 complete: 9 files created (5 components, 3 pages, 1 UI component), 1 file modified (PhotoUpload bug fix)
 
 Progress: [#######░░░] 35%
 
@@ -51,6 +51,7 @@ Progress: [#######░░░] 35%
 | Phase Phase 03-verification-kyc P05 P03-05 | 2 | 1 tasks | 4 files |
 | Phase 04-profil-prestataire-services P02 | 15 | 2 tasks | 4 files |
 | Phase 04-profil-prestataire-services P03 | 8 | 2 tasks | 8 files |
+| Phase 04-profil-prestataire-services P04 | 8 | 2 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -150,6 +151,10 @@ Recent decisions affecting current work:
 - [04-03]: AvailabilityEditor normalizes dayOfWeek 0=Sunday..6=Saturday — matches Prisma schema and JS Date convention
 - [04-03]: BlockedDatesEditor stores dates as ISO datetime (midnight UTC) — required by blockedDateSchema z.string().datetime()
 - [04-03]: Edit profile page redirects to /provider/kyc if no provider record — provider record created during KYC registration
+- [Phase 04-04]: ServicesGrid client wrapper: server page fetches data for SSR, client wrapper manages optimistic toggle/delete UI
+- [Phase 04-04]: ActionCreateData/ActionUpdateData imported from action file to resolve null vs undefined type mismatch between validation and action schemas
+- [Phase 04-04]: AlertDialog installed via shadcn (alert-dialog.tsx) for ServiceCard delete confirmation
+- [Phase 04-04]: ServicePhotoUploader disabled when serviceId is null — create-then-edit flow for photos
 
 ### Pending Todos
 
