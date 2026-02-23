@@ -11,8 +11,8 @@ Tawa Services est une plateforme marketplace de services locaux tunisienne const
 - Decimal phases: Insertions urgentes (marque INSERTED)
 
 - [x] **Phase 1: Foundation & Infrastructure** - Scaffolding Next.js 15, schema Prisma, i18n next-intl, CI, layout global (completed 2026-02-22)
-- [x] **Phase 2: Authentification** - Inscription, connexion, sessions, OAuth, RBAC, validation Tunisienne (completed 2026-02-22)
-- [x] **Phase 3: Verification KYC** - Upload documents, workflow admin approval, trust badges prestataires (completed 2026-02-23)
+- [x] **Phase 2: Authentification** - Inscription, connexion, sessions, OAuth, RBAC, validation Tunisienne (completed 2026-02-22)
+- [x] **Phase 3: Verification KYC** - Upload documents, workflow admin approval, trust badges prestataires (completed 2026-02-23)
 - [ ] **Phase 4: Profil Prestataire & Services** - Profil, listing services, disponibilites, zone d'intervention, statistiques
 - [ ] **Phase 5: Recherche & Decouverte** - Parcourir par categorie, filtres ville/delegation, autocomplete, tri
 - [ ] **Phase 6: Systeme de Reservation** - Booking direct + sur devis, statuts, tableau de bord prestataire, annulation
@@ -242,18 +242,14 @@ sequenceDiagram
   4. Le profil public affiche les statistiques en temps reel : missions terminees, note moyenne, nombre d'avis, temps de reponse moyen
   5. Un service peut specifier des listes d'inclusions et d'exclusions claires, et des conditions particulieres
 
-**Plans**: TBD (environ 7-9 plans)
+**Plans**: 5 plans
 
 Plans:
-- [ ] 04-01: Schema et API profil prestataire — CRUD complet, endpoints RESTful
-- [ ] 04-02: Formulaire edition profil — react-hook-form + Zod, upload photo, champs langues/experience/contact
-- [ ] 04-03: Gestion zones d'intervention — selecteur gouvernorats/delegations tunisiennes, multi-selection
-- [ ] 04-04: Calendrier disponibilites — composant weekly schedule (jours/heures), blocked dates picker
-- [ ] 04-05: Creation et edition service — formulaire complet avec validation Zod (titre 80c, desc 150-1000c, prix)
-- [ ] 04-06: Upload photos de travaux — max 5 par service, preview, suppression
-- [ ] 04-07: Inclusions/exclusions et conditions — champs repeater dans formulaire service
-- [ ] 04-08: Page profil public — layout, statistiques calculees, liste services, trust badges
-- [ ] 04-09: Certifications et diplomes — upload PDF/image, affichage sur profil
+- [ ] 04-01-PLAN.md — Backend profil prestataire: validations Zod, server actions CRUD, upload photo, i18n
+- [ ] 04-02-PLAN.md — Backend services: CRUD server actions avec KYC guard, upload photos/certifications
+- [ ] 04-03-PLAN.md — UI edition profil: formulaire, zones d'intervention, disponibilites, photo upload
+- [ ] 04-04-PLAN.md — UI services: formulaire creation/edition, photos de travaux, My Services page
+- [ ] 04-05-PLAN.md — Page profil public: header, statistiques, onglets Services/Avis/A propos, certifications
 
 ```mermaid
 classDiagram
@@ -598,7 +594,7 @@ Plans:
 | 1. Foundation & Infrastructure | 7/7 | Complete    | 2026-02-22 |
 | 2. Authentification | 7/7 | Complete   | 2026-02-22 |
 | 3. Verification KYC | 5/5 | Complete   | 2026-02-23 |
-| 4. Profil Prestataire & Services | 0/9 | Not started | - |
+| 4. Profil Prestataire & Services | 0/5 | Planned | - |
 | 5. Recherche & Decouverte | 0/7 | Not started | - |
 | 6. Systeme de Reservation | 0/9 | Not started | - |
 | 7. Paiement Simule | 0/8 | Not started | - |
@@ -607,4 +603,4 @@ Plans:
 | 10. Panneau d'Administration | 0/9 | Not started | - |
 | 11. Demo Data, Polish & PFE Readiness | 0/7 | Not started | - |
 
-**Total plans estimated:** ~84 plans across 11 sprints
+**Total plans estimated:** ~80 plans across 11 sprints
