@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-21)
 
 **Core value:** Clients can find, book, and pay a trusted local service provider in their city — and providers can get discovered and manage their business in one place.
-**Current focus:** Phase 3 — Verification KYC. Plan 01 complete (upload API + submission action + i18n). Plans 02-05 remaining.
+**Current focus:** Phase 3 — Verification KYC. Plans 01 and 03 complete. Plans 02, 04, 05 remaining.
 
 ## Current Position
 
 Phase: 3 of 11 (Verification KYC)
-Plan: 1 of 5 in current phase — COMPLETE
-Status: Phase 3 in progress — Plan 03-01 complete. Ready for Plan 03-02 (KYC wizard UI).
-Last activity: 2026-02-23 — Plan 03-01 complete: KYC upload API, submission server action, Zod validation schemas, French translations
+Plan: 3 of 5 in current phase — COMPLETE
+Status: Phase 3 in progress — Plans 03-01 and 03-03 complete. Ready for Plan 03-02 (KYC wizard UI).
+Last activity: 2026-02-23 — Plan 03-03 complete: Admin KYC review interface (list page, detail page, approve/reject actions)
 
-Progress: [######░░░░] 18%
+Progress: [######░░░░] 21%
 
 ## Performance Metrics
 
@@ -44,6 +44,7 @@ Progress: [######░░░░] 18%
 | Phase 02-authentification P05 | 5 | 2 tasks | 7 files |
 | Phase 02-authentification P04 | 8 | 2 tasks | 15 files |
 | Phase 02-authentification P07 | 8 | 2 tasks | 11 files |
+| Phase 03-verification-kyc P03 | 4 | 2 tasks | 6 files |
 | Phase 03-verification-kyc P01 | 3 | 2 tasks | 4 files |
 
 ## Accumulated Context
@@ -116,6 +117,9 @@ Recent decisions affecting current work:
 - [Phase 02-07]: Suspicious login requires BOTH new IP and new user-agent to reduce false positives
 - [Phase 02-07]: Login recording is fire-and-forget (void promise) — never blocks authentication flow
 - [Phase 03-01]: KYC_DOC_TYPES uses 4-step array per CONTEXT.md; kycSubmissionSchema validates array+refine for all 4 types; upload stores to /public/uploads/kyc/[userId]/uuid.ext; atomic transaction for KYC submission with re-submission support
+- [Phase 03-03]: trustBadge.upsert used instead of create to prevent duplicate IDENTITY_VERIFIED badge on re-approval
+- [Phase 03-03]: shadcn Table component installed (was missing from components/ui/) using npx shadcn@latest add table
+- [Phase 03-03]: useRouter from @/i18n/routing used in client components for locale-aware redirects
 
 ### Pending Todos
 
@@ -123,10 +127,10 @@ None.
 
 ### Blockers/Concerns
 
-None. Phase 3 Plan 01 complete. KYC backend foundation ready for Plan 02 (provider wizard UI).
+None. Phase 3 Plans 01 and 03 complete. KYC admin review interface ready. Plans 02, 04, 05 remaining.
 
 ## Session Continuity
 
 Last session: 2026-02-23
-Stopped at: Completed 03-01-PLAN.md — KYC upload API, submission action, validation schemas, and i18n translations
+Stopped at: Completed 03-03-PLAN.md — Admin KYC review interface (list page, detail page, approve/reject server actions)
 Resume file: None

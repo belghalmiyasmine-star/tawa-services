@@ -197,9 +197,9 @@ sequenceDiagram
 **Plans**: 5 plans
 
 Plans:
-- [ ] 03-01-PLAN.md — KYC upload API route, submission server action, Zod schemas, i18n translations
+- [x] 03-01-PLAN.md — KYC upload API route, submission server action, Zod schemas, i18n translations
 - [ ] 03-02-PLAN.md — Provider KYC 4-step wizard (CIN recto/verso, selfie, justificatif) + status page
-- [ ] 03-03-PLAN.md — Admin KYC review interface (list, document viewer, approve/reject with reasons)
+- [x] 03-03-PLAN.md — Admin KYC review interface (list, document viewer, approve/reject with reasons)
 - [ ] 03-04-PLAN.md — Trust badges component + badge computation logic (identity, quick response, top provider)
 - [ ] 03-05-PLAN.md — KYC guard banner on provider dashboard, admin KYC pending count, end-to-end verification
 
