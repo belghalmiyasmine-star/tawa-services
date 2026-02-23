@@ -5,14 +5,14 @@
 See: .planning/PROJECT.md (updated 2026-02-21)
 
 **Core value:** Clients can find, book, and pay a trusted local service provider in their city — and providers can get discovered and manage their business in one place.
-**Current focus:** Phase 4 — Profil Prestataire & Services. Plan 02 complete (service backend). Plans 01, 03, 04, 05 remaining.
+**Current focus:** Phase 4 — Profil Prestataire & Services. Plans 01 and 02 complete (backend infrastructure). Plans 03, 04, 05 remaining.
 
 ## Current Position
 
 Phase: 4 of 11 (Profil Prestataire & Services)
-Plan: 2 of 5 in current phase — COMPLETE
-Status: Phase 4 Plan 02 complete — service CRUD actions (KYC guard), photo upload API (max 5/service), certification upload API (PDF+images), certification management actions.
-Last activity: 2026-02-23 — Plan 04-02 complete: manage-services.ts, service/photos route, provider/certification route, manage-certifications.ts
+Plan: 2 of 5 in current phase — COMPLETE (Plans 01+02 done)
+Status: Phase 4 Plans 01+02 complete — provider backend: PortfolioPhoto model, Zod schemas, updateProfileAction, zone/availability/portfolio/photo-upload actions and APIs; service CRUD actions with KYC guard, photo upload, certification APIs.
+Last activity: 2026-02-23 — Plan 04-01 complete: update-profile.ts, manage-zones.ts, manage-availability.ts, manage-portfolio.ts, provider/photo route, provider/portfolio route
 
 Progress: [######░░░░] 29%
 
@@ -134,6 +134,12 @@ Recent decisions affecting current work:
 - [Phase 03-05]: KycBanner is pure server component using getTranslations — no client bundle overhead
 - [Phase 03-05]: KYC guard is page-level (not middleware) — providers can access dashboard/messaging before KYC approval, only service listing is blocked
 - [Phase 03-05]: Admin KYC KPI card: real prisma.provider.count(PENDING) with amber dot indicator and Link to /admin/kyc
+- [04-01]: PortfolioPhoto uses soft delete (isDeleted+deletedAt) consistent with all other models
+- [04-01]: Physical file deletion is best-effort — never blocks action/API response
+- [04-01]: Portfolio max=10 enforced at API route level (count check before upload)
+- [04-01]: Availability upsert uses providerId_dayOfWeek compound unique — idempotent updates
+- [04-01]: Zone update uses replace strategy (deleteMany + createMany) in a transaction
+- [04-01]: Prisma client regenerated (npx prisma generate) after adding PortfolioPhoto model
 - [04-02]: Service CRUD actions use inline Zod schemas (Plan 04-01 not yet executed) — TODO comment left for import migration to service.ts
 - [04-02]: HOURLY pricingType maps to FIXED in DB (Prisma enum only has FIXED/SUR_DEVIS) — fixedPrice stores hourly rate value
 - [04-02]: KYC guard helper checkKycApproved(userId) returns error string or null — used by create/update actions
@@ -151,5 +157,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-23
-Stopped at: Completed Phase 04-profil-prestataire-services Plan 02 (04-02-PLAN.md)
+Stopped at: Completed 04-profil-prestataire-services/04-01-PLAN.md
 Resume file: None
