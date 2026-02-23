@@ -1,10 +1,9 @@
-import { redirect } from "next/navigation";
-
 import type { Metadata } from "next";
 import { getServerSession } from "next-auth";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 
 import { authOptions } from "@/lib/auth";
+import { redirect } from "@/i18n/routing";
 import { prisma } from "@/lib/prisma";
 import { SecuritySettings } from "@/features/auth/components/SecuritySettings";
 
@@ -18,9 +17,10 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function SecurityPage() {
   const session = await getServerSession(authOptions);
+  const locale = await getLocale();
 
   if (!session?.user?.id) {
-    redirect("/auth/login");
+    return redirect({ href: "/auth/login", locale });
   }
 
   // Fetch user 2FA settings and recent login records
@@ -48,7 +48,7 @@ export default async function SecurityPage() {
   ]);
 
   if (!user) {
-    redirect("/auth/login");
+    return redirect({ href: "/auth/login", locale });
   }
 
   return (

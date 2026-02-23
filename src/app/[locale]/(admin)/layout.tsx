@@ -1,21 +1,22 @@
 import { getServerSession } from "next-auth";
-import { getTranslations } from "next-intl/server";
-import { redirect } from "next/navigation";
+import { getLocale, getTranslations } from "next-intl/server";
 
 import { authOptions } from "@/lib/auth";
+import { redirect } from "@/i18n/routing";
 import { AdminSidebar } from "@/components/layout/AdminSidebar";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerSession(authOptions);
+  const locale = await getLocale();
 
   // No session — redirect to login
   if (!session) {
-    redirect("/auth/login");
+    return redirect({ href: "/auth/login", locale });
   }
 
   // Only ADMIN can access admin routes
   if (session.user.role !== "ADMIN") {
-    redirect("/auth/403");
+    return redirect({ href: "/auth/403", locale });
   }
 
   const t = await getTranslations("layout");

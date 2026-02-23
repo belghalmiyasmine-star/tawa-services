@@ -1,7 +1,8 @@
 import { getServerSession } from "next-auth";
-import { redirect } from "next/navigation";
+import { getLocale } from "next-intl/server";
 
 import { authOptions } from "@/lib/auth";
+import { redirect } from "@/i18n/routing";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { BottomNav } from "@/components/layout/BottomNav";
@@ -9,15 +10,16 @@ import { EmailVerificationBanner } from "@/components/shared/EmailVerificationBa
 
 export default async function ProviderLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerSession(authOptions);
+  const locale = await getLocale();
 
   // No session — redirect to login
   if (!session) {
-    redirect("/auth/login");
+    return redirect({ href: "/auth/login", locale });
   }
 
   // Wrong role — redirect to 403
   if (session.user.role !== "PROVIDER" && session.user.role !== "ADMIN") {
-    redirect("/auth/403");
+    return redirect({ href: "/auth/403", locale });
   }
 
   return (

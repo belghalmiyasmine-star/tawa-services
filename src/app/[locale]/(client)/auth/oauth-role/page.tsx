@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { getServerSession } from "next-auth";
-import { redirect } from "next/navigation";
 
 import { authOptions } from "@/lib/auth";
+import { redirect } from "@/i18n/routing";
 import { OAuthRoleSelection } from "@/features/auth/components/OAuthRoleSelection";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -19,10 +19,11 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function OAuthRolePage() {
   const t = await getTranslations("auth");
   const session = await getServerSession(authOptions);
+  const locale = await getLocale();
 
   // If not authenticated, redirect to login
   if (!session?.user) {
-    redirect("/auth/login");
+    return redirect({ href: "/auth/login", locale });
   }
 
   // If user already has a non-default role that was explicitly set
@@ -33,11 +34,11 @@ export default async function OAuthRolePage() {
   // without a DB flag, so we simply show the selection page to CLIENT role users.
   // PROVIDER and ADMIN users are definitively assigned and should not see this page.
   if (session.user.role === "PROVIDER") {
-    redirect("/provider/dashboard");
+    return redirect({ href: "/provider/dashboard", locale });
   }
 
   if (session.user.role === "ADMIN") {
-    redirect("/admin");
+    return redirect({ href: "/admin", locale });
   }
 
   return (

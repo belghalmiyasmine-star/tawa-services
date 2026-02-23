@@ -1,8 +1,7 @@
-import { redirect } from "next/navigation";
-
 import type { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 
+import { redirect } from "@/i18n/routing";
 import { TwoFactorChallenge } from "@/features/auth/components/TwoFactorChallenge";
 
 interface TwoFaPageProps {
@@ -24,10 +23,11 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function TwoFaPage({ searchParams }: TwoFaPageProps) {
   const params = await searchParams;
   const { userId, method, phone, callbackUrl } = params;
+  const locale = await getLocale();
 
   // Validate required params
   if (!userId || (method !== "TOTP" && method !== "SMS")) {
-    redirect("/auth/login");
+    return redirect({ href: "/auth/login", locale });
   }
 
   return (
