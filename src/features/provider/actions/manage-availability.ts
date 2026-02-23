@@ -7,8 +7,6 @@ import { prisma } from "@/lib/prisma";
 import {
   availabilitySchema,
   blockedDateSchema,
-  type AvailabilityFormData,
-  type BlockedDateFormData,
 } from "@/lib/validations/provider";
 import type { ActionResult } from "@/types/api";
 

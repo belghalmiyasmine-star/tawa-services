@@ -7,10 +7,7 @@ import { getServerSession } from "next-auth";
 
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import {
-  portfolioPhotoSchema,
-  type PortfolioPhotoFormData,
-} from "@/lib/validations/provider";
+import { portfolioPhotoSchema } from "@/lib/validations/provider";
 import type { ActionResult } from "@/types/api";
 
 // ============================================================

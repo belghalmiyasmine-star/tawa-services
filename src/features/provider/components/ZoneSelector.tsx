@@ -99,9 +99,6 @@ export function ZoneSelector({ initialDelegationIds, gouvernorats }: ZoneSelecto
     });
   };
 
-  const isAllSelectedInGov = (gov: Gouvernorat) =>
-    gov.delegations.every((d) => selectedIds.has(d.id));
-
   const removeDelegation = (delId: string) => {
     setSelectedIds((prev) => {
       const next = new Set(prev);
@@ -151,7 +148,6 @@ export function ZoneSelector({ initialDelegationIds, gouvernorats }: ZoneSelecto
       <div className="divide-y rounded-lg border">
         {gouvernorats.map((gov) => {
           const isExpanded = expandedGouvernorats.has(gov.id);
-          const allSelected = isAllSelectedInGov(gov);
           const selectedCount = gov.delegations.filter((d) =>
             selectedIds.has(d.id),
           ).length;

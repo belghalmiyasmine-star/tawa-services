@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, DragEvent } from "react";
+import { useState, useRef, type DragEvent } from "react";
 import Image from "next/image";
 import { X, Plus, GripVertical, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";

@@ -8,7 +8,7 @@ import { getServerSession } from "next-auth";
 
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { ActionResult } from "@/types/api";
+import type { ActionResult } from "@/types/api";
 import {
   SERVICE_TITLE_MAX_LENGTH,
   SERVICE_DESCRIPTION_MIN_LENGTH,

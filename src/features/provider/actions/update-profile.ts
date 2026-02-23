@@ -4,10 +4,7 @@ import { getServerSession } from "next-auth";
 
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import {
-  updateProfileSchema,
-  type UpdateProfileFormData,
-} from "@/lib/validations/provider";
+import { updateProfileSchema } from "@/lib/validations/provider";
 import type { ActionResult } from "@/types/api";
 
 /**

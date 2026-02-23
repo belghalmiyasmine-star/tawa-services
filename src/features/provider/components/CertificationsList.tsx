@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import { ExternalLink, FileText, Image, Trash2 } from "lucide-react";
+import { ExternalLink, FileText, ImageIcon, Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
@@ -149,7 +149,7 @@ export function CertificationsList({
                   {isPdf(cert.fileUrl) ? (
                     <FileText className="h-5 w-5 shrink-0 text-red-500" />
                   ) : (
-                    <Image className="h-5 w-5 shrink-0 text-blue-500" />
+                    <ImageIcon className="h-5 w-5 shrink-0 text-blue-500" />
                   )}
                   <div className="min-w-0">
                     <p className="truncate text-sm font-medium text-gray-700 dark:text-gray-200">

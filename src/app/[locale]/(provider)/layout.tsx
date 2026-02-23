@@ -6,6 +6,7 @@ import { redirect } from "@/i18n/routing";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { BottomNav } from "@/components/layout/BottomNav";
+import { ProviderSidebar } from "@/components/layout/ProviderSidebar";
 import { EmailVerificationBanner } from "@/components/shared/EmailVerificationBanner";
 
 export default async function ProviderLayout({ children }: { children: React.ReactNode }) {
@@ -27,16 +28,17 @@ export default async function ProviderLayout({ children }: { children: React.Rea
   // The guard is page-level (not middleware-level) because:
   // - Provider CAN access dashboard and messaging before KYC approval
   // - Only service listing/creation is blocked for non-approved providers
-  // Implementation: in Phase 4, service creation page server component must query
-  // prisma.provider.findUnique and redirect to /provider/kyc if kycStatus !== "APPROVED"
 
   return (
-    <>
-      <Navbar />
-      <EmailVerificationBanner />
-      <main className="min-h-[calc(100vh-4rem)] pb-16 md:pb-0">{children}</main>
-      <Footer />
-      <BottomNav role="PROVIDER" />
-    </>
+    <div className="flex min-h-screen">
+      <ProviderSidebar />
+      <div className="flex flex-1 flex-col">
+        <Navbar />
+        <EmailVerificationBanner />
+        <main className="flex-1 pb-16 md:pb-0">{children}</main>
+        <Footer />
+        <BottomNav role="PROVIDER" />
+      </div>
+    </div>
   );
 }

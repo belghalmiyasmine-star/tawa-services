@@ -4,7 +4,7 @@ import { getServerSession } from "next-auth";
 
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { zoneSchema, type ZoneFormData } from "@/lib/validations/provider";
+import { zoneSchema } from "@/lib/validations/provider";
 import type { ActionResult } from "@/types/api";
 
 /**

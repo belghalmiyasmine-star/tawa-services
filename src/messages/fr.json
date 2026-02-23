@@ -45,7 +45,12 @@
     "analytics": "Analytique",
     "kyc": "Verification KYC",
     "content": "Contenu",
-    "notifications": "Notifications"
+    "notifications": "Notifications",
+    "editProfile": "Modifier profil",
+    "myServices": "Mes services",
+    "availability": "Disponibilites",
+    "portfolio": "Portfolio",
+    "certifications": "Certifications"
   },
   "home": {
     "title": "Tawa Services",
@@ -205,6 +210,7 @@
     "editProfile": "Modifier mon profil",
     "dashboardTitle": "Tableau de bord prestataire",
     "profileSection": "Mon profil",
+    "manageServices": "Gerez vos services et tarifs",
     "availabilitySection": "Mes disponibilites",
     "zonesSection": "Zones d'intervention",
     "portfolioSection": "Portfolio",

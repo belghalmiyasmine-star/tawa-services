@@ -31,7 +31,7 @@ const MAX_PHOTOS = 10;
 // COMPONENT
 // ============================================================
 
-export function PortfolioUploader({ initialPhotos, providerId }: PortfolioUploaderProps) {
+export function PortfolioUploader({ initialPhotos, providerId: _providerId }: PortfolioUploaderProps) {
   const t = useTranslations("provider");
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);

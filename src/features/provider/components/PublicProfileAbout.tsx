@@ -1,4 +1,4 @@
-import { Briefcase, ExternalLink, FileText, Globe, Image, MapPin } from "lucide-react";
+import { Briefcase, ExternalLink, FileText, Globe, ImageIcon, MapPin } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 
 import { PortfolioGallery } from "./PortfolioGallery";
@@ -156,7 +156,7 @@ export async function PublicProfileAbout({ provider }: PublicProfileAboutProps) 
                   {isPdf(cert.fileUrl) ? (
                     <FileText className="h-4 w-4 shrink-0 text-red-500" />
                   ) : (
-                    <Image className="h-4 w-4 shrink-0 text-blue-500" />
+                    <ImageIcon className="h-4 w-4 shrink-0 text-blue-500" />
                   )}
                   <span className="font-medium text-gray-700 dark:text-gray-200">
                     {cert.title}
