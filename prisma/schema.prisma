@@ -368,7 +368,7 @@ model KYCDocument {
   id         String    @id @default(cuid())
   providerId String
   provider   Provider  @relation(fields: [providerId], references: [id], onDelete: Cascade)
-  docType    String    // "CIN_PASSPORT" | "SELFIE" | "PROOF_OF_ADDRESS"
+  docType    String    // "CIN_RECTO" | "CIN_VERSO" | "SELFIE" | "PROOF_OF_ADDRESS"
   fileUrl    String
   uploadedAt DateTime  @default(now())
   adminNote  String?
