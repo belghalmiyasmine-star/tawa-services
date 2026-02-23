@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-21)
 
 **Core value:** Clients can find, book, and pay a trusted local service provider in their city — and providers can get discovered and manage their business in one place.
-**Current focus:** Phase 4 — Profil Prestataire & Services. Plans 01 and 02 complete (backend infrastructure). Plans 03, 04, 05 remaining.
+**Current focus:** Phase 4 — Profil Prestataire & Services. Plans 01, 02, and 03 complete. Plan 04 (service CRUD UI) already executed. Plan 05 (certifications) remaining.
 
 ## Current Position
 
 Phase: 4 of 11 (Profil Prestataire & Services)
-Plan: 2 of 5 in current phase — COMPLETE (Plans 01+02 done)
-Status: Phase 4 Plans 01+02 complete — provider backend: PortfolioPhoto model, Zod schemas, updateProfileAction, zone/availability/portfolio/photo-upload actions and APIs; service CRUD actions with KYC guard, photo upload, certification APIs.
-Last activity: 2026-02-23 — Plan 04-01 complete: update-profile.ts, manage-zones.ts, manage-availability.ts, manage-portfolio.ts, provider/photo route, provider/portfolio route
+Plan: 3 of 5 in current phase — COMPLETE (Plans 01+02+03 done; 04 pre-executed)
+Status: Phase 4 Plan 03 complete — provider profile edit page with 5-tab layout, ProfileEditForm (react-hook-form/zod), PhotoUpload, ZoneSelector (gouvernorat accordion), PortfolioUploader (10-slot grid), AvailabilityEditor (7-day schedule), BlockedDatesEditor.
+Last activity: 2026-02-23 — Plan 04-03 complete: 8 files created (6 components, 1 page, 1 Switch UI component)
 
-Progress: [######░░░░] 29%
+Progress: [#######░░░] 35%
 
 ## Performance Metrics
 
@@ -50,6 +50,7 @@ Progress: [######░░░░] 29%
 | Phase 03-verification-kyc P01 | 3 | 2 tasks | 4 files |
 | Phase Phase 03-verification-kyc P05 P03-05 | 2 | 1 tasks | 4 files |
 | Phase 04-profil-prestataire-services P02 | 15 | 2 tasks | 4 files |
+| Phase 04-profil-prestataire-services P03 | 8 | 2 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -145,6 +146,10 @@ Recent decisions affecting current work:
 - [04-02]: KYC guard helper checkKycApproved(userId) returns error string or null — used by create/update actions
 - [04-02]: Photo delete uses best-effort physical file removal — fs.unlink failure is caught/logged, does not fail HTTP response
 - [04-02]: Certification upload accepts application/pdf + images with 10MB limit (vs 5MB for service photos)
+- [04-03]: Switch component created manually (switch.tsx) — @radix-ui/react-switch was already in package.json, only the shadcn wrapper was missing
+- [04-03]: AvailabilityEditor normalizes dayOfWeek 0=Sunday..6=Saturday — matches Prisma schema and JS Date convention
+- [04-03]: BlockedDatesEditor stores dates as ISO datetime (midnight UTC) — required by blockedDateSchema z.string().datetime()
+- [04-03]: Edit profile page redirects to /provider/kyc if no provider record — provider record created during KYC registration
 
 ### Pending Todos
 
@@ -157,5 +162,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-23
-Stopped at: Completed 04-profil-prestataire-services/04-01-PLAN.md
+Stopped at: Completed 04-profil-prestataire-services/04-03-PLAN.md
 Resume file: None
