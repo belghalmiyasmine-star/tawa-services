@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-21)
 ## Current Position
 
 Phase: 7 of 11 (Paiement Simule)
-Plan: 3 of 5 in current phase — Plan 07-03 COMPLETE.
-Status: Plan 07-03 COMPLETE — Provider earnings dashboard with balance cards, monthly breakdown, transaction history, and withdrawal request functionality (e9ae255, ed0efd1). Ready for Plan 07-04.
-Last activity: 2026-02-24 — Plan 07-03 complete. PAY-03 (provider earnings visibility) and PAY-06 (withdrawal requests with 50 TND minimum) requirements satisfied.
+Plan: 4 of 5 in current phase — Plan 07-04 COMPLETE.
+Status: Plan 07-04 COMPLETE — Invoice generation (TAWA-INV numbers, printable HTML), monthly statement page, navigation links wired between earnings dashboard and invoices/statements (a71dc26, def94a1). Ready for Plan 07-05.
+Last activity: 2026-02-24 — Plan 07-04 complete. PAY-04 (auto-generated invoices), PAY-05 (monthly statements), PAY-07 (5-year retention notice) requirements satisfied.
 
-Progress: [##########] 68%
+Progress: [##########] 70%
 
 ## Performance Metrics
 
@@ -67,6 +67,7 @@ Progress: [##########] 68%
 | Phase 07-paiement-simule P01 | 25 | 2 tasks | 6 files |
 | Phase 07-paiement-simule P02 | 35 | 2 tasks | 5 files |
 | Phase 07-paiement-simule P03 | 34 | 2 tasks | 6 files |
+| Phase 07-paiement-simule P04 | 25 | 2 tasks | 11 files |
 
 ## Accumulated Context
 
@@ -243,6 +244,11 @@ Recent decisions affecting current work:
 - [07-03]: FIFO withdrawal links to oldest available RELEASED payment — simple, deterministic, PFE-appropriate
 - [07-03]: Withdrawal dialog blocks if available < 50 TND at button level — UX enforcement before server validation
 - [07-03]: fetchEarnings extracted as named function — called on mount + after successful withdrawal to refresh balance
+- [07-04]: Native Intl.DateTimeFormat used instead of date-fns — date-fns not in package.json, avoids new dependency for simple formatting
+- [07-04]: formatDateCompact() helper for invoice number date portion — pure Date arithmetic, zero dependencies
+- [07-04]: @media print targets #invoice-printable and #statement-printable divs — allows clean printing without nav/footer
+- [07-04]: Provider invoice page fetches payment first to extract bookingId, then calls getInvoiceDataAction — single auth source
+- [07-04]: getMonthlyStatementAction uses startOfMonth/startOfNextMonth date range for precise month filtering
 
 ### Pending Todos
 
@@ -255,5 +261,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-24
-Stopped at: Phase 7 Plan 07-02 complete — checkout page (4 payment methods + fee breakdown + card form) and confirmation page (reference number + success icon) committed (8bcf23e, 2ac78e3). Plan 07-03 also complete. Ready for Plan 07-04.
+Stopped at: Completed Phase 7 Plan 07-04 — invoice generation (TAWA-INV numbers, printable HTML template), monthly statement page, navigation links wired (a71dc26, def94a1). PAY-04, PAY-05, PAY-07 complete. Ready for Plan 07-05.
 Resume file: None

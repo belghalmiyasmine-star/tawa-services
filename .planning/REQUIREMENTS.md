@@ -62,10 +62,10 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **PAY-01**: Simulated checkout UI showing Tunisian payment methods (card, D17, Flouci, cash)
 - [x] **PAY-02**: Escrow model: client pays → platform holds → service completed → provider paid minus 12% commission
 - [x] **PAY-03**: Provider earnings dashboard showing earnings, pending payments, commission breakdown
-- [ ] **PAY-04**: Auto-generated invoices/receipts for completed transactions
-- [ ] **PAY-05**: Monthly earnings statements for providers
+- [x] **PAY-04**: Auto-generated invoices/receipts for completed transactions
+- [x] **PAY-05**: Monthly earnings statements for providers
 - [x] **PAY-06**: Provider withdrawal requests (minimum 50 TND)
-- [ ] **PAY-07**: Tax summaries and 5-year document retention
+- [x] **PAY-07**: Tax summaries and 5-year document retention
 - [x] **PAY-08**: Payment service abstraction layer (pluggable for future Konnect integration)
 
 ### Reviews & Ratings
@@ -200,10 +200,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PAY-01 | Phase 7 | Complete |
 | PAY-02 | Phase 7 | Complete |
 | PAY-03 | Phase 7 | Complete |
-| PAY-04 | Phase 7 | Pending |
-| PAY-05 | Phase 7 | Pending |
+| PAY-04 | Phase 7 | Complete |
+| PAY-05 | Phase 7 | Complete |
 | PAY-06 | Phase 7 | Complete |
-| PAY-07 | Phase 7 | Pending |
+| PAY-07 | Phase 7 | Complete |
 | PAY-08 | Phase 7 | Complete |
 | REVW-01 | Phase 8 | Pending |
 | REVW-02 | Phase 8 | Pending |

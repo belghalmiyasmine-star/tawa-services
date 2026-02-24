@@ -405,7 +405,7 @@ Plans:
 - [x] 07-01-PLAN.md — IPaymentService abstraction layer + SimulatedPaymentService + escrow actions + i18n keys
 - [x] 07-02-PLAN.md — Checkout page (4 payment methods, card form, fee breakdown) + confirmation page with reference number
 - [x] 07-03-PLAN.md — Provider earnings dashboard (balance cards, monthly breakdown, transaction history, withdrawal requests)
-- [ ] 07-04-PLAN.md — Invoice generation (printable HTML template) + monthly statements + tax retention notice
+- [x] 07-04-PLAN.md — Invoice generation (printable HTML template) + monthly statements + tax retention notice
 - [ ] 07-05-PLAN.md — Navigation wiring (booking flow -> checkout, sidebar earnings) + end-to-end verification checkpoint
 
 ```mermaid
@@ -590,7 +590,7 @@ Plans:
 | 4. Profil Prestataire & Services | 5/5 | Complete   | 2026-02-23 |
 | 5. Recherche & Decouverte | 5/5 | Complete   | 2026-02-24 |
 | 6. Systeme de Reservation | 7/7 | Complete    | 2026-02-24 |
-| 7. Paiement Simule | 0/5 | Not started | - |
+| 7. Paiement Simule | 4/5 | In progress | 2026-02-24 |
 | 8. Avis & Evaluations | 0/7 | Not started | - |
 | 9. Messagerie & Notifications | 0/8 | Not started | - |
 | 10. Panneau d'Administration | 0/9 | Not started | - |
