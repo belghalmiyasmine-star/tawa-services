@@ -1,22 +1,63 @@
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
+import { prisma } from "@/lib/prisma";
+import { CategoryGrid } from "@/features/search/components/CategoryGrid";
+import { SearchAutocomplete } from "@/features/search/components/SearchAutocomplete";
 
-// Slugs et icones — les labels sont dans fr.json["categories"]
-// sera remplace par donnees DB en Phase 5
-const CATEGORY_ITEMS = [
-  { slug: "plomberie", icon: "🔧" },
-  { slug: "electricite", icon: "⚡" },
-  { slug: "menage", icon: "🧹" },
-  { slug: "cours", icon: "📚" },
-  { slug: "jardinage", icon: "🌱" },
-  { slug: "peinture", icon: "🎨" },
-  { slug: "informatique", icon: "💻" },
-  { slug: "demenagement", icon: "📦" },
-] as const;
+// ============================================================
+// HOMEPAGE — Async server component (Phase 5 DB-driven)
+// ============================================================
 
-export default function ClientHomePage() {
-  const t = useTranslations("home");
-  const tCat = useTranslations("categories");
+export default async function ClientHomePage() {
+  const t = await getTranslations("home");
+
+  // Fetch top-level categories from DB with active service counts
+  let categories: {
+    id: string;
+    name: string;
+    slug: string;
+    icon: string | null;
+    serviceCount: number;
+  }[] = [];
+
+  try {
+    const dbCategories = await prisma.category.findMany({
+      where: {
+        isActive: true,
+        isDeleted: false,
+        parentId: null,
+      },
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        icon: true,
+        _count: {
+          select: {
+            services: {
+              where: {
+                status: "ACTIVE",
+                isDeleted: false,
+              },
+            },
+          },
+        },
+      },
+      orderBy: { sortOrder: "asc" },
+      take: 10,
+    });
+
+    categories = dbCategories.map((cat) => ({
+      id: cat.id,
+      name: cat.name,
+      slug: cat.slug,
+      icon: cat.icon,
+      serviceCount: cat._count.services,
+    }));
+  } catch {
+    // DB unavailable — render with empty categories (graceful degradation)
+    categories = [];
+  }
 
   return (
     <div className="container mx-auto max-w-7xl px-4 py-12">
@@ -26,7 +67,13 @@ export default function ClientHomePage() {
           {t("heroTitle")}
         </h1>
         <p className="mx-auto mt-6 max-w-2xl text-lg text-gray-600">{t("heroSubtitle")}</p>
-        <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+
+        {/* Search bar — autocomplete with DB suggestions */}
+        <div className="mx-auto mt-8 max-w-lg">
+          <SearchAutocomplete />
+        </div>
+
+        <div className="mt-6 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
           <Link
             href="/services"
             className="rounded-full bg-blue-600 px-8 py-3 text-white hover:bg-blue-700"
@@ -42,23 +89,13 @@ export default function ClientHomePage() {
         </div>
       </section>
 
-      {/* Categories placeholder — labels depuis fr.json["categories"] via tCat(slug) */}
+      {/* DB-driven category grid */}
       <section className="mt-16">
         <h2 className="mb-8 text-2xl font-semibold">{t("featuredCategories")}</h2>
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
-          {CATEGORY_ITEMS.map((cat) => (
-            <div
-              key={cat.slug}
-              className="flex cursor-pointer flex-col items-center justify-center rounded-xl border bg-white p-6 shadow-sm transition-shadow hover:shadow-md"
-            >
-              <span className="mb-2 text-3xl">{cat.icon}</span>
-              <span className="text-sm font-medium">{tCat(cat.slug)}</span>
-            </div>
-          ))}
-        </div>
+        <CategoryGrid categories={categories} />
       </section>
 
-      {/* How it works placeholder */}
+      {/* How it works */}
       <section className="mt-16">
         <h2 className="mb-8 text-2xl font-semibold">{t("howItWorks")}</h2>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">

@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import { signOut, useSession } from "next-auth/react";
 import { Bell, ChevronDown, LogOut, Menu, Settings, User } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -17,16 +18,20 @@ import { LocaleSwitcher } from "@/components/shared/LocaleSwitcher";
 import { SearchAutocomplete } from "@/features/search/components/SearchAutocomplete";
 import { Link } from "@/i18n/routing";
 
-// Categories placeholder — sera remplace par donnees DB en Phase 5.
-// Les labels proviennent de fr.json sous le namespace "categories".
-const CATEGORIES = [
-  { slug: "plomberie", icon: "🔧", labelKey: "plomberie" },
-  { slug: "electricite", icon: "⚡", labelKey: "electricite" },
-  { slug: "menage", icon: "🧹", labelKey: "menage" },
-  { slug: "cours", icon: "📚", labelKey: "cours" },
-  { slug: "jardinage", icon: "🌱", labelKey: "jardinage" },
-  { slug: "peinture", icon: "🎨", labelKey: "peinture" },
-];
+// ============================================================
+// TYPES
+// ============================================================
+
+interface NavCategory {
+  id: string;
+  name: string;
+  slug: string;
+  icon: string | null;
+}
+
+// ============================================================
+// HELPERS
+// ============================================================
 
 function getInitials(name?: string | null, email?: string | null): string {
   if (name) {
@@ -38,12 +43,42 @@ function getInitials(name?: string | null, email?: string | null): string {
   return "U";
 }
 
+// ============================================================
+// COMPONENT
+// ============================================================
+
 export function Navbar() {
   const { data: session, status } = useSession();
   const t = useTranslations("navigation");
   const tAuth = useTranslations("auth");
-  // Labels categories depuis fr.json["categories"] — aucun label hardcode
-  const tCat = useTranslations("categories");
+
+  // DB-driven categories fetched from /api/search/categories on mount
+  const [categories, setCategories] = useState<NavCategory[]>([]);
+  const [categoriesLoaded, setCategoriesLoaded] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function fetchCategories() {
+      try {
+        const res = await fetch("/api/search/categories", { cache: "no-store" });
+        if (res.ok && !cancelled) {
+          const data = (await res.json()) as { categories: NavCategory[] };
+          // Show top-level categories only (parentId not exposed in NavCategory, API already filters)
+          setCategories(data.categories.slice(0, 8));
+        }
+      } catch {
+        // Network error — keep empty categories, no visible error needed
+      } finally {
+        if (!cancelled) setCategoriesLoaded(true);
+      }
+    }
+
+    void fetchCategories();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   return (
     <header className="sticky top-0 z-50 hidden w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 md:block">
@@ -56,7 +91,7 @@ export function Navbar() {
           <span className="text-lg font-bold text-primary">Tawa Services</span>
         </Link>
 
-        {/* Categories Dropdown */}
+        {/* Categories Dropdown — DB-driven */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="flex items-center gap-1">
@@ -66,14 +101,44 @@ export function Navbar() {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56">
-            {CATEGORIES.map((cat) => (
-              <DropdownMenuItem key={cat.slug} asChild>
-                <Link href={`/services/${cat.slug}` as never} className="flex items-center gap-2">
-                  <span>{cat.icon}</span>
-                  <span>{tCat(cat.labelKey)}</span>
+            {!categoriesLoaded ? (
+              // Skeleton while loading
+              <div className="space-y-1 p-1">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="h-8 animate-pulse rounded bg-gray-100 dark:bg-gray-700"
+                  />
+                ))}
+              </div>
+            ) : categories.length > 0 ? (
+              <>
+                {categories.map((cat) => (
+                  <DropdownMenuItem key={cat.id} asChild>
+                    <Link
+                      href={`/services/${cat.slug}` as never}
+                      className="flex items-center gap-2"
+                    >
+                      {cat.icon && <span>{cat.icon}</span>}
+                      <span>{cat.name}</span>
+                    </Link>
+                  </DropdownMenuItem>
+                ))}
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link href="/services" className="flex items-center gap-2 font-medium">
+                    <span>{t("allCategories")}</span>
+                  </Link>
+                </DropdownMenuItem>
+              </>
+            ) : (
+              // Fallback when no categories (empty DB)
+              <DropdownMenuItem asChild>
+                <Link href="/services" className="flex items-center gap-2">
+                  <span>{t("allCategories")}</span>
                 </Link>
               </DropdownMenuItem>
-            ))}
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
 
@@ -108,7 +173,10 @@ export function Navbar() {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
                 <DropdownMenuItem asChild>
-                  <Link href={session.user.role === "PROVIDER" ? "/provider/dashboard" : "/"} className="flex items-center gap-2">
+                  <Link
+                    href={session.user.role === "PROVIDER" ? "/provider/dashboard" : "/"}
+                    className="flex items-center gap-2"
+                  >
                     <User className="h-4 w-4" />
                     <span>{t("dashboard")}</span>
                   </Link>
