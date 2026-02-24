@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-21)
 ## Current Position
 
 Phase: 6 of 11 (Reservations & Paiements)
-Plan: 2 of N in current phase — Plan 06-01 COMPLETE
-Status: Plan 06-01 complete — Booking/quote backend infrastructure: Prisma schema, 6 Zod schemas, 13 server actions, 80+ i18n keys. Ready for UI plans (06-02 through 06-06).
-Last activity: 2026-02-24 — Plan 06-01 complete. Quote model extended with client relation and address fields. Full booking state machine (PENDING->ACCEPTED->IN_PROGRESS->COMPLETED) and quote flow (PENDING->RESPONDED->ACCEPTED/DECLINED) implemented.
+Plan: 3 of N in current phase — Plan 06-02 COMPLETE
+Status: Plan 06-02 complete — Cancellation policy with tiered refunds (>48h=100%, 24-48h=50%, <24h=0%), cancel booking actions (CLIENT + PROVIDER), quote expiration via lazy check + 6h cron. TypeScript zero errors.
+Last activity: 2026-02-24 — Plan 06-02 complete. calculateRefundPercentage pure utility, cancelBookingAction, cancelBookingProviderAction, checkAndExpireQuote, expireQuotesAction, cron endpoint at /api/cron/expire-quotes, vercel.json created.
 
-Progress: [#########░] 52%
+Progress: [#########░] 54%
 
 ## Performance Metrics
 
@@ -198,6 +198,12 @@ Recent decisions affecting current work:
 - [06-01]: acceptQuoteAction links booking to quote via quoteId field — enables quoting flow traceability in BookingDetail
 - [06-01]: getProviderBookingsAction parses firstName/lastName from User.name field (stored as full name "firstName lastName")
 - [06-01]: cancelBookingAction pre-existed in src/features/booking/actions/cancel-booking.ts — not duplicated in this plan
+- [06-02]: calculateRefundPercentage accepts optional now Date for testability — pure function, zero side effects
+- [06-02]: Provider cancellation always gives 100% refund regardless of timing — provider-initiated = full client responsibility
+- [06-02]: CRON_SECRET not required in dev mode — allows unauthenticated cron calls locally with console.warn
+- [06-02]: vercel.json cron runs every 6 hours (0 */6 * * *) as secondary sweep; lazy checkAndExpireQuote is primary mechanism
+- [06-02]: Partial refund (50%) updates only refundAmount + refundedAt on payment, not status — payment stays PENDING until settlement
+- [06-02]: checkAndExpireQuote lazy guard returns boolean — callers check and return error if true, before any quote operation
 
 ### Pending Todos
 
@@ -210,5 +216,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-24
-Stopped at: Completed 06-01-PLAN.md (Phase 6 backend — booking/quote Prisma schema, 6 Zod schemas, 13 server actions, 80+ fr.json keys)
+Stopped at: Completed 06-02-PLAN.md (Cancellation policy with tiered refunds, cancel booking actions, quote expiration via lazy check + cron, vercel.json)
 Resume file: None
