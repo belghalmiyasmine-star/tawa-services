@@ -40,10 +40,10 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Search & Discovery
 
-- [ ] **SRCH-01**: Client can browse services by category (Plomberie, Menage, Cours, Electricite, etc.)
-- [ ] **SRCH-02**: Client can filter providers by city/delegation
+- [x] **SRCH-01**: Client can browse services by category (Plomberie, Menage, Cours, Electricite, etc.)
+- [x] **SRCH-02**: Client can filter providers by city/delegation
 - [ ] **SRCH-03**: Real-time autocomplete search suggestions as user types
-- [ ] **SRCH-04**: Client can sort results by rating, price, availability; filter by verified status, price range
+- [x] **SRCH-04**: Client can sort results by rating, price, availability; filter by verified status, price range
 - [ ] **SRCH-05**: Client can view provider profiles with portfolio, certifications, badges, and reviews
 
 ### Booking

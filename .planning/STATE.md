@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-21)
 
 **Core value:** Clients can find, book, and pay a trusted local service provider in their city — and providers can get discovered and manage their business in one place.
-**Current focus:** Phase 4 — Profil Prestataire & Services. All 5 plans complete (Tasks 1-2 of plan 05 done; Task 3 is checkpoint:human-verify awaiting user confirmation).
+**Current focus:** Phase 5 — Recherche & Decouverte. Plan 01 complete (search API backend). Plans 02-05 pending.
 
 ## Current Position
 
-Phase: 4 of 11 (Profil Prestataire & Services)
-Plan: 5 of 5 in current phase — TASKS 1-2 COMPLETE, awaiting Task 3 (checkpoint:human-verify)
-Status: Phase 4 Plan 05 tasks 1-2 complete — public provider profile page, 5 stat components, certification management UI. Awaiting human verification of complete Phase 4 E2E flow.
-Last activity: 2026-02-23 — Plan 04-05 tasks 1-2 complete: 8 files created (6 public profile components + 2 certification components), 2 files modified (edit profile page + fr.json)
+Phase: 5 of 11 (Recherche & Decouverte)
+Plan: 1 of 5 in current phase — COMPLETE
+Status: Phase 5 Plan 01 complete — search validation schemas, categories API, service search API with dynamic Prisma filters, i18n keys for Phase 5 UI.
+Last activity: 2026-02-24 — Plan 05-01 complete: 3 files created (search.ts, categories/route.ts, services/route.ts), 2 files modified (fr.json + ProviderMiniCard.tsx)
 
-Progress: [########░░] 38%
+Progress: [########░░] 40%
 
 ## Performance Metrics
 
@@ -53,6 +53,7 @@ Progress: [########░░] 38%
 | Phase 04-profil-prestataire-services P03 | 8 | 2 tasks | 8 files |
 | Phase 04-profil-prestataire-services P04 | 8 | 2 tasks | 9 files |
 | Phase 04-profil-prestataire-services P05 | 6 | 2 tasks (checkpoint pending) | 8 files |
+| Phase 05-recherche-decouverte P01 | 15 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -160,6 +161,10 @@ Recent decisions affecting current work:
 - [04-05]: CertificationUploader POSTs to /api/provider/certification only — addCertificationAction not called to prevent duplicate DB writes
 - [04-05]: PortfolioGallery returns null when no photos — section hidden rather than empty state
 - [04-05]: PublicProfileStats grid: 2-col mobile, 5-col desktop (5th card wraps on tablet)
+- [05-01]: Prisma.ServiceWhereInput and Prisma.ProviderWhereInput used for dynamic where clause — more readable than Parameters<typeof prisma.service.findMany>[0]["where"]
+- [05-01]: Parent category resolved to children IDs via preliminary findUnique query — avoids complex nested Prisma query
+- [05-01]: z.coerce used for numeric/boolean URL params — all URL searchParams arrive as strings
+- [05-01]: providerFilter accumulated as single ProviderWhereInput before assigning to where.provider — avoids overwriting across multiple conditions
 
 ### Pending Todos
 
@@ -171,6 +176,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-02-23
-Stopped at: Checkpoint Task 3 (human-verify) in 04-profil-prestataire-services/04-05-PLAN.md
+Last session: 2026-02-24
+Stopped at: Completed 05-01-PLAN.md (Search API backend — validation schemas, categories API, service search API, i18n keys)
 Resume file: None
