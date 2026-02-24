@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-21)
 
 **Core value:** Clients can find, book, and pay a trusted local service provider in their city — and providers can get discovered and manage their business in one place.
-**Current focus:** Phase 5 — Recherche & Decouverte. Plans 01-05 in progress — Task 1 complete, awaiting human verification at checkpoint.
+**Current focus:** Phase 6 — Reservations & Paiements. Phase 5 complete — full search & discovery flow verified end-to-end.
 
 ## Current Position
 
-Phase: 5 of 11 (Recherche & Decouverte)
-Plan: 5 of 5 in current phase — IN PROGRESS (awaiting checkpoint Task 2 human-verify)
-Status: Phase 5 Plan 05 Task 1 complete — homepage converted to async server component with DB-driven CategoryGrid, SearchAutocomplete in hero, Navbar CATEGORIES replaced with API fetch from /api/search/categories.
-Last activity: 2026-02-24 — Plan 05-05 Task 1 committed (e32cfb0): homepage + Navbar wired with DB categories. Checkpoint Task 2 requires human flow verification.
+Phase: 6 of 11 (Reservations & Paiements)
+Plan: 1 of N in current phase — READY TO START
+Status: Phase 5 COMPLETE — all 5 plans executed. Homepage DB-driven categories, search results, autocomplete, service detail, and provider profile all working. Route conflict resolved (/categories/[slug] for browse, /services/[id] for detail).
+Last activity: 2026-02-24 — Plan 05-05 complete (Task 2 human-verify approved). 4 bugs fixed during verification (route conflict, i18n key, icon/list/nav bugs, service count aggregation).
 
-Progress: [########░░] 42%
+Progress: [#########░] 50%
 
 ## Performance Metrics
 
@@ -57,6 +57,7 @@ Progress: [########░░] 42%
 | Phase 05-recherche-decouverte P02 | 25 | 2 tasks | 4 files |
 | Phase 05-recherche-decouverte P03 | 30 | 2 tasks | 9 files |
 | Phase 05-recherche-decouverte P04 | 18 | 2 tasks | 6 files |
+| Phase 05-recherche-decouverte P05 | 60 | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -184,6 +185,10 @@ Recent decisions affecting current work:
 - [05-04]: Flat items array for keyboard navigation — categories first (0..n-1), services after (n..n+m-1)
 - [05-04]: Cache-Control: no-store on autocomplete route — live DB data must not be cached
 - [05-04]: BottomNav already has Search icon at /services — no change needed
+- [05-05]: Homepage converted to async server component — getTranslations replaces useTranslations for SSR with DB data
+- [05-05]: Navbar fetches categories via useEffect + fetch('/api/search/categories') — client components cannot call Prisma directly
+- [05-05]: Category browse route moved from /services/[categorySlug] to /categories/[categorySlug] — prevents dynamic route conflict with /services/[serviceId]
+- [05-05]: Root category service counts aggregate children categories' services via two-level Prisma query
 
 ### Pending Todos
 
@@ -196,5 +201,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-24
-Stopped at: Completed 05-03-PLAN.md (Search results page — CategoryGrid, SearchFilters, SearchResultsGrid, SearchPagination, SearchSortSelect, /services page, /services/[categorySlug] page)
+Stopped at: Completed 05-05-PLAN.md (Phase 5 integration — homepage + Navbar DB-driven categories, route conflict fix, end-to-end flow verified)
 Resume file: None
