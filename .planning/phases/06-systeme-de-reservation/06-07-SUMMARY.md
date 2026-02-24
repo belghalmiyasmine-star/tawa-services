@@ -61,10 +61,10 @@ completed: 2026-02-24
 
 ## Performance
 
-- **Duration:** ~15 min (Task 1 only — Task 2 is human verification checkpoint)
+- **Duration:** ~15 min (Task 1) + human verification checkpoint
 - **Started:** 2026-02-24T18:00:00Z
-- **Completed (Task 1):** 2026-02-24T18:15:00Z
-- **Tasks:** 1 of 2 (Task 2 is checkpoint:human-verify)
+- **Completed:** 2026-02-24T18:55:25Z
+- **Tasks:** 2 of 2 (Task 1 auto + Task 2 checkpoint:human-verify — approved)
 - **Files modified:** 4
 
 ## Accomplishments
@@ -74,11 +74,12 @@ completed: 2026-02-24
 - Added "Reservations" nav item to ProviderSidebar between "Mes services" and "KYC" — links to `/provider/bookings`, with a pending booking count badge fetched via `useEffect` calling `getProviderBookingsAction({ status: ["PENDING"] })`
 - Added `navigation.reservations = "Reservations"` i18n key to `fr.json`
 - Middleware already correct: `/bookings` in `AUTHENTICATED_PATHS`, `/provider/bookings` covered by `/provider` prefix in `PROVIDER_PATHS`
+- Human verified all 5 end-to-end flows: (1) Direct booking FIXED service 3-step wizard → PENDING status, (2) Provider accepts → ACCEPTED, (3) SUR_DEVIS quote request → provider responds → client accepts → booking created, (4) Cancellation with refund tier display → CANCELLED status, (5) Status progression PENDING → ACCEPTED → IN_PROGRESS → COMPLETED with timeline
 
 ## Task Commits
 
 1. **Task 1: Wire booking pages into navigation** - `fa6ac6a` (feat)
-2. **Task 2: End-to-end verification** - *pending human verification*
+2. **Task 2: End-to-end verification** - N/A (checkpoint:human-verify — human approved all 5 flows)
 
 ## Files Created/Modified
 
@@ -111,7 +112,7 @@ None — navigation changes are pure UI, no new DB migrations or environment var
 
 - All BOOK-01 through BOOK-08 requirements satisfied at code level
 - Navigation integration complete for both CLIENT and PROVIDER roles on both mobile (BottomNav) and desktop (Navbar + ProviderSidebar)
-- Task 2 (human verification) will confirm all 5 end-to-end flows work correctly before Phase 6 is marked complete
+- Task 2 (human verification) approved — all 5 end-to-end flows confirmed working: direct booking (FIXED), provider acceptance, quote request (SUR_DEVIS), cancellation with refund, status progression
 
 ## Self-Check: PASSED
 
