@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-02-21)
 
 ## Current Position
 
-Phase: 6 of 11 (Reservations & Paiements)
-Plan: 7 of 7 in current phase — Phase 6 COMPLETE. All 7 plans executed and verified.
-Status: Plan 06-07 COMPLETE — Navigation wiring (fa6ac6a) + all 5 end-to-end booking flows human-verified. Phase 6 complete — ready for Phase 7 (Paiement Simule).
-Last activity: 2026-02-24 — Plan 06-07 complete. All BOOK-01 through BOOK-08 requirements satisfied. Phase 6 Systeme de Reservation finished.
+Phase: 7 of 11 (Paiement Simule)
+Plan: 1 of 5 in current phase — Plan 07-01 COMPLETE.
+Status: Plan 07-01 COMPLETE — IPaymentService abstraction + SimulatedPaymentService + payment server actions + escrow release wiring (947cbf5, d9bdf4a). Ready for Plan 07-02 (checkout UI).
+Last activity: 2026-02-24 — Plan 07-01 complete. PAY-08 (payment service abstraction) and PAY-02 (escrow release with 12% commission) requirements satisfied.
 
-Progress: [##########] 66%
+Progress: [##########] 68%
 
 ## Performance Metrics
 
@@ -64,6 +64,7 @@ Progress: [##########] 66%
 | Phase 06-systeme-de-reservation P05 | 25 | 2 tasks | 6 files |
 | Phase 06-systeme-de-reservation P06 | 43 | 2 tasks | 8 files |
 | Phase 06-systeme-de-reservation P07 | 15 | 2 tasks (nav wiring + E2E verification) | 4 files |
+| Phase 07-paiement-simule P01 | 25 | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -228,6 +229,10 @@ Recent decisions affecting current work:
 - [06-07]: Navbar Mes reservations uses tBooking('myBookings') — long label hidden on <lg, icon always visible; CLIENT-only visibility guard
 - [06-07]: ProviderSidebar pending badge fetches total via useEffect + getProviderBookingsAction(PENDING) — silently catches errors, badge is non-critical UI
 - [06-07]: navigation.reservations key added to fr.json sidebar label (distinct from navigation.bookings used in BottomNav)
+- [07-01]: IPaymentService interface with 3 methods (processPayment/releasePayment/refundPayment) — swapping to KonnectPaymentService requires only implementing the interface, zero frontend changes
+- [07-01]: paymentService singleton export — dependency injection pattern, single import in all server actions
+- [07-01]: completeBookingAction handles both HELD (post-checkout) and PENDING (CASH) payment statuses at completion
+- [07-01]: releasePayment called outside Prisma transaction in completeBookingAction — avoids nested transaction issues
 
 ### Pending Todos
 
@@ -240,5 +245,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-24
-Stopped at: Phase 6 complete — Plan 06-07 finished (navigation wiring + E2E verification approved). Ready to start Phase 7 (Paiement Simule).
+Stopped at: Phase 7 Plan 07-01 complete — payment service abstraction layer (IPaymentService + SimulatedPaymentService + server actions) committed. Ready for Plan 07-02 (checkout UI).
 Resume file: None
