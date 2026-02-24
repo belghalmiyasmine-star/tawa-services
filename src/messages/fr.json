@@ -478,25 +478,7 @@
       "invalidStatusTransition": "Transition de statut invalide"
     }
   },
-  "payment": {
-    "method": {
-      "CARD": "Carte bancaire",
-      "D17": "D17",
-      "FLOUCI": "Flouci",
-      "CASH": "Especes"
-    },
-    "status": {
-      "PENDING": "En attente",
-      "HELD": "Retenu (escrow)",
-      "RELEASED": "Libere",
-      "REFUNDED": "Rembourse",
-      "FAILED": "Echoue"
-    },
-    "checkout": "Paiement",
-    "totalAmount": "Montant total",
-    "commission": "Commission plateforme (12%)",
-    "earnings": "Vos revenus"
-  },
+  "_payment_legacy": "merged into top-level payment namespace",
   "review": {
     "writeReview": "Laisser un avis",
     "stars": "Etoiles",
@@ -707,6 +689,23 @@
     "badgeNonVerified": "Non verifie"
   },
   "payment": {
+    "method": {
+      "CARD": "Carte bancaire",
+      "D17": "D17 (Poste tunisienne)",
+      "FLOUCI": "Flouci",
+      "CASH": "Especes (paiement a la prestation)"
+    },
+    "status": {
+      "PENDING": "En attente",
+      "HELD": "Retenu (escrow)",
+      "RELEASED": "Libere",
+      "REFUNDED": "Rembourse",
+      "FAILED": "Echoue"
+    },
+    "totalAmount": "Montant total",
+    "commission": "Commission plateforme (12%)",
+    "viewInvoice": "Voir la facture",
+    "print": "Imprimer",
     "checkout": {
       "title": "Paiement de la reservation",
       "demoBanner": "Mode demonstration — Paiement simule. Aucun montant reel ne sera debite.",

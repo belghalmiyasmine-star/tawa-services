@@ -27,9 +27,9 @@ interface PaymentConfirmationProps {
 
 const PAYMENT_METHOD_LABELS: Record<PaymentMethod, string> = {
   CARD: "Carte bancaire",
-  D17: "D17",
+  D17: "D17 (Poste tunisienne)",
   FLOUCI: "Flouci",
-  CASH: "Especes",
+  CASH: "Especes (paiement a la prestation)",
 };
 
 // ============================================================

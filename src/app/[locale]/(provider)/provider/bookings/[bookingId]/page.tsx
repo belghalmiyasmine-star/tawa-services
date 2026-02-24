@@ -1,13 +1,14 @@
 import { getServerSession } from "next-auth";
 import { getLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
-import { Calendar, MapPin, User, CreditCard, FileText, Clock } from "lucide-react";
+import { Calendar, MapPin, User, CreditCard, FileText, Clock, Printer } from "lucide-react";
 import type { Metadata } from "next";
 
 import { authOptions } from "@/lib/auth";
 import { redirect } from "@/i18n/routing";
 import { getBookingDetailAction } from "@/features/booking/actions/booking-queries";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Link } from "@/i18n/routing";
@@ -54,9 +55,9 @@ const STATUS_CONFIG: Record<
 
 const PAYMENT_METHOD_LABELS: Record<string, string> = {
   CARD: "Carte bancaire",
-  D17: "D17",
+  D17: "D17 (Poste tunisienne)",
   FLOUCI: "Flouci",
-  CASH: "Especes",
+  CASH: "Especes (paiement a la prestation)",
 };
 
 function formatDateTime(date: Date | null): string {
@@ -372,6 +373,43 @@ export default async function ProviderBookingDetailPage({ params }: Props) {
               )}
             </CardContent>
           </Card>
+
+          {/* Invoice link for completed bookings */}
+          {booking.status === "COMPLETED" &&
+            booking.payment &&
+            (booking.payment.status === "RELEASED" ||
+              booking.payment.status === "HELD") && (
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center gap-2 text-base">
+                    <FileText className="h-4 w-4" />
+                    Facture
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="flex gap-3">
+                  <Button variant="outline" size="sm" asChild>
+                    <Link
+                      href={
+                        `/provider/earnings/invoice/${booking.payment.id}` as never
+                      }
+                    >
+                      <FileText className="mr-2 h-4 w-4" />
+                      Voir la facture
+                    </Link>
+                  </Button>
+                  <Button variant="outline" size="sm" asChild>
+                    <Link
+                      href={
+                        `/provider/earnings/invoice/${booking.payment.id}` as never
+                      }
+                    >
+                      <Printer className="mr-2 h-4 w-4" />
+                      Imprimer
+                    </Link>
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
 
           {/* Quote info (if quote-based) */}
           {booking.quote && (

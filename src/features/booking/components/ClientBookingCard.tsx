@@ -72,9 +72,9 @@ const STATUS_CONFIG: Record<
 
 const PAYMENT_METHOD_LABELS: Record<string, string> = {
   CARD: "Carte bancaire",
-  D17: "D17",
+  D17: "D17 (Poste tunisienne)",
   FLOUCI: "Flouci",
-  CASH: "Especes",
+  CASH: "Especes (paiement a la prestation)",
 };
 
 // ============================================================
