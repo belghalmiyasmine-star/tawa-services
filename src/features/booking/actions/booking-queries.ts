@@ -95,11 +95,13 @@ export interface QuoteListItem {
   proposedPrice: number | null;
   proposedDelay: string | null;
   expiresAt: Date;
+  respondedAt?: Date | null;
   createdAt: Date;
   service: {
     title: string;
   };
   clientId: string;
+  bookingId?: string | null;
 }
 
 export interface PaginatedBookings {
@@ -482,7 +484,98 @@ export async function getBookingDetailAction(
 }
 
 // ============================================================
-// QUERY 4: getProviderQuotesAction
+// QUERY 4: getClientQuotesAction
+// ============================================================
+
+/**
+ * Get paginated quotes for the authenticated client.
+ *
+ * - Optional status filter
+ * - Includes service title and booking id (if accepted)
+ * - Orders by createdAt desc
+ */
+export async function getClientQuotesAction(filters?: {
+  status?: QuoteStatus[];
+  page?: number;
+  limit?: number;
+}): Promise<ActionResult<PaginatedQuotes>> {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      return { success: false, error: "Non authentifie" };
+    }
+    if (session.user.role !== "CLIENT") {
+      return { success: false, error: "Acces reserve aux clients" };
+    }
+
+    const userId = session.user.id;
+    const page = filters?.page ?? 1;
+    const limit = filters?.limit ?? 50;
+    const skip = (page - 1) * limit;
+
+    const where = {
+      clientId: userId,
+      isDeleted: false,
+      ...(filters?.status?.length ? { status: { in: filters.status } } : {}),
+    };
+
+    const [total, rawQuotes] = await Promise.all([
+      prisma.quote.count({ where }),
+      prisma.quote.findMany({
+        where,
+        include: {
+          service: {
+            select: {
+              title: true,
+            },
+          },
+          booking: {
+            select: {
+              id: true,
+            },
+          },
+        },
+        orderBy: { createdAt: "desc" },
+        skip,
+        take: limit,
+      }),
+    ]);
+
+    const quotes: QuoteListItem[] = rawQuotes.map((q) => ({
+      id: q.id,
+      status: q.status,
+      description: q.description,
+      address: q.address,
+      city: q.city,
+      preferredDate: q.preferredDate,
+      budget: q.budget,
+      proposedPrice: q.proposedPrice,
+      proposedDelay: q.proposedDelay,
+      expiresAt: q.expiresAt,
+      respondedAt: q.respondedAt,
+      createdAt: q.createdAt,
+      service: {
+        title: q.service.title,
+      },
+      clientId: q.clientId,
+      bookingId: q.booking?.id ?? null,
+    }));
+
+    return {
+      success: true,
+      data: { quotes, total, page, limit },
+    };
+  } catch (error) {
+    console.error("[getClientQuotesAction] Error:", error);
+    return {
+      success: false,
+      error: "Erreur lors de la recuperation des devis",
+    };
+  }
+}
+
+// ============================================================
+// QUERY 5: getProviderQuotesAction
 // ============================================================
 
 /**
