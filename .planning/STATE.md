@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-02-21)
 ## Current Position
 
 Phase: 6 of 11 (Reservations & Paiements)
-Plan: 7 of N in current phase — Plan 06-06 complete (client booking dashboard, StatusTimeline, CancelBookingDialog)
-Status: Plan 06-06 complete — client bookings list page with 4 tabs (A venir/En cours/Passees/Annulees), booking detail page with StatusTimeline, CancelBookingDialog with 3-tier refund preview. Task 1 committed (5d63af5). Task 2 committed (71bdfbf).
-Last activity: 2026-02-24 — Plan 06-06 executed. Client-facing booking management pages complete: /bookings (4-tab list with QuoteResponseCard integration) and /bookings/[bookingId] (full detail with StatusTimeline, provider card, cancel flow).
+Plan: 7 of N in current phase — Plan 06-07 Task 1 complete, awaiting Task 2 human verification checkpoint
+Status: Plan 06-07 Task 1 committed (fa6ac6a) — Navbar Mes reservations (CLIENT-only), BottomNav CalendarCheck icon, ProviderSidebar Reservations link with pending badge. Task 2 is checkpoint:human-verify (all 5 booking flows end-to-end).
+Last activity: 2026-02-24 — Plan 06-07 Task 1 executed. Navigation wiring complete. Awaiting human verification of end-to-end booking flows.
 
 Progress: [#########░] 62%
 
@@ -63,6 +63,7 @@ Progress: [#########░] 62%
 | Phase 06-systeme-de-reservation P04 | 10 | 2 tasks | 5 files |
 | Phase 06-systeme-de-reservation P05 | 25 | 2 tasks | 6 files |
 | Phase 06-systeme-de-reservation P06 | 43 | 2 tasks | 8 files |
+| Phase 06-systeme-de-reservation P07 | 15 | 1 task (Task 2 pending checkpoint) | 4 files |
 
 ## Accumulated Context
 
@@ -224,6 +225,9 @@ Recent decisions affecting current work:
 - [06-06]: CancelBookingDialog calls calculateRefundPercentage client-side (pure function import) — immediate refund preview with no server round-trip needed for the display step
 - [06-06]: StatusTimeline is a pure (non-client) server component — no hooks needed, zero client bundle overhead when used in server pages
 - [06-06]: getClientQuotesAction added to booking-queries.ts — Plan 01 created getProviderQuotesAction but not a client equivalent; added with bookingId relation for QuoteResponseCard AcceptedState link
+- [06-07]: Navbar Mes reservations uses tBooking('myBookings') — long label hidden on <lg, icon always visible; CLIENT-only visibility guard
+- [06-07]: ProviderSidebar pending badge fetches total via useEffect + getProviderBookingsAction(PENDING) — silently catches errors, badge is non-critical UI
+- [06-07]: navigation.reservations key added to fr.json sidebar label (distinct from navigation.bookings used in BottomNav)
 
 ### Pending Todos
 
@@ -236,5 +240,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-24
-Stopped at: Completed 06-06-PLAN.md (client booking dashboard — ClientBookingsList 4-tab, ClientBookingCard, CancelBookingDialog with refund preview, StatusTimeline reusable component, /bookings and /bookings/[id] pages)
+Stopped at: Plan 06-07 Task 2 checkpoint:human-verify — navigation wiring complete (Task 1 fa6ac6a), awaiting manual verification of 5 end-to-end booking flows
 Resume file: None
