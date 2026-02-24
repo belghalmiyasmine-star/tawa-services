@@ -119,3 +119,15 @@ None - no external service configuration required.
 ---
 *Phase: 05-recherche-decouverte*
 *Completed: 2026-02-24*
+
+## Self-Check: PASSED
+
+- FOUND: `src/app/[locale]/(client)/services/[serviceId]/page.tsx`
+- FOUND: `src/features/search/components/ServiceImageGallery.tsx`
+- FOUND: `src/features/search/components/ServiceDetailClient.tsx`
+- FOUND: `src/features/search/components/ProviderMiniCard.tsx` (from Phase 05-01)
+- FOUND: `.planning/phases/05-recherche-decouverte/05-02-SUMMARY.md`
+- FOUND: commit `71f678c` (Task 1: service detail page + image gallery)
+- FOUND: commit `b681db8` (Task 2: ServiceDetailClient + PublicServiceCard links)
+- FOUND: commit `b56df3d` (docs: SUMMARY, STATE, ROADMAP, REQUIREMENTS)
+- TypeScript check: PASS (0 errors, verified via `node tsc.js --noEmit`)

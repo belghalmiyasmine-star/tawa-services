@@ -6,7 +6,6 @@ import { Link } from "@/i18n/routing";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { Button } from "@/components/ui/button";
 import { ServicesGrid } from "@/features/provider/components/ServicesGrid";
 import { redirect } from "@/i18n/routing";
 import { getLocale } from "next-intl/server";
@@ -70,12 +69,10 @@ export default async function MyServicesPage() {
           )}
         </div>
 
-        <Button asChild>
-          <Link href="/provider/services/new">
-            <Plus className="mr-2 h-4 w-4" />
-            {t("createService")}
-          </Link>
-        </Button>
+        <Link href="/provider/services/new" className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90">
+          <Plus className="mr-2 h-4 w-4" />
+          {t("createService")}
+        </Link>
       </div>
 
       {/* Services grid or empty state */}
@@ -90,12 +87,10 @@ export default async function MyServicesPage() {
           <p className="mt-2 max-w-sm text-sm text-muted-foreground">
             Creez votre premier service pour etre decouverts par des clients.
           </p>
-          <Button asChild className="mt-6">
-            <Link href="/provider/services/new">
-              <Plus className="mr-2 h-4 w-4" />
-              {t("myServicesCreate")}
-            </Link>
-          </Button>
+          <Link href="/provider/services/new" className="mt-6 inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90">
+            <Plus className="mr-2 h-4 w-4" />
+            {t("myServicesCreate")}
+          </Link>
         </div>
       ) : (
         <ServicesGrid initialServices={services} />

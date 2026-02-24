@@ -2,7 +2,7 @@
 
 import { AlertTriangle, X } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
 import { usePathname } from "@/i18n/routing";
@@ -18,6 +18,7 @@ import { sendVerificationEmailAction } from "@/features/auth/actions/send-verifi
 export function EmailVerificationBanner() {
   const { data: session } = useSession();
   const t = useTranslations("auth");
+  const locale = useLocale();
   const pathname = usePathname();
   const [dismissed, setDismissed] = useState(false);
   const [sending, setSending] = useState(false);
@@ -38,8 +39,6 @@ export function EmailVerificationBanner() {
     if (!session?.user?.id || !session.user.email) return;
     setSending(true);
     try {
-      // Extract locale from the pathname (first segment after /)
-      const locale = pathname.split("/")[1] ?? "fr";
       await sendVerificationEmailAction(session.user.id, session.user.email, locale);
       setSentSuccess(true);
     } finally {
