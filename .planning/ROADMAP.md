@@ -317,16 +317,14 @@ classDiagram
   4. Un client peut trier les resultats par "Meilleure note", "Prix croissant", "Disponible maintenant" et filtrer par "Verifie uniquement" et plage de prix min/max
   5. En cliquant sur un prestataire, le client voit son profil complet avec portfolio photos, certifications, trust badges et tous ses avis
 
-**Plans**: TBD (environ 5-7 plans)
+**Plans**: 5 plans
 
 Plans:
-- [ ] 05-01: Page categories — grille categories (icones lucide-react), navigation vers resultats filtres
-- [ ] 05-02: Page resultats recherche — liste cartes prestataires, URL params pour filtres persistants
-- [ ] 05-03: Composant filtres — ville/delegation, plage prix, statut verifie, disponibilite
-- [ ] 05-04: Tri resultats — note, prix, disponibilite avec mise a jour instantanee
-- [ ] 05-05: Autocomplete recherche — debounce 300ms, API endpoint `/api/search/autocomplete`, suggestions categories + noms
-- [ ] 05-06: Carte prestataire — composant reutilisable avec photo, nom, note, prix de base, badges, ville
-- [ ] 05-07: Page profil public client — vue complete prestataire avec tous les avis et galerie
+- [ ] 05-01-PLAN.md — Search API backend: validation schemas, categories API with counts, service search API with filters/sort/pagination, i18n keys
+- [ ] 05-02-PLAN.md — Service detail page: image gallery, provider mini-card, inclusions/exclusions, action buttons, similar services, PublicServiceCard linking
+- [ ] 05-03-PLAN.md — Category browsing + search results page: category grid, sidebar filters (Sheet mobile), sort dropdown, pagination, results grid
+- [ ] 05-04-PLAN.md — Autocomplete search: API endpoint, debounce 300ms component, Navbar/BottomNav integration
+- [ ] 05-05-PLAN.md — Integration: homepage DB-driven categories, Navbar dynamic categories, end-to-end flow verification checkpoint
 
 ---
 
@@ -595,7 +593,7 @@ Plans:
 | 2. Authentification | 7/7 | Complete   | 2026-02-22 |
 | 3. Verification KYC | 5/5 | Complete   | 2026-02-23 |
 | 4. Profil Prestataire & Services | 5/5 | Complete   | 2026-02-23 |
-| 5. Recherche & Decouverte | 0/7 | Not started | - |
+| 5. Recherche & Decouverte | 0/5 | Not started | - |
 | 6. Systeme de Reservation | 0/9 | Not started | - |
 | 7. Paiement Simule | 0/8 | Not started | - |
 | 8. Avis & Evaluations | 0/7 | Not started | - |
