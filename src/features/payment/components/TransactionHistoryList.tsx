@@ -2,6 +2,7 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Link } from "@/i18n/routing";
 import type { TransactionItem } from "@/features/payment/actions/earnings-queries";
 
 interface TransactionHistoryListProps {
@@ -128,6 +129,14 @@ export function TransactionHistoryList({ data }: TransactionHistoryListProps) {
                   <span className="text-xs text-muted-foreground">
                     {formatDate(tx.createdAt)}
                   </span>
+                  {tx.status === "RELEASED" && (
+                    <Link
+                      href={`/provider/earnings/invoice/${tx.id}` as never}
+                      className="text-xs font-medium text-primary hover:underline"
+                    >
+                      Facture
+                    </Link>
+                  )}
                 </div>
               </div>
 

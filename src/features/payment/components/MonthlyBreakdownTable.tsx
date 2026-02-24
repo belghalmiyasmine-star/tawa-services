@@ -9,6 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Link } from "@/i18n/routing";
 import type { MonthlyBreakdown } from "@/features/payment/actions/earnings-queries";
 
 interface MonthlyBreakdownTableProps {
@@ -60,6 +61,7 @@ export function MonthlyBreakdownTable({ data }: MonthlyBreakdownTableProps) {
             <TableHead className="text-right">Revenu brut (TND)</TableHead>
             <TableHead className="text-right">Commission 12% (TND)</TableHead>
             <TableHead className="text-right">Revenu net (TND)</TableHead>
+            <TableHead className="text-right">Releve</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -77,6 +79,14 @@ export function MonthlyBreakdownTable({ data }: MonthlyBreakdownTableProps) {
               </TableCell>
               <TableCell className="text-right font-semibold text-green-600 dark:text-green-400">
                 {formatAmount(row.netEarnings)}
+              </TableCell>
+              <TableCell className="text-right">
+                <Link
+                  href={`/provider/earnings/statement/${row.month}` as never}
+                  className="text-sm font-medium text-primary hover:underline"
+                >
+                  Voir
+                </Link>
               </TableCell>
             </TableRow>
           ))}
@@ -96,6 +106,7 @@ export function MonthlyBreakdownTable({ data }: MonthlyBreakdownTableProps) {
             <TableCell className="text-right font-bold text-green-600 dark:text-green-400">
               {formatAmount(totals.netEarnings)}
             </TableCell>
+            <TableCell />
           </TableRow>
         </TableFooter>
       </Table>

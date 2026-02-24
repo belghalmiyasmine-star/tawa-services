@@ -739,7 +739,8 @@
       "requestWithdrawal": "Demander un virement",
       "minimumWithdrawal": "Montant minimum : 50 TND",
       "withdrawalRequested": "Demande de virement envoyee",
-      "insufficientBalance": "Solde insuffisant (minimum 50 TND)"
+      "insufficientBalance": "Solde insuffisant (minimum 50 TND)",
+      "retentionNotice": "Les documents financiers sont conserves pendant 5 ans conformement a la reglementation."
     },
     "invoice": {
       "title": "Facture",

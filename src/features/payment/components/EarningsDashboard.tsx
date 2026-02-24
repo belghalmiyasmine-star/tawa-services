@@ -315,6 +315,12 @@ export function EarningsDashboard() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* PAY-07: 5-year retention notice */}
+      <div className="mt-6 rounded-md border border-border bg-muted/30 px-4 py-3 text-center text-xs text-muted-foreground">
+        Les documents financiers sont conserves pendant 5 ans conformement a
+        la reglementation.
+      </div>
     </div>
   );
 }
