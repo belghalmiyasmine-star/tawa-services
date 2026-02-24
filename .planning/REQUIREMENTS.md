@@ -184,10 +184,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PROF-06 | Phase 4 | Complete |
 | PROF-07 | Phase 4 | Complete |
 | PROF-08 | Phase 4 | Complete |
-| SRCH-01 | Phase 5 | Pending |
-| SRCH-02 | Phase 5 | Pending |
+| SRCH-01 | Phase 5 | Complete |
+| SRCH-02 | Phase 5 | Complete |
 | SRCH-03 | Phase 5 | Complete |
-| SRCH-04 | Phase 5 | Pending |
+| SRCH-04 | Phase 5 | Complete |
 | SRCH-05 | Phase 5 | Complete |
 | BOOK-01 | Phase 6 | Pending |
 | BOOK-02 | Phase 6 | Pending |

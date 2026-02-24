@@ -5,7 +5,7 @@
 See: .planning/PROJECT.md (updated 2026-02-21)
 
 **Core value:** Clients can find, book, and pay a trusted local service provider in their city — and providers can get discovered and manage their business in one place.
-**Current focus:** Phase 5 — Recherche & Decouverte. Plans 01-02, 04 complete. Plans 03, 05 pending.
+**Current focus:** Phase 5 — Recherche & Decouverte. Plans 01-04 complete. Plan 05 pending.
 
 ## Current Position
 
@@ -55,6 +55,7 @@ Progress: [########░░] 42%
 | Phase 04-profil-prestataire-services P05 | 6 | 2 tasks (checkpoint pending) | 8 files |
 | Phase 05-recherche-decouverte P01 | 15 | 2 tasks | 5 files |
 | Phase 05-recherche-decouverte P02 | 25 | 2 tasks | 4 files |
+| Phase 05-recherche-decouverte P03 | 30 | 2 tasks | 9 files |
 | Phase 05-recherche-decouverte P04 | 18 | 2 tasks | 6 files |
 
 ## Accumulated Context
@@ -172,6 +173,12 @@ Recent decisions affecting current work:
 - [05-02]: Similar services: up to 4 from same category ordered by viewCount desc, section hidden when 0 results
 - [05-02]: PublicServiceCard outer div replaced with Link from @/i18n/routing with as never cast — typed routes don't include /services/[id] yet
 - [05-02]: Action buttons (Reserver/Demander un devis/Contacter) show Disponible prochainement toast — Phase 6 booking, Phase 9 messaging
+- [05-03]: URL searchParams as filter state — server page re-renders on navigation, no client-side filter state needed
+- [05-03]: buildSearchQuery() shared utility in search-query.ts — avoids duplicating Prisma where/orderBy logic between /services page and /services/[categorySlug] page
+- [05-03]: SearchFilters uses mobileOnly prop — rendered twice in parent (once hidden desktop sidebar, once for mobile Sheet trigger)
+- [05-03]: CategoryGrid shown only when no active filters on /services page — browsing mode vs search results mode
+- [05-03]: Debounced price inputs use useRef for setTimeout handle — avoids stale closure and prevents rapid URL updates
+- [05-03]: buildPageRange() builds compact pagination with ellipsis — avoids rendering all page numbers for large result sets
 - [05-04]: Promise.all for parallel category + service queries — single DB round-trip latency
 - [05-04]: useRef + setTimeout debounce pattern — no external library, 300ms per SRCH-03 requirement
 - [05-04]: Flat items array for keyboard navigation — categories first (0..n-1), services after (n..n+m-1)
@@ -189,5 +196,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-24
-Stopped at: Completed 05-04-PLAN.md (Autocomplete search — /api/search/autocomplete, SearchAutocomplete component, Navbar integration)
+Stopped at: Completed 05-03-PLAN.md (Search results page — CategoryGrid, SearchFilters, SearchResultsGrid, SearchPagination, SearchSortSelect, /services page, /services/[categorySlug] page)
 Resume file: None
