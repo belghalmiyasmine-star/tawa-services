@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-21)
 ## Current Position
 
 Phase: 6 of 11 (Reservations & Paiements)
-Plan: 6 of N in current phase — Plan 06-03 SUMMARY completed retroactively (Plans 06-04 and 06-05 previously completed)
-Status: Plan 06-03 SUMMARY created — 3-step booking wizard (BookingWizard, BookingConfirmation, /services/[id]/book page) with AvailabilityCalendar, TimeSlotPicker, and availability API. Task 1 artifacts were already committed in prior session (841c365). Task 2 committed (6aea373).
-Last activity: 2026-02-24 — Plan 06-03 SUMMARY retroactively created. BookingWizard 3-step flow, BookingConfirmation card, and /services/[serviceId]/book SSR page committed. All plan requirements (BOOK-01, BOOK-08) documented.
+Plan: 7 of N in current phase — Plan 06-06 complete (client booking dashboard, StatusTimeline, CancelBookingDialog)
+Status: Plan 06-06 complete — client bookings list page with 4 tabs (A venir/En cours/Passees/Annulees), booking detail page with StatusTimeline, CancelBookingDialog with 3-tier refund preview. Task 1 committed (5d63af5). Task 2 committed (71bdfbf).
+Last activity: 2026-02-24 — Plan 06-06 executed. Client-facing booking management pages complete: /bookings (4-tab list with QuoteResponseCard integration) and /bookings/[bookingId] (full detail with StatusTimeline, provider card, cancel flow).
 
-Progress: [#########░] 58%
+Progress: [#########░] 62%
 
 ## Performance Metrics
 
@@ -62,6 +62,7 @@ Progress: [#########░] 58%
 | Phase 06-systeme-de-reservation P03 | 35 | 2 tasks | 7 files |
 | Phase 06-systeme-de-reservation P04 | 10 | 2 tasks | 5 files |
 | Phase 06-systeme-de-reservation P05 | 25 | 2 tasks | 6 files |
+| Phase 06-systeme-de-reservation P06 | 43 | 2 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -219,6 +220,10 @@ Recent decisions affecting current work:
 - [06-04]: QuoteAcceptFlow uses Dialog for all screen sizes — simplifies implementation, responsive sizing via max-w-md
 - [06-04]: scheduledAt built as noon local time (12:00:00) from date-only input — avoids timezone ambiguity for date-only selection
 - [06-04]: ServiceDetailClient wires both SUR_DEVIS (-> /quote) and FIXED (-> /book) — linter enforced the FIXED wire consistent with Plan 03's planned output
+- [06-06]: CancelBookingButton extracted as client component — server detail pages cannot use useState, client wrapper owns dialog open/close state and calls router.refresh() on success
+- [06-06]: CancelBookingDialog calls calculateRefundPercentage client-side (pure function import) — immediate refund preview with no server round-trip needed for the display step
+- [06-06]: StatusTimeline is a pure (non-client) server component — no hooks needed, zero client bundle overhead when used in server pages
+- [06-06]: getClientQuotesAction added to booking-queries.ts — Plan 01 created getProviderQuotesAction but not a client equivalent; added with bookingId relation for QuoteResponseCard AcceptedState link
 
 ### Pending Todos
 
@@ -231,5 +236,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-24
-Stopped at: Completed 06-03-PLAN.md (BookingWizard 3-step flow, BookingConfirmation, /services/[id]/book page, AvailabilityCalendar, TimeSlotPicker, availability API — retroactive SUMMARY created)
+Stopped at: Completed 06-06-PLAN.md (client booking dashboard — ClientBookingsList 4-tab, ClientBookingCard, CancelBookingDialog with refund preview, StatusTimeline reusable component, /bookings and /bookings/[id] pages)
 Resume file: None
