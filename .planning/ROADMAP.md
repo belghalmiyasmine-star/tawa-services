@@ -343,18 +343,16 @@ Plans:
   4. La progression des statuts PENDING → ACCEPTED → IN_PROGRESS → COMPLETED est correctement appliquee et visible par les deux parties
   5. Si un client annule une reservation, le remboursement applicable (100% > 48h, partiel 24-48h, 0% < 24h) est correctement calcule et affiche
 
-**Plans**: TBD (environ 7-9 plans)
+**Plans**: 7 plans
 
 Plans:
-- [ ] 06-01: Schema booking et API CRUD — modele Booking, endpoints creation/mise a jour statut
-- [ ] 06-02: Flux reservation directe — 3 ecrans (selection service → creneau calendrier → confirmation)
-- [ ] 06-03: Flux demande de devis — formulaire description besoin, soumission, reception devis prestataire
-- [ ] 06-04: Dashboard prestataire — onglets par statut, actions accept/reject/complete, details booking
-- [ ] 06-05: Gestion devis prestataire — recevoir demande, proposer prix/delai, client accepte/decline
-- [ ] 06-06: Machine a etats booking — transitions PENDING/ACCEPTED/IN_PROGRESS/COMPLETED/REJECTED/CANCELLED
-- [ ] 06-07: Politique d'annulation — calcul remboursement selon delai, confirmation client, mise a jour payment
-- [ ] 06-08: Auto-expiration devis — job cron ou Vercel CRON pour expirer quotes non-repondues apres 48h
-- [ ] 06-09: Historique reservations client — page "Mes reservations" avec filtres et details
+- [ ] 06-01-PLAN.md — Backend booking: Prisma schema additions, Zod schemas, booking/quote CRUD actions, query actions, i18n keys
+- [ ] 06-02-PLAN.md — Cancellation policy + quote expiration: refund tier calculation, cancel actions, cron endpoint
+- [ ] 06-03-PLAN.md — Direct booking wizard: availability calendar, time slot picker, 3-step wizard, payment selector
+- [ ] 06-04-PLAN.md — Quote request flow: quote form, response card, accept/decline flow
+- [ ] 06-05-PLAN.md — Provider booking dashboard: tabbed list, action buttons, quote response, booking detail
+- [ ] 06-06-PLAN.md — Client bookings pages: Mes reservations tabs, booking detail, status timeline, cancel dialog
+- [ ] 06-07-PLAN.md — Navigation integration + end-to-end verification checkpoint
 
 ```mermaid
 sequenceDiagram
