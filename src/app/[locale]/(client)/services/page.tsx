@@ -109,7 +109,7 @@ export default async function ServicesPage({ searchParams }: ServicesPageProps) 
       },
     }),
     prisma.service.count({ where }),
-    // Fetch root categories with service counts for CategoryGrid + filter sidebar
+    // Fetch root categories with service counts (including children) for CategoryGrid + filter sidebar
     prisma.category.findMany({
       where: { isActive: true, isDeleted: false, parentId: null },
       select: {
@@ -124,6 +124,18 @@ export default async function ServicesPage({ searchParams }: ServicesPageProps) 
             },
           },
         },
+        children: {
+          where: { isDeleted: false, isActive: true },
+          select: {
+            _count: {
+              select: {
+                services: {
+                  where: { status: "ACTIVE", isDeleted: false },
+                },
+              },
+            },
+          },
+        },
       },
       orderBy: { sortOrder: "asc" },
     }),
@@ -131,13 +143,15 @@ export default async function ServicesPage({ searchParams }: ServicesPageProps) 
 
   const totalPages = Math.ceil(total / limit);
 
-  // Format categories for CategoryGrid
+  // Format categories for CategoryGrid — sum direct + children service counts
   const categoriesForGrid = rootCategories.map((cat) => ({
     id: cat.id,
     name: cat.name,
     slug: cat.slug,
     icon: cat.icon,
-    serviceCount: cat._count.services,
+    serviceCount:
+      cat._count.services +
+      cat.children.reduce((sum, child) => sum + child._count.services, 0),
   }));
 
   // Format categories for filter sidebar (just name + slug)

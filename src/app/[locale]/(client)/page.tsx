@@ -35,9 +35,18 @@ export default async function ClientHomePage() {
         _count: {
           select: {
             services: {
-              where: {
-                status: "ACTIVE",
-                isDeleted: false,
+              where: { status: "ACTIVE", isDeleted: false },
+            },
+          },
+        },
+        children: {
+          where: { isDeleted: false, isActive: true },
+          select: {
+            _count: {
+              select: {
+                services: {
+                  where: { status: "ACTIVE", isDeleted: false },
+                },
               },
             },
           },
@@ -52,7 +61,9 @@ export default async function ClientHomePage() {
       name: cat.name,
       slug: cat.slug,
       icon: cat.icon,
-      serviceCount: cat._count.services,
+      serviceCount:
+        cat._count.services +
+        cat.children.reduce((sum, child) => sum + child._count.services, 0),
     }));
   } catch {
     // DB unavailable — render with empty categories (graceful degradation)

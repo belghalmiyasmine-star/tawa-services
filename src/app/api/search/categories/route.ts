@@ -55,6 +55,18 @@ export async function GET() {
             },
           },
         },
+        children: {
+          where: { isDeleted: false, isActive: true },
+          select: {
+            _count: {
+              select: {
+                services: {
+                  where: { status: "ACTIVE", isDeleted: false },
+                },
+              },
+            },
+          },
+        },
       },
     });
 
@@ -65,7 +77,9 @@ export async function GET() {
       icon: cat.icon,
       description: cat.description,
       parentId: cat.parentId,
-      serviceCount: cat._count.services,
+      serviceCount:
+        cat._count.services +
+        (cat.children?.reduce((sum: number, child: { _count: { services: number } }) => sum + child._count.services, 0) ?? 0),
       parent: cat.parent,
     }));
 
