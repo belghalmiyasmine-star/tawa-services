@@ -59,7 +59,7 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Payment
 
-- [ ] **PAY-01**: Simulated checkout UI showing Tunisian payment methods (card, D17, Flouci, cash)
+- [x] **PAY-01**: Simulated checkout UI showing Tunisian payment methods (card, D17, Flouci, cash)
 - [x] **PAY-02**: Escrow model: client pays → platform holds → service completed → provider paid minus 12% commission
 - [x] **PAY-03**: Provider earnings dashboard showing earnings, pending payments, commission breakdown
 - [ ] **PAY-04**: Auto-generated invoices/receipts for completed transactions
@@ -197,7 +197,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | BOOK-06 | Phase 6 | Complete |
 | BOOK-07 | Phase 6 | Complete |
 | BOOK-08 | Phase 6 | Complete |
-| PAY-01 | Phase 7 | Pending |
+| PAY-01 | Phase 7 | Complete |
 | PAY-02 | Phase 7 | Complete |
 | PAY-03 | Phase 7 | Complete |
 | PAY-04 | Phase 7 | Pending |
