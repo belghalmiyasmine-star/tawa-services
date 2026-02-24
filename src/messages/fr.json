@@ -699,5 +699,78 @@
     "badgeTooltipQuickResponse": "Ce prestataire repond en moyenne en moins d'une heure",
     "badgeTooltipTopProvider": "Note superieure a 4.5 avec plus de 10 missions terminees",
     "badgeNonVerified": "Non verifie"
+  },
+  "payment": {
+    "checkout": {
+      "title": "Paiement de la reservation",
+      "demoBanner": "Mode demonstration — Paiement simule. Aucun montant reel ne sera debite.",
+      "servicePrice": "Prix du service",
+      "platformFee": "Frais de plateforme",
+      "total": "Total a payer",
+      "payNow": "Payer maintenant",
+      "processing": "Traitement en cours..."
+    },
+    "confirmation": {
+      "title": "Paiement confirme",
+      "reference": "Reference",
+      "backToBookings": "Voir mes reservations",
+      "message": "Votre paiement a ete enregistre avec succes."
+    },
+    "earnings": {
+      "title": "Mes revenus",
+      "available": "Disponible",
+      "pending": "En attente",
+      "totalEarned": "Total gagne",
+      "totalCommission": "Total commissions",
+      "monthlyBreakdown": "Recapitulatif mensuel",
+      "month": "Mois",
+      "missions": "Missions",
+      "grossRevenue": "Revenu brut",
+      "commission": "Commission (12%)",
+      "netEarnings": "Revenu net",
+      "transactionHistory": "Historique des transactions",
+      "noTransactions": "Aucune transaction pour le moment",
+      "requestWithdrawal": "Demander un virement",
+      "minimumWithdrawal": "Montant minimum : 50 TND",
+      "withdrawalRequested": "Demande de virement envoyee",
+      "insufficientBalance": "Solde insuffisant (minimum 50 TND)"
+    },
+    "invoice": {
+      "title": "Facture",
+      "invoiceNumber": "Numero de facture",
+      "date": "Date",
+      "client": "Client",
+      "provider": "Prestataire",
+      "service": "Service",
+      "amount": "Montant",
+      "commission": "Commission plateforme",
+      "netAmount": "Montant net",
+      "download": "Telecharger la facture",
+      "noInvoices": "Aucune facture disponible"
+    },
+    "card": {
+      "cardNumber": "Numero de carte",
+      "expiry": "Date d'expiration",
+      "cvv": "CVV",
+      "placeholder": {
+        "number": "1234 5678 9012 3456",
+        "expiry": "MM/AA",
+        "cvv": "123"
+      }
+    },
+    "statement": {
+      "title": "Releve mensuel",
+      "download": "Telecharger le releve",
+      "period": "Periode"
+    },
+    "withdrawal": {
+      "title": "Demande de retrait",
+      "amount": "Montant du retrait",
+      "status": "Statut",
+      "PENDING": "En attente",
+      "APPROVED": "Approuve",
+      "REJECTED": "Rejete",
+      "PAID": "Paye"
+    }
   }
 }

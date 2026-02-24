@@ -9,6 +9,7 @@ import {
   createBookingSchema,
   rejectBookingSchema,
 } from "@/lib/validations/booking";
+import { paymentService } from "@/features/payment/services/simulated-payment.service";
 
 // ============================================================
 // ACTION 1: createBookingAction
@@ -411,7 +412,9 @@ export async function startBookingAction(
  * - Verifies booking belongs to provider
  * - Verifies status is IN_PROGRESS
  * - Transitions status to COMPLETED, sets completedAt
- * - Updates Payment status to HELD with heldAt timestamp
+ * - Releases payment via paymentService with 12% commission logic:
+ *   - If payment.status === "HELD" (normal checkout flow): releases HELD -> RELEASED
+ *   - If payment.status === "PENDING" (CASH method, no checkout): releases PENDING -> RELEASED directly
  * - Increments provider.completedMissions counter
  */
 export async function completeBookingAction(
@@ -458,8 +461,8 @@ export async function completeBookingAction(
 
     const now = new Date();
 
+    // Mark booking as completed and increment provider missions counter
     await prisma.$transaction(async (tx) => {
-      // Complete the booking
       await tx.booking.update({
         where: { id: bookingId },
         data: {
@@ -468,18 +471,6 @@ export async function completeBookingAction(
         },
       });
 
-      // Move payment to HELD (escrow)
-      if (booking.payment) {
-        await tx.payment.update({
-          where: { id: booking.payment.id },
-          data: {
-            status: "HELD",
-            heldAt: now,
-          },
-        });
-      }
-
-      // Increment provider completed missions counter
       await tx.provider.update({
         where: { id: provider.id },
         data: {
@@ -487,6 +478,30 @@ export async function completeBookingAction(
         },
       });
     });
+
+    // Release payment via payment service (outside transaction for isolation)
+    if (booking.payment) {
+      const paymentStatus = booking.payment.status;
+
+      if (paymentStatus === "HELD") {
+        // Normal escrow flow: client paid via checkout, payment is HELD — release it
+        await paymentService.releasePayment({ bookingId });
+      } else if (paymentStatus === "PENDING") {
+        // CASH method: no checkout step was done — release directly with commission
+        const commission = booking.payment.amount * 0.12;
+        const providerEarning = booking.payment.amount - commission;
+        await prisma.payment.update({
+          where: { id: booking.payment.id },
+          data: {
+            status: "RELEASED",
+            releasedAt: now,
+            commission,
+            providerEarning,
+          },
+        });
+      }
+      // If already RELEASED or other status, no action needed
+    }
 
     return { success: true, data: { success: true } };
   } catch (error) {
