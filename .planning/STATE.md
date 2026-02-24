@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-21)
 ## Current Position
 
 Phase: 6 of 11 (Reservations & Paiements)
-Plan: 3 of N in current phase — Plan 06-02 COMPLETE
-Status: Plan 06-02 complete — Cancellation policy with tiered refunds (>48h=100%, 24-48h=50%, <24h=0%), cancel booking actions (CLIENT + PROVIDER), quote expiration via lazy check + 6h cron. TypeScript zero errors.
-Last activity: 2026-02-24 — Plan 06-02 complete. calculateRefundPercentage pure utility, cancelBookingAction, cancelBookingProviderAction, checkAndExpireQuote, expireQuotesAction, cron endpoint at /api/cron/expire-quotes, vercel.json created.
+Plan: 6 of N in current phase — Plan 06-05 COMPLETE
+Status: Plan 06-05 complete — Provider booking management dashboard with 4 status tabs (Nouvelles demandes/Acceptees/En cours/Historique), action buttons (accept/reject/start/complete/cancel), quote inline respond form, and detail page with status timeline.
+Last activity: 2026-02-24 — Plan 06-05 complete. ProviderBookingCard, ProviderQuoteCard, ProviderBookingsList, BookingActions, provider bookings page, provider booking detail page.
 
-Progress: [#########░] 54%
+Progress: [#########░] 58%
 
 ## Performance Metrics
 
@@ -59,6 +59,7 @@ Progress: [#########░] 54%
 | Phase 05-recherche-decouverte P04 | 18 | 2 tasks | 6 files |
 | Phase 05-recherche-decouverte P05 | 60 | 2 tasks | 6 files |
 | Phase 06-systeme-de-reservation P01 | 5 | 2 tasks | 6 files |
+| Phase 06-systeme-de-reservation P05 | 25 | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -204,6 +205,10 @@ Recent decisions affecting current work:
 - [06-02]: vercel.json cron runs every 6 hours (0 */6 * * *) as secondary sweep; lazy checkAndExpireQuote is primary mechanism
 - [06-02]: Partial refund (50%) updates only refundAmount + refundedAt on payment, not status — payment stays PENDING until settlement
 - [06-02]: checkAndExpireQuote lazy guard returns boolean — callers check and return error if true, before any quote operation
+- [06-05]: useSearchParams + router.push(?tab=) pattern for URL-persistent tab state in ProviderBookingsList client component
+- [06-05]: toCardBooking() adapter converts BookingListItem.service.photoUrl (single) to ProviderBookingCard props (service.photoUrls[]) without changing backend query structure
+- [06-05]: StatusTimeline handles both terminal states (REJECTED/CANCELLED = 2-step path) and normal progression (4-step PENDING->ACCEPTED->IN_PROGRESS->COMPLETED)
+- [06-05]: BookingActions imports cancelBookingProviderAction from cancel-booking.ts (Plan 02) — reuses existing logic without duplication
 
 ### Pending Todos
 
@@ -216,5 +221,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-24
-Stopped at: Completed 06-02-PLAN.md (Cancellation policy with tiered refunds, cancel booking actions, quote expiration via lazy check + cron, vercel.json)
+Stopped at: Completed 06-05-PLAN.md (Provider booking management dashboard with tabs, action buttons, quote response, and detail page with status timeline)
 Resume file: None

@@ -346,11 +346,11 @@ Plans:
 **Plans**: 7 plans
 
 Plans:
-- [ ] 06-01-PLAN.md — Backend booking: Prisma schema additions, Zod schemas, booking/quote CRUD actions, query actions, i18n keys
-- [ ] 06-02-PLAN.md — Cancellation policy + quote expiration: refund tier calculation, cancel actions, cron endpoint
-- [ ] 06-03-PLAN.md — Direct booking wizard: availability calendar, time slot picker, 3-step wizard, payment selector
-- [ ] 06-04-PLAN.md — Quote request flow: quote form, response card, accept/decline flow
-- [ ] 06-05-PLAN.md — Provider booking dashboard: tabbed list, action buttons, quote response, booking detail
+- [x] 06-01-PLAN.md — Backend booking: Prisma schema additions, Zod schemas, booking/quote CRUD actions, query actions, i18n keys (completed 2026-02-24)
+- [x] 06-02-PLAN.md — Cancellation policy + quote expiration: refund tier calculation, cancel actions, cron endpoint (completed 2026-02-24)
+- [x] 06-03-PLAN.md — Direct booking wizard: availability calendar, time slot picker, 3-step wizard, payment selector (completed 2026-02-24)
+- [x] 06-04-PLAN.md — Quote request flow: quote form, response card, accept/decline flow (completed 2026-02-24)
+- [x] 06-05-PLAN.md — Provider booking dashboard: tabbed list, action buttons, quote response, booking detail (completed 2026-02-24)
 - [ ] 06-06-PLAN.md — Client bookings pages: Mes reservations tabs, booking detail, status timeline, cancel dialog
 - [ ] 06-07-PLAN.md — Navigation integration + end-to-end verification checkpoint
 

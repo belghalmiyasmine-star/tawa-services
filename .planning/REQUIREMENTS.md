@@ -53,7 +53,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **BOOK-03**: Provider can accept or reject direct bookings and quote requests
 - [x] **BOOK-04**: Provider has 48h to respond to quote requests before auto-expiry
 - [x] **BOOK-05**: Booking status flow: PENDING → ACCEPTED → IN_PROGRESS → COMPLETED (with REJECTED and CANCELLED alternatives)
-- [ ] **BOOK-06**: Provider dashboard shows bookings by status: pending, accepted, in-progress, completed, cancelled
+- [x] **BOOK-06**: Provider dashboard shows bookings by status: pending, accepted, in-progress, completed, cancelled
 - [x] **BOOK-07**: Cancellation policy enforced: >48h full refund, 24-48h partial refund, <24h no refund
 - [ ] **BOOK-08**: 3-screen maximum booking flow (select service → confirm details → payment)
 
@@ -194,7 +194,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | BOOK-03 | Phase 6 | Complete |
 | BOOK-04 | Phase 6 | Complete |
 | BOOK-05 | Phase 6 | Complete |
-| BOOK-06 | Phase 6 | Pending |
+| BOOK-06 | Phase 6 | Complete |
 | BOOK-07 | Phase 6 | Complete |
 | BOOK-08 | Phase 6 | Pending |
 | PAY-01 | Phase 7 | Pending |
