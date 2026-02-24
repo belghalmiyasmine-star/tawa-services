@@ -32,6 +32,10 @@ export interface BookingListItem {
     firstName: string | null;
     lastName: string | null;
   } | null;
+  payment: {
+    method: string;
+    status: string;
+  } | null;
 }
 
 export interface BookingDetail {
@@ -74,6 +78,7 @@ export interface BookingDetail {
     method: string;
     status: string;
     amount: number;
+    refundAmount: number | null;
   } | null;
   quote: {
     id: string;
@@ -173,6 +178,12 @@ export async function getClientBookingsAction(filters?: {
               photoUrl: true,
             },
           },
+          payment: {
+            select: {
+              method: true,
+              status: true,
+            },
+          },
         },
         orderBy: { createdAt: "desc" },
         skip,
@@ -200,6 +211,12 @@ export async function getClientBookingsAction(filters?: {
           }
         : null,
       client: null,
+      payment: b.payment
+        ? {
+            method: b.payment.method,
+            status: b.payment.status,
+          }
+        : null,
     }));
 
     return {
@@ -278,6 +295,12 @@ export async function getProviderBookingsAction(filters?: {
               name: true,
             },
           },
+          payment: {
+            select: {
+              method: true,
+              status: true,
+            },
+          },
         },
         orderBy: { createdAt: "desc" },
         skip,
@@ -306,6 +329,9 @@ export async function getProviderBookingsAction(filters?: {
         },
         provider: null,
         client: { firstName, lastName },
+        payment: b.payment
+          ? { method: b.payment.method, status: b.payment.status }
+          : null,
       };
     });
 
@@ -387,6 +413,7 @@ export async function getBookingDetailAction(
             method: true,
             status: true,
             amount: true,
+            refundAmount: true,
           },
         },
         quote: {
@@ -460,6 +487,7 @@ export async function getBookingDetailAction(
             method: booking.payment.method,
             status: booking.payment.status,
             amount: booking.payment.amount,
+            refundAmount: booking.payment.refundAmount,
           }
         : null,
       quote: booking.quote
