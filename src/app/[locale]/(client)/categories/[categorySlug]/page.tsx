@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { Prisma } from "@prisma/client";
 
 import { prisma } from "@/lib/prisma";
 import { Link } from "@/i18n/routing";
@@ -194,7 +193,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
           {category.children.map((child) => (
             <Link
               key={child.id}
-              href={`/services/${child.slug}` as never}
+              href={`/categories/${child.slug}` as never}
               className="rounded-full border border-gray-200 bg-white px-3 py-1 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:border-teal-300 hover:bg-teal-50 hover:text-teal-700 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-teal-900/20"
             >
               {child.name}

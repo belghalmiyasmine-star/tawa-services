@@ -116,7 +116,7 @@ export function Navbar() {
                 {categories.map((cat) => (
                   <DropdownMenuItem key={cat.id} asChild>
                     <Link
-                      href={`/services/${cat.slug}` as never}
+                      href={`/categories/${cat.slug}` as never}
                       className="flex items-center gap-2"
                     >
                       {cat.icon && <span>{cat.icon}</span>}

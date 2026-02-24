@@ -21,6 +21,7 @@ const PUBLIC_PATHS = [
   "/",
   "/providers",
   "/services",
+  "/categories",
   "/become-provider",
 ];
 

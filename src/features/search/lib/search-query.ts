@@ -12,7 +12,7 @@ import type { SearchParams } from "@/lib/validations/search";
  * Shared between:
  *  - /api/search/services (API route)
  *  - /services page (server component)
- *  - /services/[categorySlug] page (server component)
+ *  - /categories/[categorySlug] page (server component)
  */
 export async function buildSearchQuery(params: SearchParams): Promise<{
   where: Prisma.ServiceWhereInput;

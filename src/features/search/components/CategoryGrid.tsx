@@ -23,7 +23,7 @@ interface CategoryGridProps {
 /**
  * CategoryGrid — Server component displaying categories as clickable cards.
  * Responsive: 2-col mobile, 3-col sm, 4-col md, 5-col lg.
- * Each card links to /services/[slug] for category-filtered results.
+ * Each card links to /categories/[slug] for category-filtered results.
  */
 export function CategoryGrid({ categories }: CategoryGridProps) {
   if (categories.length === 0) {
@@ -41,7 +41,7 @@ export function CategoryGrid({ categories }: CategoryGridProps) {
       {categories.map((category) => (
         <Link
           key={category.id}
-          href={`/services/${category.slug}` as never}
+          href={`/categories/${category.slug}` as never}
           className="group flex flex-col items-center gap-2 rounded-xl border border-gray-100 bg-white p-4 shadow-sm transition-shadow hover:shadow-md dark:border-gray-700 dark:bg-gray-800"
         >
           {/* Emoji icon */}

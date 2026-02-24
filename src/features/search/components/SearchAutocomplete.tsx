@@ -138,7 +138,7 @@ export function SearchAutocomplete({ className, placeholder }: SearchAutocomplet
 
   function navigateToItem(entry: (typeof flatItems)[number]) {
     if (entry.type === "category") {
-      router.push(`/services?category=${entry.item.slug}` as never);
+      router.push(`/categories/${entry.item.slug}` as never);
     } else {
       router.push(`/services/${entry.item.id}` as never);
     }
