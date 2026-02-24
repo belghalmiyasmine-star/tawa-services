@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { signOut, useSession } from "next-auth/react";
-import { Search, Menu, Bell, ChevronDown, LogOut, Settings, User } from "lucide-react";
+import { Bell, ChevronDown, LogOut, Menu, Settings, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -14,7 +14,7 @@ import {
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ThemeToggle } from "@/components/shared/ThemeToggle";
 import { LocaleSwitcher } from "@/components/shared/LocaleSwitcher";
-import { Input } from "@/components/ui/input";
+import { SearchAutocomplete } from "@/features/search/components/SearchAutocomplete";
 import { Link } from "@/i18n/routing";
 
 // Categories placeholder — sera remplace par donnees DB en Phase 5.
@@ -42,7 +42,6 @@ export function Navbar() {
   const { data: session, status } = useSession();
   const t = useTranslations("navigation");
   const tAuth = useTranslations("auth");
-  const tCommon = useTranslations("common");
   // Labels categories depuis fr.json["categories"] — aucun label hardcode
   const tCat = useTranslations("categories");
 
@@ -78,12 +77,9 @@ export function Navbar() {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        {/* Search Bar */}
+        {/* Search Bar — autocomplete with live suggestions */}
         <div className="hidden w-72 md:block lg:w-96">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input placeholder={tCommon("search")} className="rounded-full pl-9" />
-          </div>
+          <SearchAutocomplete />
         </div>
 
         {/* Right Actions */}

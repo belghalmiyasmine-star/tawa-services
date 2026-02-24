@@ -526,7 +526,12 @@
     "buttonContact": "Contacter",
     "viewProfile": "Voir le profil",
     "verifiedBadge": "Prestataire verifie",
-    "comingSoonToast": "Disponible prochainement"
+    "comingSoonToast": "Disponible prochainement",
+    "autocompleteCategories": "Categories",
+    "autocompleteServices": "Services",
+    "autocompleteSeeAll": "Voir tous les resultats pour \"{query}\"",
+    "autocompletePlaceholder": "Rechercher un service...",
+    "autocompleteNoResults": "Aucun resultat"
   },
   "footer": {
     "tagline": "La plateforme de services locaux de confiance en Tunisie.",
