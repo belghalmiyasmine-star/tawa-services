@@ -234,7 +234,7 @@ export function BookingWizard({ service }: BookingWizardProps) {
           title: "Reservation creee",
           description: "Votre reservation a ete soumise avec succes.",
         });
-        router.push(`/bookings/${result.data.bookingId}` as never);
+        router.push(`/bookings/${result.data.bookingId}/checkout` as never);
       } else {
         toast({
           title: "Erreur",

@@ -10,6 +10,7 @@ import {
   CalendarCheck,
   UserPen,
   ShieldCheck,
+  DollarSign,
   ChevronLeft,
   ChevronRight,
   LogOut,
@@ -24,6 +25,7 @@ const NAV_ITEMS = [
   { href: "/provider/profile/edit", icon: UserPen, labelKey: "editProfile" },
   { href: "/provider/services", icon: Briefcase, labelKey: "myServices" },
   { href: "/provider/bookings", icon: CalendarCheck, labelKey: "reservations" },
+  { href: "/provider/earnings", icon: DollarSign, labelKey: "earnings" },
   { href: "/provider/kyc", icon: ShieldCheck, labelKey: "kyc" },
 ];
 

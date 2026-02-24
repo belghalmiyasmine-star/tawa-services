@@ -116,8 +116,8 @@ export function QuoteAcceptFlow({
       const bookingId = result.data.bookingId;
       onAccepted(bookingId);
 
-      // Navigate to the newly created booking
-      router.push(`/bookings/${bookingId}` as never);
+      // Navigate to checkout after quote acceptance
+      router.push(`/bookings/${bookingId}/checkout` as never);
     } catch {
       toast({
         variant: "destructive",

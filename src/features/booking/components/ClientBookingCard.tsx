@@ -29,6 +29,7 @@ export interface ClientBookingCardProps {
     } | null;
     payment: {
       method: string;
+      status: string;
     } | null;
   };
   /** Called when "Annuler" is clicked — parent opens CancelBookingDialog */
@@ -194,19 +195,41 @@ export function ClientBookingCard({
                 )}
               </div>
 
-              {canCancel && onCancelClick && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-auto px-2 py-0.5 text-xs text-destructive hover:bg-destructive/10 hover:text-destructive"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    onCancelClick(booking.id);
-                  }}
-                >
-                  Annuler
-                </Button>
-              )}
+              <div className="flex items-center gap-1">
+                {/* Payment action links */}
+                {booking.payment?.status === "PENDING" && (
+                  <Link
+                    href={`/bookings/${booking.id}/checkout` as never}
+                    className="h-auto rounded px-2 py-0.5 text-xs font-medium text-primary hover:bg-primary/10"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    Payer
+                  </Link>
+                )}
+                {booking.payment?.status === "RELEASED" && (
+                  <Link
+                    href={`/bookings/${booking.id}/invoice` as never}
+                    className="h-auto rounded px-2 py-0.5 text-xs font-medium text-primary hover:bg-primary/10"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    Facture
+                  </Link>
+                )}
+
+                {canCancel && onCancelClick && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-auto px-2 py-0.5 text-xs text-destructive hover:bg-destructive/10 hover:text-destructive"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      onCancelClick(booking.id);
+                    }}
+                  >
+                    Annuler
+                  </Button>
+                )}
+              </div>
             </div>
           </div>
         </div>

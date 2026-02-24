@@ -379,6 +379,64 @@ export default async function ClientBookingDetailPage({ params }: Props) {
                           booking.payment.status}
                       </Badge>
                     </div>
+
+                    {/* Payment action: Pay button (PENDING) */}
+                    {booking.payment.status === "PENDING" && (
+                      <>
+                        <Separator />
+                        <Link
+                          href={`/bookings/${booking.id}/checkout` as never}
+                          className="mt-1 flex w-full items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+                        >
+                          Payer maintenant
+                        </Link>
+                      </>
+                    )}
+
+                    {/* Payment status: HELD */}
+                    {booking.payment.status === "HELD" && (
+                      <>
+                        <Separator />
+                        <div className="rounded-md bg-amber-50 px-3 py-2 text-sm text-amber-800 dark:bg-amber-950 dark:text-amber-200">
+                          Paiement retenu (escrow) — sera libere a la fin du service
+                        </div>
+                      </>
+                    )}
+
+                    {/* Payment status: RELEASED — show invoice link */}
+                    {booking.payment.status === "RELEASED" && (
+                      <>
+                        <Separator />
+                        <div className="flex items-center justify-between">
+                          <div className="rounded-md bg-green-50 px-3 py-2 text-sm text-green-800 dark:bg-green-950 dark:text-green-200">
+                            Paiement libere
+                          </div>
+                          <Link
+                            href={`/bookings/${booking.id}/invoice` as never}
+                            className="flex items-center gap-1 text-sm text-primary hover:underline"
+                          >
+                            <FileText className="h-3.5 w-3.5" />
+                            Voir la facture
+                          </Link>
+                        </div>
+                      </>
+                    )}
+
+                    {/* Payment status: REFUNDED */}
+                    {booking.payment.status === "REFUNDED" && (
+                      <>
+                        <Separator />
+                        <div className="rounded-md bg-blue-50 px-3 py-2 text-sm text-blue-800 dark:bg-blue-950 dark:text-blue-200">
+                          Rembourse
+                          {booking.payment.refundAmount !== null &&
+                            booking.payment.refundAmount !== undefined && (
+                              <span className="ml-1 font-medium">
+                                ({booking.payment.refundAmount.toFixed(2)} TND)
+                              </span>
+                            )}
+                        </div>
+                      </>
+                    )}
                   </>
                 )}
               </CardContent>
