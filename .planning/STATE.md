@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-02-21)
 ## Current Position
 
 Phase: 7 of 11 (Paiement Simule)
-Plan: 1 of 5 in current phase — Plan 07-01 COMPLETE.
-Status: Plan 07-01 COMPLETE — IPaymentService abstraction + SimulatedPaymentService + payment server actions + escrow release wiring (947cbf5, d9bdf4a). Ready for Plan 07-02 (checkout UI).
-Last activity: 2026-02-24 — Plan 07-01 complete. PAY-08 (payment service abstraction) and PAY-02 (escrow release with 12% commission) requirements satisfied.
+Plan: 3 of 5 in current phase — Plan 07-03 COMPLETE.
+Status: Plan 07-03 COMPLETE — Provider earnings dashboard with balance cards, monthly breakdown, transaction history, and withdrawal request functionality (e9ae255, ed0efd1). Ready for Plan 07-04.
+Last activity: 2026-02-24 — Plan 07-03 complete. PAY-03 (provider earnings visibility) and PAY-06 (withdrawal requests with 50 TND minimum) requirements satisfied.
 
 Progress: [##########] 68%
 
@@ -65,6 +65,8 @@ Progress: [##########] 68%
 | Phase 06-systeme-de-reservation P06 | 43 | 2 tasks | 8 files |
 | Phase 06-systeme-de-reservation P07 | 15 | 2 tasks (nav wiring + E2E verification) | 4 files |
 | Phase 07-paiement-simule P01 | 25 | 2 tasks | 6 files |
+| Phase 07-paiement-simule P02 | 35 | 2 tasks | 5 files |
+| Phase 07-paiement-simule P03 | 34 | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -233,6 +235,14 @@ Recent decisions affecting current work:
 - [07-01]: paymentService singleton export — dependency injection pattern, single import in all server actions
 - [07-01]: completeBookingAction handles both HELD (post-checkout) and PENDING (CASH) payment statuses at completion
 - [07-01]: releasePayment called outside Prisma transaction in completeBookingAction — avoids nested transaction issues
+- [07-02]: CheckoutPage uses onValidate callback from CardPaymentForm — parent owns pay button enabled state, avoids prop drilling form data
+- [07-02]: Card number stored as raw 16 digits, displayed with spaces (auto-format in onChange) — checkoutFormSchema validates raw digits
+- [07-02]: Confirmation page uses ?ref= query param for reference number — processPaymentAction returns referenceNumber, CheckoutPage pushes it in URL
+- [07-02]: Platform fee shown as amount * 0.05 (display only) — totalAmount already includes all fees, fee line is informational
+- [07-03]: In-memory groupBy for monthly breakdown — payments per provider are bounded, avoids raw SQL dependency
+- [07-03]: FIFO withdrawal links to oldest available RELEASED payment — simple, deterministic, PFE-appropriate
+- [07-03]: Withdrawal dialog blocks if available < 50 TND at button level — UX enforcement before server validation
+- [07-03]: fetchEarnings extracted as named function — called on mount + after successful withdrawal to refresh balance
 
 ### Pending Todos
 
@@ -245,5 +255,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-24
-Stopped at: Phase 7 Plan 07-01 complete — payment service abstraction layer (IPaymentService + SimulatedPaymentService + server actions) committed. Ready for Plan 07-02 (checkout UI).
+Stopped at: Phase 7 Plan 07-02 complete — checkout page (4 payment methods + fee breakdown + card form) and confirmation page (reference number + success icon) committed (8bcf23e, 2ac78e3). Plan 07-03 also complete. Ready for Plan 07-04.
 Resume file: None
