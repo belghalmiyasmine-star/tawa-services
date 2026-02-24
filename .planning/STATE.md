@@ -5,14 +5,14 @@
 See: .planning/PROJECT.md (updated 2026-02-21)
 
 **Core value:** Clients can find, book, and pay a trusted local service provider in their city — and providers can get discovered and manage their business in one place.
-**Current focus:** Phase 5 — Recherche & Decouverte. Plans 01-02 complete. Plans 03-05 pending.
+**Current focus:** Phase 5 — Recherche & Decouverte. Plans 01-02, 04 complete. Plans 03, 05 pending.
 
 ## Current Position
 
 Phase: 5 of 11 (Recherche & Decouverte)
-Plan: 2 of 5 in current phase — COMPLETE
-Status: Phase 5 Plan 02 complete — service detail page at /services/[serviceId], ServiceImageGallery, ServiceDetailClient, ProviderMiniCard, PublicServiceCard now links to service detail.
-Last activity: 2026-02-24 — Plan 05-02 complete: 3 files created (ServiceImageGallery, ServiceDetailClient, service detail page), 1 file modified (PublicServiceCard)
+Plan: 4 of 5 in current phase — COMPLETE
+Status: Phase 5 Plan 04 complete — autocomplete API at /api/search/autocomplete, SearchAutocomplete component with 300ms debounce and keyboard nav, integrated into Navbar.
+Last activity: 2026-02-24 — Plan 05-04 complete: 2 files created (autocomplete route, SearchAutocomplete component), 4 files modified (Navbar, fr.json, SearchFilters bug fix, categorySlug page bug fix)
 
 Progress: [########░░] 42%
 
@@ -55,6 +55,7 @@ Progress: [########░░] 42%
 | Phase 04-profil-prestataire-services P05 | 6 | 2 tasks (checkpoint pending) | 8 files |
 | Phase 05-recherche-decouverte P01 | 15 | 2 tasks | 5 files |
 | Phase 05-recherche-decouverte P02 | 25 | 2 tasks | 4 files |
+| Phase 05-recherche-decouverte P04 | 18 | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -171,6 +172,11 @@ Recent decisions affecting current work:
 - [05-02]: Similar services: up to 4 from same category ordered by viewCount desc, section hidden when 0 results
 - [05-02]: PublicServiceCard outer div replaced with Link from @/i18n/routing with as never cast — typed routes don't include /services/[id] yet
 - [05-02]: Action buttons (Reserver/Demander un devis/Contacter) show Disponible prochainement toast — Phase 6 booking, Phase 9 messaging
+- [05-04]: Promise.all for parallel category + service queries — single DB round-trip latency
+- [05-04]: useRef + setTimeout debounce pattern — no external library, 300ms per SRCH-03 requirement
+- [05-04]: Flat items array for keyboard navigation — categories first (0..n-1), services after (n..n+m-1)
+- [05-04]: Cache-Control: no-store on autocomplete route — live DB data must not be cached
+- [05-04]: BottomNav already has Search icon at /services — no change needed
 
 ### Pending Todos
 
@@ -183,5 +189,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-24
-Stopped at: Completed 05-02-PLAN.md (Service detail page — ServiceImageGallery, ServiceDetailClient, ProviderMiniCard, PublicServiceCard links)
+Stopped at: Completed 05-04-PLAN.md (Autocomplete search — /api/search/autocomplete, SearchAutocomplete component, Navbar integration)
 Resume file: None

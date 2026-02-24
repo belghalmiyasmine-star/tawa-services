@@ -323,7 +323,7 @@ Plans:
 - [x] 05-01-PLAN.md — Search API backend: validation schemas, categories API with counts, service search API with filters/sort/pagination, i18n keys (completed 2026-02-24)
 - [x] 05-02-PLAN.md — Service detail page: image gallery, provider mini-card, inclusions/exclusions, action buttons, similar services, PublicServiceCard linking (completed 2026-02-24)
 - [ ] 05-03-PLAN.md — Category browsing + search results page: category grid, sidebar filters (Sheet mobile), sort dropdown, pagination, results grid
-- [ ] 05-04-PLAN.md — Autocomplete search: API endpoint, debounce 300ms component, Navbar/BottomNav integration
+- [x] 05-04-PLAN.md — Autocomplete search: API endpoint, debounce 300ms component, Navbar/BottomNav integration (completed 2026-02-24)
 - [ ] 05-05-PLAN.md — Integration: homepage DB-driven categories, Navbar dynamic categories, end-to-end flow verification checkpoint
 
 ---

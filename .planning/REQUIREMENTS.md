@@ -42,7 +42,7 @@ Requirements for initial release. Each maps to roadmap phases.
 
 - [x] **SRCH-01**: Client can browse services by category (Plomberie, Menage, Cours, Electricite, etc.)
 - [x] **SRCH-02**: Client can filter providers by city/delegation
-- [ ] **SRCH-03**: Real-time autocomplete search suggestions as user types
+- [x] **SRCH-03**: Real-time autocomplete search suggestions as user types
 - [x] **SRCH-04**: Client can sort results by rating, price, availability; filter by verified status, price range
 - [x] **SRCH-05**: Client can view provider profiles with portfolio, certifications, badges, and reviews
 
@@ -186,7 +186,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PROF-08 | Phase 4 | Complete |
 | SRCH-01 | Phase 5 | Pending |
 | SRCH-02 | Phase 5 | Pending |
-| SRCH-03 | Phase 5 | Pending |
+| SRCH-03 | Phase 5 | Complete |
 | SRCH-04 | Phase 5 | Pending |
 | SRCH-05 | Phase 5 | Complete |
 | BOOK-01 | Phase 6 | Pending |

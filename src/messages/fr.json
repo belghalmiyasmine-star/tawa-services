@@ -467,6 +467,7 @@
   },
   "search": {
     "title": "Recherche",
+    "all": "Tous",
     "resultsCount": "{count} resultats",
     "noResults": "Aucun resultat trouve",
     "noResultsDescription": "Essayez de modifier vos filtres ou votre recherche",
