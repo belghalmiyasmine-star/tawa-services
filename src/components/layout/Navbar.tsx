@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { signOut, useSession } from "next-auth/react";
-import { Bell, ChevronDown, LogOut, Menu, Settings, User } from "lucide-react";
+import { Bell, CalendarCheck, ChevronDown, LogOut, Menu, Settings, User } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -52,6 +52,7 @@ export function Navbar() {
   const { data: session, status } = useSession();
   const t = useTranslations("navigation");
   const tAuth = useTranslations("auth");
+  const tBooking = useTranslations("booking");
 
   // DB-driven categories fetched from /api/search/categories on mount
   const [categories, setCategories] = useState<NavCategory[]>([]);
@@ -155,6 +156,15 @@ export function Navbar() {
           <Button variant="ghost" size="icon" aria-label="Notifications">
             <Bell className="h-5 w-5" />
           </Button>
+          {/* Mes reservations — visible only for authenticated CLIENT users */}
+          {status === "authenticated" && session?.user?.role === "CLIENT" && (
+            <Button variant="ghost" asChild className="flex items-center gap-2">
+              <Link href="/bookings" className="flex items-center gap-1.5">
+                <CalendarCheck className="h-4 w-4" />
+                <span className="hidden text-sm lg:inline">{tBooking("myBookings")}</span>
+              </Link>
+            </Button>
+          )}
           {/* Auth / User menu */}
           {status === "authenticated" && session?.user ? (
             <DropdownMenu>

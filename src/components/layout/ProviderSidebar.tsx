@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { signOut } from "next-auth/react";
 import { Link, usePathname } from "@/i18n/routing";
 import {
   LayoutDashboard,
   Briefcase,
+  CalendarCheck,
   UserPen,
   ShieldCheck,
   ChevronLeft,
@@ -16,20 +17,38 @@ import {
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { getProviderBookingsAction } from "@/features/booking/actions/booking-queries";
 
 const NAV_ITEMS = [
   { href: "/provider/dashboard", icon: LayoutDashboard, labelKey: "dashboard" },
   { href: "/provider/profile/edit", icon: UserPen, labelKey: "editProfile" },
   { href: "/provider/services", icon: Briefcase, labelKey: "myServices" },
+  { href: "/provider/bookings", icon: CalendarCheck, labelKey: "reservations" },
   { href: "/provider/kyc", icon: ShieldCheck, labelKey: "kyc" },
 ];
 
 export function ProviderSidebar() {
   const [collapsed, setCollapsed] = useState(false);
+  const [pendingCount, setPendingCount] = useState<number>(0);
   const pathname = usePathname();
   const t = useTranslations("navigation");
   const tLayout = useTranslations("layout");
   const tAuth = useTranslations("auth");
+
+  // Fetch pending bookings count on mount for the badge
+  useEffect(() => {
+    async function fetchPendingCount() {
+      try {
+        const result = await getProviderBookingsAction({ status: ["PENDING"], limit: 1 });
+        if (result.success) {
+          setPendingCount(result.data.total);
+        }
+      } catch {
+        // Silently ignore — badge is non-critical UI
+      }
+    }
+    void fetchPendingCount();
+  }, []);
 
   return (
     <aside
@@ -62,6 +81,7 @@ export function ProviderSidebar() {
         {NAV_ITEMS.map((item) => {
           const Icon = item.icon;
           const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
+          const isBookings = item.href === "/provider/bookings";
 
           return (
             <Link
@@ -77,7 +97,18 @@ export function ProviderSidebar() {
               title={collapsed ? t(item.labelKey) : undefined}
             >
               <Icon className="h-4 w-4 flex-shrink-0" />
-              {!collapsed && <span>{t(item.labelKey)}</span>}
+              {!collapsed && <span className="flex-1">{t(item.labelKey)}</span>}
+              {/* Pending badge — shown only for the bookings link when count > 0 */}
+              {isBookings && pendingCount > 0 && (
+                <span
+                  className={cn(
+                    "flex h-5 min-w-[20px] items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-semibold text-destructive-foreground",
+                    collapsed && "absolute right-1 top-1 h-4 min-w-[16px] text-[9px]"
+                  )}
+                >
+                  {pendingCount > 99 ? "99+" : pendingCount}
+                </span>
+              )}
             </Link>
           );
         })}

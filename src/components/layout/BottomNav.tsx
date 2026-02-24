@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 import {
   Home,
   Search,
-  Calendar,
+  CalendarCheck,
   MessageSquare,
   User,
   LayoutDashboard,
@@ -23,7 +23,7 @@ type NavItem = {
 const CLIENT_ITEMS: NavItem[] = [
   { href: "/", icon: Home, labelKey: "home" },
   { href: "/services", icon: Search, labelKey: "search" },
-  { href: "/bookings", icon: Calendar, labelKey: "bookings" },
+  { href: "/bookings", icon: CalendarCheck, labelKey: "bookings" },
   { href: "/messages", icon: MessageSquare, labelKey: "messages" },
   { href: "/profile", icon: User, labelKey: "profile" },
 ];
@@ -32,7 +32,7 @@ const CLIENT_ITEMS: NavItem[] = [
 const PROVIDER_ITEMS: NavItem[] = [
   { href: "/provider/dashboard", icon: LayoutDashboard, labelKey: "dashboard" },
   { href: "/provider/services", icon: Briefcase, labelKey: "services" },
-  { href: "/provider/bookings", icon: Calendar, labelKey: "bookings" },
+  { href: "/provider/bookings", icon: CalendarCheck, labelKey: "bookings" },
   { href: "/messages", icon: MessageSquare, labelKey: "messages" },
   { href: "/profile", icon: User, labelKey: "profile" },
 ];
