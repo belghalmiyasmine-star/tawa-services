@@ -13,8 +13,8 @@ Tawa Services est une plateforme marketplace de services locaux tunisienne const
 - [x] **Phase 1: Foundation & Infrastructure** - Scaffolding Next.js 15, schema Prisma, i18n next-intl, CI, layout global (completed 2026-02-22)
 - [x] **Phase 2: Authentification** - Inscription, connexion, sessions, OAuth, RBAC, validation Tunisienne (completed 2026-02-22)
 - [x] **Phase 3: Verification KYC** - Upload documents, workflow admin approval, trust badges prestataires (completed 2026-02-23)
-- [x] **Phase 4: Profil Prestataire & Services** - Profil, listing services, disponibilites, zone d'intervention, statistiques (completed 2026-02-23)
-- [x] **Phase 5: Recherche & Decouverte** - Parcourir par categorie, filtres ville/delegation, autocomplete, tri (completed 2026-02-24)
+- [x] **Phase 4: Profil Prestataire & Services** - Profil, listing services, disponibilites, zone d'intervention, statistiques (completed 2026-02-23)
+- [x] **Phase 5: Recherche & Decouverte** - Parcourir par categorie, filtres ville/delegation, autocomplete, tri (completed 2026-02-24)
 - [x] **Phase 6: Systeme de Reservation** - Booking direct + sur devis, statuts, tableau de bord prestataire, annulation (completed 2026-02-24)
 - [ ] **Phase 7: Paiement Simule** - Checkout Tunisien, escrow model, earnings dashboard, factures, abstraction layer
 - [ ] **Phase 8: Avis & Evaluations** - Ratings bidirectionnels, criteres, photos, moderation, agregation
@@ -399,17 +399,14 @@ sequenceDiagram
   4. Une facture PDF ou HTML imprimable est generee automatiquement pour chaque transaction terminee, accessible par client et prestataire
   5. Le service de paiement est isole derriere une interface `IPaymentService` — remplacer la simulation par Konnect ne necessite que d'implementer cette interface
 
-**Plans**: TBD (environ 6-8 plans)
+**Plans**: 5 plans
 
 Plans:
-- [ ] 07-01: Abstraction layer paiement — interface `IPaymentService`, `SimulatedPaymentService`, structure pour `KonnectPaymentService`
-- [ ] 07-02: Page checkout — selection methode paiement (card/D17/Flouci/cash), formulaire simule par methode
-- [ ] 07-03: Logique escrow — statuts PENDING → HELD → RELEASED, transitions automatiques sur completion service
-- [ ] 07-04: Dashboard earnings prestataire — recharts graphiques gains, commission 12%, historique transactions
-- [ ] 07-05: Generation factures — template HTML → PDF (react-pdf ou jsPDF), numero unique, telechargement
-- [ ] 07-06: Releves mensuels — recapitulatif mensuel prestataire, telechargement CSV/PDF
-- [ ] 07-07: Demandes de retrait — formulaire retrait minimum 50 TND, liste demandes admin, approbation manuelle
-- [ ] 07-08: Conservation documents fiscaux — retention 5 ans, tableau de bord admin taxes et commissions
+- [ ] 07-01-PLAN.md — IPaymentService abstraction layer + SimulatedPaymentService + escrow actions + i18n keys
+- [ ] 07-02-PLAN.md — Checkout page (4 payment methods, card form, fee breakdown) + confirmation page with reference number
+- [ ] 07-03-PLAN.md — Provider earnings dashboard (balance cards, monthly breakdown, transaction history, withdrawal requests)
+- [ ] 07-04-PLAN.md — Invoice generation (printable HTML template) + monthly statements + tax retention notice
+- [ ] 07-05-PLAN.md — Navigation wiring (booking flow -> checkout, sidebar earnings) + end-to-end verification checkpoint
 
 ```mermaid
 sequenceDiagram
@@ -593,10 +590,10 @@ Plans:
 | 4. Profil Prestataire & Services | 5/5 | Complete   | 2026-02-23 |
 | 5. Recherche & Decouverte | 5/5 | Complete   | 2026-02-24 |
 | 6. Systeme de Reservation | 7/7 | Complete    | 2026-02-24 |
-| 7. Paiement Simule | 0/8 | Not started | - |
+| 7. Paiement Simule | 0/5 | Not started | - |
 | 8. Avis & Evaluations | 0/7 | Not started | - |
 | 9. Messagerie & Notifications | 0/8 | Not started | - |
 | 10. Panneau d'Administration | 0/9 | Not started | - |
 | 11. Demo Data, Polish & PFE Readiness | 0/7 | Not started | - |
 
-**Total plans estimated:** ~80 plans across 11 sprints
+**Total plans estimated:** ~77 plans across 11 sprints
