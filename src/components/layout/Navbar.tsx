@@ -27,6 +27,7 @@ interface NavCategory {
   name: string;
   slug: string;
   icon: string | null;
+  parentId: string | null;
 }
 
 // ============================================================
@@ -64,8 +65,8 @@ export function Navbar() {
         const res = await fetch("/api/search/categories", { cache: "no-store" });
         if (res.ok && !cancelled) {
           const data = (await res.json()) as { categories: NavCategory[] };
-          // Show top-level categories only (parentId not exposed in NavCategory, API already filters)
-          setCategories(data.categories.slice(0, 8));
+          // Show only root (top-level) categories — same as search filter sidebar
+          setCategories(data.categories.filter((c) => !c.parentId).slice(0, 8));
         }
       } catch {
         // Network error — keep empty categories, no visible error needed
@@ -116,10 +117,9 @@ export function Navbar() {
                 {categories.map((cat) => (
                   <DropdownMenuItem key={cat.id} asChild>
                     <Link
-                      href={`/categories/${cat.slug}` as never}
+                      href={`/services?category=${cat.slug}` as never}
                       className="flex items-center gap-2"
                     >
-                      {cat.icon && <span>{cat.icon}</span>}
                       <span>{cat.name}</span>
                     </Link>
                   </DropdownMenuItem>
