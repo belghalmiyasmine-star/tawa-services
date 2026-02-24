@@ -149,6 +149,7 @@ model User {
   // Relations
   provider           Provider?
   clientBookings     Booking[]              @relation("ClientBookings")
+  clientQuotes       Quote[]                @relation("ClientQuotes")
   sentMessages       Message[]              @relation("SentMessages")
   notifications      Notification[]
   notificationPrefs  NotificationPreference?
@@ -488,10 +489,15 @@ model Booking {
 model Quote {
   id            String      @id @default(cuid())
   clientId      String
+  client        User        @relation("ClientQuotes", fields: [clientId], references: [id])
   serviceId     String
   service       Service     @relation(fields: [serviceId], references: [id])
   status        QuoteStatus @default(PENDING)
   description   String      @db.Text
+  address       String?
+  city          String?
+  preferredDate DateTime?
+  budget        Float?
   proposedPrice Float?
   proposedDelay String?
   expiresAt     DateTime

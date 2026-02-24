@@ -388,7 +388,88 @@
     "myBookings": "Mes reservations",
     "newBooking": "Nouvelle reservation",
     "cancelBooking": "Annuler la reservation",
-    "confirmBooking": "Confirmer la reservation"
+    "confirmBooking": "Confirmer la reservation",
+    "wizard": {
+      "selectDate": "Choisissez une date",
+      "selectTime": "Choisissez un creneau horaire",
+      "enterAddress": "Adresse d'intervention",
+      "confirmDetails": "Confirmer les details",
+      "choosePayment": "Choisir le paiement"
+    },
+    "quote": {
+      "describeNeed": "Decrivez votre besoin",
+      "minCharsDescription": "Minimum 50 caracteres",
+      "preferredDate": "Date preferee",
+      "budget": "Budget estimatif",
+      "optionalBudget": "Budget (optionnel)",
+      "submitQuoteRequest": "Envoyer la demande de devis",
+      "proposedPrice": "Prix propose",
+      "proposedDelay": "Delai d'intervention",
+      "respondToQuote": "Repondre au devis",
+      "acceptQuote": "Accepter le devis",
+      "declineQuote": "Decliner le devis",
+      "quoteExpired": "Devis expire",
+      "expiresIn": "Expire dans {hours}h",
+      "quoteStatus": {
+        "PENDING": "En attente",
+        "RESPONDED": "Repondu",
+        "ACCEPTED": "Accepte",
+        "DECLINED": "Decline",
+        "EXPIRED": "Expire"
+      }
+    },
+    "provider": {
+      "acceptBooking": "Accepter la reservation",
+      "rejectBooking": "Rejeter la reservation",
+      "startService": "Demarrer le service",
+      "completeService": "Marquer comme termine",
+      "rejectReason": "Raison du rejet (optionnel)",
+      "newRequests": "Nouvelles demandes",
+      "acceptedTab": "Acceptees",
+      "inProgressTab": "En cours",
+      "historyTab": "Historique"
+    },
+    "client": {
+      "upcomingTab": "A venir",
+      "inProgressTab": "En cours",
+      "pastTab": "Passees",
+      "cancelledTab": "Annulees",
+      "bookingDetail": "Detail de la reservation",
+      "statusTimeline": "Suivi de la reservation"
+    },
+    "cancellation": {
+      "cancelPolicy": "Politique d'annulation",
+      "fullRefund": "Remboursement integral",
+      "partialRefund": "Remboursement partiel",
+      "noRefund": "Aucun remboursement",
+      "cancelConfirmTitle": "Confirmer l'annulation",
+      "cancelConfirmMessage": "Cette action est irreversible. Etes-vous sur de vouloir annuler cette reservation ?"
+    },
+    "payment": {
+      "selectPaymentMethod": "Choisir une methode de paiement",
+      "demoModeBanner": "Mode demonstration — aucun paiement reel ne sera effectue"
+    },
+    "noBookings": "Aucune reservation pour le moment",
+    "loadingBookings": "Chargement des reservations...",
+    "bookingCreated": "Reservation creee avec succes",
+    "quoteSubmitted": "Demande de devis envoyee",
+    "bookingAccepted": "Reservation acceptee",
+    "bookingRejected": "Reservation rejetee",
+    "bookingStarted": "Service demarre",
+    "bookingCompleted": "Service termine",
+    "bookingCancelled": "Reservation annulee",
+    "addressLabel": "Adresse",
+    "cityLabel": "Ville",
+    "scheduledAtLabel": "Date prevue",
+    "clientNoteLabel": "Instructions pour le prestataire",
+    "errors": {
+      "serviceNotFound": "Service introuvable",
+      "providerNotAvailable": "Le prestataire n'est pas disponible a cette date",
+      "slotAlreadyBooked": "Ce creneau est deja reserve",
+      "quoteExpired": "Ce devis a expire",
+      "cannotCancelInProgress": "Impossible d'annuler une mission en cours",
+      "invalidStatusTransition": "Transition de statut invalide"
+    }
   },
   "payment": {
     "method": {
