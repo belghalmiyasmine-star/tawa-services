@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-21)
 ## Current Position
 
 Phase: 6 of 11 (Reservations & Paiements)
-Plan: 1 of N in current phase — READY TO START
-Status: Phase 5 COMPLETE — all 5 plans executed. Homepage DB-driven categories, search results, autocomplete, service detail, and provider profile all working. Route conflict resolved (/categories/[slug] for browse, /services/[id] for detail).
-Last activity: 2026-02-24 — Plan 05-05 complete (Task 2 human-verify approved). 4 bugs fixed during verification (route conflict, i18n key, icon/list/nav bugs, service count aggregation).
+Plan: 2 of N in current phase — Plan 06-01 COMPLETE
+Status: Plan 06-01 complete — Booking/quote backend infrastructure: Prisma schema, 6 Zod schemas, 13 server actions, 80+ i18n keys. Ready for UI plans (06-02 through 06-06).
+Last activity: 2026-02-24 — Plan 06-01 complete. Quote model extended with client relation and address fields. Full booking state machine (PENDING->ACCEPTED->IN_PROGRESS->COMPLETED) and quote flow (PENDING->RESPONDED->ACCEPTED/DECLINED) implemented.
 
-Progress: [#########░] 50%
+Progress: [#########░] 52%
 
 ## Performance Metrics
 
@@ -58,6 +58,7 @@ Progress: [#########░] 50%
 | Phase 05-recherche-decouverte P03 | 30 | 2 tasks | 9 files |
 | Phase 05-recherche-decouverte P04 | 18 | 2 tasks | 6 files |
 | Phase 05-recherche-decouverte P05 | 60 | 2 tasks | 6 files |
+| Phase 06-systeme-de-reservation P01 | 5 | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -189,6 +190,14 @@ Recent decisions affecting current work:
 - [05-05]: Navbar fetches categories via useEffect + fetch('/api/search/categories') — client components cannot call Prisma directly
 - [05-05]: Category browse route moved from /services/[categorySlug] to /categories/[categorySlug] — prevents dynamic route conflict with /services/[serviceId]
 - [05-05]: Root category service counts aggregate children categories' services via two-level Prisma query
+- [06-01]: prisma generate run after adding Quote fields (address/city/preferredDate/budget) — required for TypeScript to recognize new model fields
+- [06-01]: availabilityCheck uses dayOfWeek + HH:MM string comparison — no UTC conversion needed for local time slots in Availability model
+- [06-01]: conflicting booking check scans full calendar day (startOfDay to endOfDay) for PENDING/ACCEPTED status to prevent double-booking
+- [06-01]: SUR_DEVIS services rejected from createBookingAction — enforces separation between direct booking and quote flows
+- [06-01]: completeBookingAction atomically updates booking + payment(HELD) + provider.completedMissions in a single Prisma transaction
+- [06-01]: acceptQuoteAction links booking to quote via quoteId field — enables quoting flow traceability in BookingDetail
+- [06-01]: getProviderBookingsAction parses firstName/lastName from User.name field (stored as full name "firstName lastName")
+- [06-01]: cancelBookingAction pre-existed in src/features/booking/actions/cancel-booking.ts — not duplicated in this plan
 
 ### Pending Todos
 
@@ -201,5 +210,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-24
-Stopped at: Completed 05-05-PLAN.md (Phase 5 integration — homepage + Navbar DB-driven categories, route conflict fix, end-to-end flow verified)
+Stopped at: Completed 06-01-PLAN.md (Phase 6 backend — booking/quote Prisma schema, 6 Zod schemas, 13 server actions, 80+ fr.json keys)
 Resume file: None

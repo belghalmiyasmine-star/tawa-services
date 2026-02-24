@@ -48,11 +48,11 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Booking
 
-- [ ] **BOOK-01**: Client can directly book fixed-price services by selecting a time slot
-- [ ] **BOOK-02**: Client can send quote request for "sur devis" services (describe job, provider responds with price)
-- [ ] **BOOK-03**: Provider can accept or reject direct bookings and quote requests
+- [x] **BOOK-01**: Client can directly book fixed-price services by selecting a time slot
+- [x] **BOOK-02**: Client can send quote request for "sur devis" services (describe job, provider responds with price)
+- [x] **BOOK-03**: Provider can accept or reject direct bookings and quote requests
 - [ ] **BOOK-04**: Provider has 48h to respond to quote requests before auto-expiry
-- [ ] **BOOK-05**: Booking status flow: PENDING → ACCEPTED → IN_PROGRESS → COMPLETED (with REJECTED and CANCELLED alternatives)
+- [x] **BOOK-05**: Booking status flow: PENDING → ACCEPTED → IN_PROGRESS → COMPLETED (with REJECTED and CANCELLED alternatives)
 - [ ] **BOOK-06**: Provider dashboard shows bookings by status: pending, accepted, in-progress, completed, cancelled
 - [ ] **BOOK-07**: Cancellation policy enforced: >48h full refund, 24-48h partial refund, <24h no refund
 - [ ] **BOOK-08**: 3-screen maximum booking flow (select service → confirm details → payment)
@@ -189,11 +189,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SRCH-03 | Phase 5 | Complete |
 | SRCH-04 | Phase 5 | Complete |
 | SRCH-05 | Phase 5 | Complete |
-| BOOK-01 | Phase 6 | Pending |
-| BOOK-02 | Phase 6 | Pending |
-| BOOK-03 | Phase 6 | Pending |
+| BOOK-01 | Phase 6 | Complete |
+| BOOK-02 | Phase 6 | Complete |
+| BOOK-03 | Phase 6 | Complete |
 | BOOK-04 | Phase 6 | Pending |
-| BOOK-05 | Phase 6 | Pending |
+| BOOK-05 | Phase 6 | Complete |
 | BOOK-06 | Phase 6 | Pending |
 | BOOK-07 | Phase 6 | Pending |
 | BOOK-08 | Phase 6 | Pending |
