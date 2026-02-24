@@ -1,6 +1,7 @@
 import { Heart, Star } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
+import { Link } from "@/i18n/routing";
 
 // ============================================================
 // TYPES
@@ -61,6 +62,7 @@ function formatDuration(minutes: number | null): string | null {
 /**
  * PublicServiceCard — Airbnb-style service card for the public provider profile.
  * Displays provider info (name, avatar, rating, city) on the card.
+ * Links to /services/[id] — service detail page built in Phase 5.
  * Server component — no "use client".
  */
 export function PublicServiceCard({ service }: PublicServiceCardProps) {
@@ -79,8 +81,8 @@ export function PublicServiceCard({ service }: PublicServiceCardProps) {
   const duration = formatDuration(service.durationMinutes);
 
   return (
-    // Service detail page is built in Phase 5 — card links to # for now
-    <div
+    <Link
+      href={`/services/${service.id}` as never}
       className="group flex flex-col overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm transition-shadow hover:shadow-md dark:border-gray-700 dark:bg-gray-800"
     >
       {/* Top: photo or gradient placeholder */}
@@ -96,7 +98,6 @@ export function PublicServiceCard({ service }: PublicServiceCardProps) {
             <span className="text-4xl text-teal-300">🛠</span>
           </div>
         )}
-        {/* Favorite heart icon — visual placeholder only */}
         {/* Heart icon — visual placeholder for Phase 6 favorites feature */}
         <div
           aria-label="Ajouter aux favoris"
@@ -170,6 +171,6 @@ export function PublicServiceCard({ service }: PublicServiceCardProps) {
           )}
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
