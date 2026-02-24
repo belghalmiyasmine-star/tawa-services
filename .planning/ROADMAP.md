@@ -592,7 +592,7 @@ Plans:
 | 3. Verification KYC | 5/5 | Complete   | 2026-02-23 |
 | 4. Profil Prestataire & Services | 5/5 | Complete   | 2026-02-23 |
 | 5. Recherche & Decouverte | 5/5 | Complete   | 2026-02-24 |
-| 6. Systeme de Reservation | 7/7 | Complete   | 2026-02-24 |
+| 6. Systeme de Reservation | 7/7 | Complete    | 2026-02-24 |
 | 7. Paiement Simule | 0/8 | Not started | - |
 | 8. Avis & Evaluations | 0/7 | Not started | - |
 | 9. Messagerie & Notifications | 0/8 | Not started | - |
