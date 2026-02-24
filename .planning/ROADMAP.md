@@ -321,7 +321,7 @@ classDiagram
 
 Plans:
 - [x] 05-01-PLAN.md — Search API backend: validation schemas, categories API with counts, service search API with filters/sort/pagination, i18n keys (completed 2026-02-24)
-- [ ] 05-02-PLAN.md — Service detail page: image gallery, provider mini-card, inclusions/exclusions, action buttons, similar services, PublicServiceCard linking
+- [x] 05-02-PLAN.md — Service detail page: image gallery, provider mini-card, inclusions/exclusions, action buttons, similar services, PublicServiceCard linking (completed 2026-02-24)
 - [ ] 05-03-PLAN.md — Category browsing + search results page: category grid, sidebar filters (Sheet mobile), sort dropdown, pagination, results grid
 - [ ] 05-04-PLAN.md — Autocomplete search: API endpoint, debounce 300ms component, Navbar/BottomNav integration
 - [ ] 05-05-PLAN.md — Integration: homepage DB-driven categories, Navbar dynamic categories, end-to-end flow verification checkpoint
@@ -593,7 +593,7 @@ Plans:
 | 2. Authentification | 7/7 | Complete   | 2026-02-22 |
 | 3. Verification KYC | 5/5 | Complete   | 2026-02-23 |
 | 4. Profil Prestataire & Services | 5/5 | Complete   | 2026-02-23 |
-| 5. Recherche & Decouverte | 1/5 | In progress | - |
+| 5. Recherche & Decouverte | 2/5 | In progress | - |
 | 6. Systeme de Reservation | 0/9 | Not started | - |
 | 7. Paiement Simule | 0/8 | Not started | - |
 | 8. Avis & Evaluations | 0/7 | Not started | - |

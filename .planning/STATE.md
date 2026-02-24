@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-21)
 
 **Core value:** Clients can find, book, and pay a trusted local service provider in their city — and providers can get discovered and manage their business in one place.
-**Current focus:** Phase 5 — Recherche & Decouverte. Plan 01 complete (search API backend). Plans 02-05 pending.
+**Current focus:** Phase 5 — Recherche & Decouverte. Plans 01-02 complete. Plans 03-05 pending.
 
 ## Current Position
 
 Phase: 5 of 11 (Recherche & Decouverte)
-Plan: 1 of 5 in current phase — COMPLETE
-Status: Phase 5 Plan 01 complete — search validation schemas, categories API, service search API with dynamic Prisma filters, i18n keys for Phase 5 UI.
-Last activity: 2026-02-24 — Plan 05-01 complete: 3 files created (search.ts, categories/route.ts, services/route.ts), 2 files modified (fr.json + ProviderMiniCard.tsx)
+Plan: 2 of 5 in current phase — COMPLETE
+Status: Phase 5 Plan 02 complete — service detail page at /services/[serviceId], ServiceImageGallery, ServiceDetailClient, ProviderMiniCard, PublicServiceCard now links to service detail.
+Last activity: 2026-02-24 — Plan 05-02 complete: 3 files created (ServiceImageGallery, ServiceDetailClient, service detail page), 1 file modified (PublicServiceCard)
 
-Progress: [########░░] 40%
+Progress: [########░░] 42%
 
 ## Performance Metrics
 
@@ -54,6 +54,7 @@ Progress: [########░░] 40%
 | Phase 04-profil-prestataire-services P04 | 8 | 2 tasks | 9 files |
 | Phase 04-profil-prestataire-services P05 | 6 | 2 tasks (checkpoint pending) | 8 files |
 | Phase 05-recherche-decouverte P01 | 15 | 2 tasks | 5 files |
+| Phase 05-recherche-decouverte P02 | 25 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -165,6 +166,11 @@ Recent decisions affecting current work:
 - [05-01]: Parent category resolved to children IDs via preliminary findUnique query — avoids complex nested Prisma query
 - [05-01]: z.coerce used for numeric/boolean URL params — all URL searchParams arrive as strings
 - [05-01]: providerFilter accumulated as single ProviderWhereInput before assigning to where.provider — avoids overwriting across multiple conditions
+- [05-02]: ServiceDetailClient is a separate client component — server parent cannot have onClick handlers
+- [05-02]: viewCount increment is fire-and-forget (void, no await) — never blocks SSR render latency
+- [05-02]: Similar services: up to 4 from same category ordered by viewCount desc, section hidden when 0 results
+- [05-02]: PublicServiceCard outer div replaced with Link from @/i18n/routing with as never cast — typed routes don't include /services/[id] yet
+- [05-02]: Action buttons (Reserver/Demander un devis/Contacter) show Disponible prochainement toast — Phase 6 booking, Phase 9 messaging
 
 ### Pending Todos
 
@@ -177,5 +183,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-24
-Stopped at: Completed 05-01-PLAN.md (Search API backend — validation schemas, categories API, service search API, i18n keys)
+Stopped at: Completed 05-02-PLAN.md (Service detail page — ServiceImageGallery, ServiceDetailClient, ProviderMiniCard, PublicServiceCard links)
 Resume file: None

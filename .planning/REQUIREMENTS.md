@@ -44,7 +44,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **SRCH-02**: Client can filter providers by city/delegation
 - [ ] **SRCH-03**: Real-time autocomplete search suggestions as user types
 - [x] **SRCH-04**: Client can sort results by rating, price, availability; filter by verified status, price range
-- [ ] **SRCH-05**: Client can view provider profiles with portfolio, certifications, badges, and reviews
+- [x] **SRCH-05**: Client can view provider profiles with portfolio, certifications, badges, and reviews
 
 ### Booking
 
@@ -188,7 +188,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SRCH-02 | Phase 5 | Pending |
 | SRCH-03 | Phase 5 | Pending |
 | SRCH-04 | Phase 5 | Pending |
-| SRCH-05 | Phase 5 | Pending |
+| SRCH-05 | Phase 5 | Complete |
 | BOOK-01 | Phase 6 | Pending |
 | BOOK-02 | Phase 6 | Pending |
 | BOOK-03 | Phase 6 | Pending |
