@@ -1,9 +1,5 @@
 "use server";
 
-// TODO: Import cancelBookingSchema from @/lib/validations/booking once Plan 06-01 is complete.
-// For now, inline Zod schema matching the same shape.
-
-import { z } from "zod";
 import { getServerSession } from "next-auth";
 
 import { authOptions } from "@/lib/auth";
@@ -13,20 +9,12 @@ import {
   calculateRefundPercentage,
   type CancellationResult,
 } from "@/lib/utils/cancellation";
+import {
+  cancelBookingSchema,
+  type CancelBookingFormData,
+} from "@/lib/validations/booking";
 
-// ============================================================
-// INLINE SCHEMA (temporary — import from booking.ts in Plan 06-01)
-// ============================================================
-
-const cancelBookingSchema = z.object({
-  bookingId: z.string().cuid("Identifiant de réservation invalide"),
-  reason: z
-    .string()
-    .max(500, "La raison ne peut pas dépasser 500 caractères")
-    .optional(),
-});
-
-type CancelBookingInput = z.infer<typeof cancelBookingSchema>;
+type CancelBookingInput = CancelBookingFormData;
 
 // ============================================================
 // RETURN TYPE

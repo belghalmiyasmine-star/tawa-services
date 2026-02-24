@@ -10,6 +10,7 @@ const serverSchema = z.object({
   FACEBOOK_CLIENT_ID: z.string().optional(),
   FACEBOOK_CLIENT_SECRET: z.string().optional(),
   RESEND_API_KEY: z.string().optional(),
+  CRON_SECRET: z.string().optional(),
 });
 
 const clientSchema = z.object({
