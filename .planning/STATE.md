@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-02-21)
 ## Current Position
 
 Phase: 6 of 11 (Reservations & Paiements)
-Plan: 6 of N in current phase — Plan 06-05 COMPLETE
-Status: Plan 06-05 complete — Provider booking management dashboard with 4 status tabs (Nouvelles demandes/Acceptees/En cours/Historique), action buttons (accept/reject/start/complete/cancel), quote inline respond form, and detail page with status timeline.
-Last activity: 2026-02-24 — Plan 06-05 complete. ProviderBookingCard, ProviderQuoteCard, ProviderBookingsList, BookingActions, provider bookings page, provider booking detail page.
+Plan: 6 of N in current phase — Plan 06-04 COMPLETE (Plan 06-05 also previously completed)
+Status: Plan 06-04 complete — Quote request form (QuoteRequestForm), quote response card (QuoteResponseCard) with 5 status states and countdown timer, QuoteAcceptFlow 2-step dialog (date + payment), PaymentMethodSelector with 4 Tunisian methods, and /services/[id]/quote page with SSR auth guard.
+Last activity: 2026-02-24 — Plan 06-04 complete. QuoteRequestForm, QuoteResponseCard, QuoteAcceptFlow, PaymentMethodSelector, /services/[serviceId]/quote page, ServiceDetailClient updated for both SUR_DEVIS (-> /quote) and FIXED (-> /book).
 
 Progress: [#########░] 58%
 
@@ -59,6 +59,7 @@ Progress: [#########░] 58%
 | Phase 05-recherche-decouverte P04 | 18 | 2 tasks | 6 files |
 | Phase 05-recherche-decouverte P05 | 60 | 2 tasks | 6 files |
 | Phase 06-systeme-de-reservation P01 | 5 | 2 tasks | 6 files |
+| Phase 06-systeme-de-reservation P04 | 10 | 2 tasks | 5 files |
 | Phase 06-systeme-de-reservation P05 | 25 | 2 tasks | 6 files |
 
 ## Accumulated Context
@@ -209,6 +210,10 @@ Recent decisions affecting current work:
 - [06-05]: toCardBooking() adapter converts BookingListItem.service.photoUrl (single) to ProviderBookingCard props (service.photoUrls[]) without changing backend query structure
 - [06-05]: StatusTimeline handles both terminal states (REJECTED/CANCELLED = 2-step path) and normal progression (4-step PENDING->ACCEPTED->IN_PROGRESS->COMPLETED)
 - [06-05]: BookingActions imports cancelBookingProviderAction from cancel-booking.ts (Plan 02) — reuses existing logic without duplication
+- [06-04]: PaymentMethodSelector created in Plan 04 (not Plan 03) — Plan 03 not yet executed, Rule 3 deviation to unblock QuoteAcceptFlow; path identical to Plan 03's expected output
+- [06-04]: QuoteAcceptFlow uses Dialog for all screen sizes — simplifies implementation, responsive sizing via max-w-md
+- [06-04]: scheduledAt built as noon local time (12:00:00) from date-only input — avoids timezone ambiguity for date-only selection
+- [06-04]: ServiceDetailClient wires both SUR_DEVIS (-> /quote) and FIXED (-> /book) — linter enforced the FIXED wire consistent with Plan 03's planned output
 
 ### Pending Todos
 
@@ -221,5 +226,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-24
-Stopped at: Completed 06-05-PLAN.md (Provider booking management dashboard with tabs, action buttons, quote response, and detail page with status timeline)
+Stopped at: Completed 06-04-PLAN.md (QuoteRequestForm, QuoteResponseCard, QuoteAcceptFlow, PaymentMethodSelector, quote page, ServiceDetailClient updated for both booking flows)
 Resume file: None
