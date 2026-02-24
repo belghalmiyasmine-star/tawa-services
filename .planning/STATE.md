@@ -5,14 +5,14 @@
 See: .planning/PROJECT.md (updated 2026-02-21)
 
 **Core value:** Clients can find, book, and pay a trusted local service provider in their city — and providers can get discovered and manage their business in one place.
-**Current focus:** Phase 5 — Recherche & Decouverte. Plans 01-04 complete. Plan 05 pending.
+**Current focus:** Phase 5 — Recherche & Decouverte. Plans 01-05 in progress — Task 1 complete, awaiting human verification at checkpoint.
 
 ## Current Position
 
 Phase: 5 of 11 (Recherche & Decouverte)
-Plan: 4 of 5 in current phase — COMPLETE
-Status: Phase 5 Plan 04 complete — autocomplete API at /api/search/autocomplete, SearchAutocomplete component with 300ms debounce and keyboard nav, integrated into Navbar.
-Last activity: 2026-02-24 — Plan 05-04 complete: 2 files created (autocomplete route, SearchAutocomplete component), 4 files modified (Navbar, fr.json, SearchFilters bug fix, categorySlug page bug fix)
+Plan: 5 of 5 in current phase — IN PROGRESS (awaiting checkpoint Task 2 human-verify)
+Status: Phase 5 Plan 05 Task 1 complete — homepage converted to async server component with DB-driven CategoryGrid, SearchAutocomplete in hero, Navbar CATEGORIES replaced with API fetch from /api/search/categories.
+Last activity: 2026-02-24 — Plan 05-05 Task 1 committed (e32cfb0): homepage + Navbar wired with DB categories. Checkpoint Task 2 requires human flow verification.
 
 Progress: [########░░] 42%
 
