@@ -23,7 +23,7 @@ interface ServiceDetailClientProps {
 /**
  * ServiceDetailClient — Client wrapper for interactive action buttons on service detail page.
  *
- * - FIXED services: "Reserver" coming-soon toast (Plan 03 will wire it to /book)
+ * - FIXED services: "Reserver" links to /services/[id]/book (3-step booking wizard)
  * - SUR_DEVIS services: "Demander un devis" navigates to /services/[id]/quote (Plan 04)
  * - "Contacter" is always a coming-soon toast (Phase 9 messaging)
  */
@@ -52,8 +52,10 @@ export function ServiceDetailClient({
           </Link>
         </Button>
       ) : (
-        <Button className="w-full" onClick={handleComingSoon}>
-          {t("buttonReserve")}
+        <Button className="w-full" asChild>
+          <Link href={`/services/${serviceId}/book` as never}>
+            {t("buttonReserve")}
+          </Link>
         </Button>
       )}
 
