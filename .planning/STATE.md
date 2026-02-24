@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-02-21)
 ## Current Position
 
 Phase: 6 of 11 (Reservations & Paiements)
-Plan: 6 of N in current phase — Plan 06-04 COMPLETE (Plan 06-05 also previously completed)
-Status: Plan 06-04 complete — Quote request form (QuoteRequestForm), quote response card (QuoteResponseCard) with 5 status states and countdown timer, QuoteAcceptFlow 2-step dialog (date + payment), PaymentMethodSelector with 4 Tunisian methods, and /services/[id]/quote page with SSR auth guard.
-Last activity: 2026-02-24 — Plan 06-04 complete. QuoteRequestForm, QuoteResponseCard, QuoteAcceptFlow, PaymentMethodSelector, /services/[serviceId]/quote page, ServiceDetailClient updated for both SUR_DEVIS (-> /quote) and FIXED (-> /book).
+Plan: 6 of N in current phase — Plan 06-03 SUMMARY completed retroactively (Plans 06-04 and 06-05 previously completed)
+Status: Plan 06-03 SUMMARY created — 3-step booking wizard (BookingWizard, BookingConfirmation, /services/[id]/book page) with AvailabilityCalendar, TimeSlotPicker, and availability API. Task 1 artifacts were already committed in prior session (841c365). Task 2 committed (6aea373).
+Last activity: 2026-02-24 — Plan 06-03 SUMMARY retroactively created. BookingWizard 3-step flow, BookingConfirmation card, and /services/[serviceId]/book SSR page committed. All plan requirements (BOOK-01, BOOK-08) documented.
 
 Progress: [#########░] 58%
 
@@ -59,6 +59,7 @@ Progress: [#########░] 58%
 | Phase 05-recherche-decouverte P04 | 18 | 2 tasks | 6 files |
 | Phase 05-recherche-decouverte P05 | 60 | 2 tasks | 6 files |
 | Phase 06-systeme-de-reservation P01 | 5 | 2 tasks | 6 files |
+| Phase 06-systeme-de-reservation P03 | 35 | 2 tasks | 7 files |
 | Phase 06-systeme-de-reservation P04 | 10 | 2 tasks | 5 files |
 | Phase 06-systeme-de-reservation P05 | 25 | 2 tasks | 6 files |
 
@@ -210,6 +211,10 @@ Recent decisions affecting current work:
 - [06-05]: toCardBooking() adapter converts BookingListItem.service.photoUrl (single) to ProviderBookingCard props (service.photoUrls[]) without changing backend query structure
 - [06-05]: StatusTimeline handles both terminal states (REJECTED/CANCELLED = 2-step path) and normal progression (4-step PENDING->ACCEPTED->IN_PROGRESS->COMPLETED)
 - [06-05]: BookingActions imports cancelBookingProviderAction from cancel-booking.ts (Plan 02) — reuses existing logic without duplication
+- [06-03]: AvailabilityCalendar fetches availability client-side on month navigation — cleaner than SSR for interactive calendar
+- [06-03]: TimeSlotPicker generates 30-min slots on client from provider hours props — createBookingAction server-side is authoritative conflict guard
+- [06-03]: Book page redirects SUR_DEVIS to /services/[id]/quote — preserves booking flow separation at entry point
+- [06-03]: Task 1 artifacts (API, Calendar, TimeSlot) were committed in prior agent session (841c365) — recognized and not duplicated
 - [06-04]: PaymentMethodSelector created in Plan 04 (not Plan 03) — Plan 03 not yet executed, Rule 3 deviation to unblock QuoteAcceptFlow; path identical to Plan 03's expected output
 - [06-04]: QuoteAcceptFlow uses Dialog for all screen sizes — simplifies implementation, responsive sizing via max-w-md
 - [06-04]: scheduledAt built as noon local time (12:00:00) from date-only input — avoids timezone ambiguity for date-only selection
@@ -226,5 +231,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-24
-Stopped at: Completed 06-04-PLAN.md (QuoteRequestForm, QuoteResponseCard, QuoteAcceptFlow, PaymentMethodSelector, quote page, ServiceDetailClient updated for both booking flows)
+Stopped at: Completed 06-03-PLAN.md (BookingWizard 3-step flow, BookingConfirmation, /services/[id]/book page, AvailabilityCalendar, TimeSlotPicker, availability API — retroactive SUMMARY created)
 Resume file: None
