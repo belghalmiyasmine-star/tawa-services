@@ -476,17 +476,14 @@ Plans:
   4. Un utilisateur reoit des notifications in-app pour : nouvelle reservation, acceptation/rejet, nouveau message, nouvel avis, paiement recu, approbation profil
   5. Un utilisateur peut desactiver certains types de notifications (ex: emails marketing) et definir des heures de silence depuis ses preferences
 
-**Plans**: TBD (environ 7-9 plans)
+**Plans**: 5 plans
 
 Plans:
-- [ ] 09-01: Schema messagerie — Conversation, Message, ReadReceipt, modele de donnees
-- [ ] 09-02: Interface messagerie — liste conversations, vue conversation, input message, scroll infini
-- [ ] 09-03: API messages — envoi, reception, marquage lu, route polling (fallback sans WebSocket)
-- [ ] 09-04: Auto-moderation messages — regex contact info, masquage, notification moderation
-- [ ] 09-05: Badge notifications navbar — compteur non-lus, mise a jour polling, composant reutilisable
-- [ ] 09-06: Systeme notifications in-app — schema Notification, API CRUD, centre notifications
-- [ ] 09-07: Notifications email — templates transactionnels (Nodemailer/Resend), envoi asynchrone
-- [ ] 09-08: Preferences notifications — interface toggle par type, API preferences, quiet hours
+- [ ] 09-01-PLAN.md — Messaging backend: Zod schemas, server actions CRUD, message moderation, i18n keys
+- [ ] 09-02-PLAN.md — Notification backend: server actions, central dispatcher, email templates (Resend), i18n keys
+- [ ] 09-03-PLAN.md — Messaging UI: conversation list, chat view with 5s polling, message bubbles, read receipts
+- [ ] 09-04-PLAN.md — Notification UI: bell dropdown, notifications page (Tout/Non lus), preferences form
+- [ ] 09-05-PLAN.md — Integration: wire notifications into all actions, nav links, Contacter button, E2E verification
 
 ---
 
@@ -591,9 +588,9 @@ Plans:
 | 5. Recherche & Decouverte | 5/5 | Complete   | 2026-02-24 |
 | 6. Systeme de Reservation | 7/7 | Complete    | 2026-02-24 |
 | 7. Paiement Simule | 4/5 | In progress | 2026-02-24 |
-| 8. Avis & Evaluations | 6/7 | In Progress|  |
-| 9. Messagerie & Notifications | 0/8 | Not started | - |
+| 8. Avis & Evaluations | 7/7 | Complete | 2026-02-25 |
+| 9. Messagerie & Notifications | 0/5 | Not started | - |
 | 10. Panneau d'Administration | 0/9 | Not started | - |
 | 11. Demo Data, Polish & PFE Readiness | 0/7 | Not started | - |
 
-**Total plans estimated:** ~77 plans across 11 sprints
+**Total plans estimated:** ~74 plans across 11 sprints
