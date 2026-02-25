@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-21)
 
 **Core value:** Clients can find, book, and pay a trusted local service provider in their city — and providers can get discovered and manage their business in one place.
-**Current focus:** Phase 9 IN PROGRESS — Messagerie & Notifications. Plan 09-01 complete: messaging backend (schemas, moderation, server actions, conversation queries).
+**Current focus:** Phase 9 IN PROGRESS — Messagerie & Notifications. Plan 09-02 complete: notification backend (schemas, email templates, central dispatcher, server actions, queries).
 
 ## Current Position
 
 Phase: 9 of 11 (Messagerie & Notifications) — IN PROGRESS
-Plan: 1 of N in current phase — Plan 09-01 COMPLETE.
-Status: Plan 09-01 COMPLETE — Messaging schemas, moderation utility (contact info blocking pre-booking), sendMessageAction, markMessagesAsReadAction, getConversationsAction, getConversationMessagesAction (cursor-paginated), getUnreadCountAction, getOrCreateConversationAction. MSG-01, MSG-02, MSG-04 satisfied. Commits: b48500c, 7345d6f.
-Last activity: 2026-02-25 — Plan 09-01 complete. Full messaging data layer built.
+Plan: 2 of N in current phase — Plan 09-02 COMPLETE.
+Status: Plan 09-02 COMPLETE — sendNotification dispatcher (4-step: preference check, DB create, quiet hours, Resend email), buildNotificationEmail (all 13 NotifType values), markNotificationReadAction, markAllNotificationsReadAction, updateNotificationPreferencesAction, getNotificationsAction (cursor paginated), getUnreadNotificationCountAction, getNotificationPreferencesAction. NOTF-01, NOTF-02 satisfied. Commit: ed1c89c (pre-committed in 09-01 docs).
+Last activity: 2026-02-25 — Plan 09-02 complete. Full notification backend built.
 
-Progress: [###############] 85%
+Progress: [################] 87%
 
 ## Performance Metrics
 
@@ -73,6 +73,7 @@ Progress: [###############] 85%
 | Phase 08-avis-evaluations P06 | 15 | 2 tasks | 4 files |
 | Phase 08-avis-evaluations P07 | 30 | 2 tasks (nav wiring + E2E verification) | 7 files |
 | Phase 09-messagerie-notifications P01 | 25 | 2 tasks | 5 files |
+| Phase 09-messagerie-notifications P02 | 30 | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -289,6 +290,13 @@ Recent decisions affecting current work:
 - [09-01]: Cursor-based pagination uses createdAt ISO string as cursor — messages fetched DESC then reversed for oldest-first display
 - [09-01]: verifyConversationParticipant is a shared internal helper (not exported) used by sendMessageAction and markMessagesAsReadAction
 - [09-01]: getOrCreateConversationAction uses prisma.conversation.upsert with bookingId unique constraint — idempotent, safe to call multiple times
+- [09-02]: sendNotification is fire-and-forget for email — Resend failures never throw, only console.error — callers never await email outcome
+- [09-02]: NotificationPreference.inAppEnabled=false skips DB create entirely — user truly disabled in-app means no record created
+- [09-02]: Tunisia is UTC+1 year-round (no DST) — quiet hours computed via getUTCHours()+1 mod 24 without external library
+- [09-02]: sendNotificationBatch uses Promise.all — parallel dispatch for events that notify multiple parties (e.g., booking status changes)
+- [09-02]: buildNotificationEmail returns subject + html for all 13 NotifType values including QUOTE_RECEIVED and QUOTE_RESPONDED
+- [09-02]: getNotificationPreferencesAction uses upsert — idempotent, creates default preferences on first call
+- [09-02]: Prisma.NotificationWhereInput used for dynamic where clause — type-safe, avoids manual type annotation
 
 ### Pending Todos
 
@@ -301,5 +309,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-25
-Stopped at: Completed Phase 9 Plan 09-01 — Messaging schemas, moderation, server actions, conversation queries (b48500c, 7345d6f). MSG-01, MSG-02, MSG-04 satisfied. Ready for Plan 09-02.
+Stopped at: Completed Phase 9 Plan 09-02 — Notification backend: sendNotification dispatcher, email templates (13 NotifType values), DB queries, preference management (ed1c89c pre-committed in 09-01 docs). NOTF-01, NOTF-02 satisfied. Ready for Plan 09-03.
 Resume file: None
