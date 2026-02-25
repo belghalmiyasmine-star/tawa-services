@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-21)
 ## Current Position
 
 Phase: 8 of 11 (Avis & Evaluations)
-Plan: 5 of 7 in current phase — Plans 08-01, 08-02, 08-03, 08-04, 08-05 COMPLETE.
-Status: Plan 08-05 COMPLETE — Review display components: ReviewCard (avatar, stars, criteria mini-bars, text expand, photo lightbox), RatingBreakdown (average + 5-star distribution bars), CriteriaChart (CSS horizontal bars for 4 criteria), ReviewsList (sort dropdown, load-more pagination), provider profile Avis tab integrated with ReviewsList SSR (81088a2, 2d3004f). REVW-06, REVW-08 satisfied. Ready for Plan 08-06.
-Last activity: 2026-02-25 — Plan 08-05 complete. Review display components created and integrated into provider public profile page.
+Plan: 6 of 7 in current phase — Plans 08-01, 08-02, 08-03, 08-04, 08-05, 08-06 COMPLETE.
+Status: Plan 08-06 COMPLETE — Provider profile Avis tab (already integrated in 08-05), admin review moderation page (/admin/reviews with approve/reject), moderateReviewAction (soft-delete + rating recalculation), AdminReviewActions client component (ee93c0a). REVW-07, REVW-08 satisfied. Ready for Plan 08-07.
+Last activity: 2026-02-25 — Plan 08-06 complete. Admin review moderation queue and provider profile Avis tab integration verified.
 
-Progress: [############] 75%
+Progress: [#############] 78%
 
 ## Performance Metrics
 
@@ -70,6 +70,7 @@ Progress: [############] 75%
 | Phase 07-paiement-simule P04 | 25 | 2 tasks | 11 files |
 | Phase 08-avis-evaluations P01 | 28 | 2 tasks | 6 files |
 | Phase 08-avis-evaluations P02 | 10 | 2 tasks | 6 files |
+| Phase 08-avis-evaluations P06 | 15 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -273,6 +274,11 @@ Recent decisions affecting current work:
 - [08-05]: ReviewsList.buildDistribution() derives star distribution from current page reviews — approximate for display, server-side aggregates used for averages
 - [08-05]: Provider profile page fetches initialData server-side for SSR — eliminates Avis tab loading flash
 - [08-05]: ReviewCard photo lightbox uses Radix Dialog with DialogTitle sr-only for accessibility compliance
+- [08-06]: moderateReviewAction validates ADMIN role — server action double-checks session.user.role for defense-in-depth
+- [08-06]: Approve action sets flagged=false only — does not force-publish unpublished reviews, preserves double-blind system
+- [08-06]: Reject action soft-deletes and conditionally recalculates provider rating (only if review was published)
+- [08-06]: AdminReviewActions uses router.refresh() after moderation — reloads server component data without full navigation
+- [08-06]: Admin reviews page uses card layout — long review text and photo thumbnails require vertical space not suited for table layout
 
 ### Pending Todos
 
@@ -285,5 +291,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-25
-Stopped at: Completed Phase 8 Plan 08-05 — Review display components (ReviewCard, RatingBreakdown, CriteriaChart, ReviewsList) created and integrated into provider public profile Avis tab. 81088a2, 2d3004f. REVW-06, REVW-08 complete.
+Stopped at: Completed Phase 8 Plan 08-06 — Provider profile Avis tab integration (2d3004f from 08-05), admin review moderation page (/admin/reviews), moderateReviewAction, AdminReviewActions component (ee93c0a). REVW-07, REVW-08 complete. Ready for 08-07.
 Resume file: None

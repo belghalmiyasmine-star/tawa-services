@@ -456,7 +456,7 @@ Plans:
 - [x] 08-03-PLAN.md — Provider review form: provider review page, booking detail integration (bidirectional) (completed 2026-02-25)
 - [x] 08-04-PLAN.md — Simultaneous publication logic, 10-day window enforcement, cron expiration job (completed 2026-02-25)
 - [x] 08-05-PLAN.md — Review display: ReviewCard, ReviewsList, RatingBreakdown, CriteriaRadarChart components (completed 2026-02-25)
-- [ ] 08-06-PLAN.md — Provider profile Avis tab integration, admin review moderation page, rating aggregation
+- [x] 08-06-PLAN.md — Provider profile Avis tab integration, admin review moderation page, rating aggregation (completed 2026-02-25)
 - [ ] 08-07-PLAN.md — Navigation wiring, booking list review indicators, end-to-end verification
 
 ---
@@ -591,7 +591,7 @@ Plans:
 | 5. Recherche & Decouverte | 5/5 | Complete   | 2026-02-24 |
 | 6. Systeme de Reservation | 7/7 | Complete    | 2026-02-24 |
 | 7. Paiement Simule | 4/5 | In progress | 2026-02-24 |
-| 8. Avis & Evaluations | 4/7 | In Progress|  |
+| 8. Avis & Evaluations | 6/7 | In Progress|  |
 | 9. Messagerie & Notifications | 0/8 | Not started | - |
 | 10. Panneau d'Administration | 0/9 | Not started | - |
 | 11. Demo Data, Polish & PFE Readiness | 0/7 | Not started | - |
