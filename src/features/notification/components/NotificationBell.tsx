@@ -1,7 +1,7 @@
 "use client";
 
 import { Bell } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -35,8 +35,8 @@ export function NotificationBell({
   const [isOpen, setIsOpen] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // Fetch the unread count from server
-  const fetchUnreadCount = async () => {
+  // Fetch the unread count from server — stable callback, no deps
+  const fetchUnreadCount = useCallback(async () => {
     try {
       const result = await getUnreadNotificationCountAction();
       if (result.success) {
@@ -45,7 +45,7 @@ export function NotificationBell({
     } catch {
       // Silently ignore — badge is non-critical
     }
-  };
+  }, []);
 
   // Initial fetch + polling every 10 seconds
   useEffect(() => {
@@ -60,7 +60,7 @@ export function NotificationBell({
         clearInterval(intervalRef.current);
       }
     };
-  }, []);
+  }, [fetchUnreadCount]);
 
   // Refetch unread count when dropdown closes
   const handleOpenChange = (open: boolean) => {
