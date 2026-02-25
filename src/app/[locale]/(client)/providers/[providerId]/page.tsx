@@ -9,6 +9,8 @@ import { PublicProfileAbout } from "@/features/provider/components/PublicProfile
 import { PublicProfileHeader } from "@/features/provider/components/PublicProfileHeader";
 import { PublicProfileStats } from "@/features/provider/components/PublicProfileStats";
 import { PublicServiceCard } from "@/features/provider/components/PublicServiceCard";
+import { ReviewsList } from "@/features/review/components/ReviewsList";
+import { getProviderReviewsAction } from "@/features/review/actions/review-queries";
 
 // ============================================================
 // TYPES
@@ -70,6 +72,14 @@ export default async function PublicProviderProfilePage({
 }: ProviderPageProps) {
   const { providerId } = await params;
   const t = await getTranslations("provider");
+
+  // Fetch initial reviews for SSR (avoids loading flash on Avis tab)
+  const reviewsResult = await getProviderReviewsAction(providerId, {
+    page: 1,
+    limit: 5,
+    sort: "recent",
+  });
+  const initialReviewData = reviewsResult.success ? reviewsResult.data : undefined;
 
   // Fetch provider with all related data
   const provider = await prisma.provider.findUnique({
@@ -179,14 +189,12 @@ export default async function PublicProviderProfilePage({
             )}
           </TabsContent>
 
-          {/* Avis tab — Phase 8 placeholder */}
+          {/* Avis tab — real reviews with breakdown, criteria chart, sorting, pagination */}
           <TabsContent value="avis" className="mt-4">
-            <div className="flex flex-col items-center justify-center py-16 text-center">
-              <span className="text-4xl">⭐</span>
-              <p className="mt-3 text-sm text-gray-500 dark:text-gray-400">
-                Les avis seront disponibles prochainement
-              </p>
-            </div>
+            <ReviewsList
+              providerId={provider.id}
+              initialData={initialReviewData}
+            />
           </TabsContent>
 
           {/* A propos tab */}

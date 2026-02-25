@@ -253,6 +253,50 @@ export async function getProviderReviewsAction(
 }
 
 /**
+ * Returns the 1–5 star distribution for a provider's published, non-flagged reviews.
+ * Used by RatingBreakdown to render distribution bars with accurate counts.
+ */
+export async function getProviderRatingDistribution(
+  providerId: string,
+): Promise<ActionResult<Record<number, number>>> {
+  try {
+    if (!providerId) {
+      return { success: false, error: "L'identifiant du prestataire est requis" };
+    }
+
+    const provider = await prisma.provider.findUnique({
+      where: { id: providerId },
+      select: { userId: true },
+    });
+
+    if (!provider) {
+      return { success: false, error: "Prestataire introuvable" };
+    }
+
+    const reviews = await prisma.review.findMany({
+      where: {
+        targetId: provider.userId,
+        published: true,
+        flagged: false,
+        isDeleted: false,
+      },
+      select: { stars: true },
+    });
+
+    const distribution: Record<number, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+    for (const r of reviews) {
+      const star = Math.min(5, Math.max(1, Math.round(r.stars)));
+      distribution[star] = (distribution[star] ?? 0) + 1;
+    }
+
+    return { success: true, data: distribution };
+  } catch (error) {
+    console.error("[getProviderRatingDistribution] Error:", error);
+    return { success: false, error: "Erreur lors du calcul de la distribution" };
+  }
+}
+
+/**
  * Returns the review window status for the current user and a specific booking.
  * Used by the UI to show/hide the review form.
  */
