@@ -90,8 +90,8 @@ Requirements for initial release. Each maps to roadmap phases.
 
 - [x] **NOTF-01**: In-app notifications for booking requests, acceptance/rejection, new messages, new reviews, payments received, profile approval
 - [x] **NOTF-02**: Email notifications for transactional events (bookings, password reset, verification)
-- [ ] **NOTF-03**: Notification preferences (enable/disable by type)
-- [ ] **NOTF-04**: Quiet hours setting for notification delivery
+- [x] **NOTF-03**: Notification preferences (enable/disable by type)
+- [x] **NOTF-04**: Quiet hours setting for notification delivery
 
 ### Admin
 
@@ -219,8 +219,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | MSG-04 | Phase 9 | Pending |
 | NOTF-01 | Phase 9 | Complete |
 | NOTF-02 | Phase 9 | Complete |
-| NOTF-03 | Phase 9 | Pending |
-| NOTF-04 | Phase 9 | Pending |
+| NOTF-03 | Phase 9 | Complete |
+| NOTF-04 | Phase 9 | Complete |
 | ADMN-01 | Phase 10 | Pending |
 | ADMN-02 | Phase 10 | Pending |
 | ADMN-03 | Phase 10 | Pending |

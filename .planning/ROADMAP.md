@@ -589,7 +589,7 @@ Plans:
 | 6. Systeme de Reservation | 7/7 | Complete    | 2026-02-24 |
 | 7. Paiement Simule | 4/5 | In progress | 2026-02-24 |
 | 8. Avis & Evaluations | 7/7 | Complete | 2026-02-25 |
-| 9. Messagerie & Notifications | 0/5 | Not started | - |
+| 9. Messagerie & Notifications | 3/5 | In Progress|  |
 | 10. Panneau d'Administration | 0/9 | Not started | - |
 | 11. Demo Data, Polish & PFE Readiness | 0/7 | Not started | - |
 
