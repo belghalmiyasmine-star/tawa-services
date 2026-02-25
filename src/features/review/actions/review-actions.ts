@@ -14,6 +14,7 @@ import {
   updateProviderRating,
 } from "../lib/publication";
 import { reviewSubmitSchema, type ReviewSubmitInput } from "../schemas/review";
+import { sendNotificationBatch } from "@/features/notification/lib/send-notification";
 
 // Re-export updateProviderRating so existing imports from this module continue to work
 export { updateProviderRating };
@@ -243,6 +244,38 @@ export async function submitReviewAction(
     const updatedReview = await prisma.review.findUnique({
       where: { id: review.id },
     });
+
+    // 12. If reviews were published (both parties reviewed), notify both parties
+    if (updatedReview?.published) {
+      // Fetch booking parties for notification
+      const bookingForNotif = await prisma.booking.findUnique({
+        where: { id: validData.bookingId },
+        select: {
+          clientId: true,
+          provider: { select: { userId: true } },
+          service: { select: { title: true } },
+        },
+      });
+
+      if (bookingForNotif) {
+        void sendNotificationBatch([
+          {
+            userId: bookingForNotif.clientId,
+            type: "REVIEW_RECEIVED",
+            title: "Nouvel avis recu",
+            body: bookingForNotif.service.title,
+            data: { bookingId: validData.bookingId, reviewId: review.id },
+          },
+          {
+            userId: bookingForNotif.provider.userId,
+            type: "REVIEW_RECEIVED",
+            title: "Nouvel avis recu",
+            body: bookingForNotif.service.title,
+            data: { bookingId: validData.bookingId, reviewId: review.id },
+          },
+        ]);
+      }
+    }
 
     return { success: true, data: updatedReview ?? review };
   } catch (error) {

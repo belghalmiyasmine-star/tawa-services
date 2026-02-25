@@ -13,6 +13,7 @@ import {
   cancelBookingSchema,
   type CancelBookingFormData,
 } from "@/lib/validations/booking";
+import { sendNotification } from "@/features/notification/lib/send-notification";
 
 type CancelBookingInput = CancelBookingFormData;
 
@@ -72,6 +73,12 @@ export async function cancelBookingAction(
       },
       include: {
         payment: true,
+        service: {
+          select: {
+            title: true,
+            provider: { select: { userId: true } },
+          },
+        },
       },
     });
 
@@ -141,6 +148,15 @@ export async function cancelBookingAction(
       }
     });
 
+    // Fire-and-forget: notify provider that client cancelled the booking
+    void sendNotification({
+      userId: booking.service.provider.userId,
+      type: "BOOKING_CANCELLED",
+      title: "Reservation annulee",
+      body: booking.service.title,
+      data: { bookingId },
+    });
+
     return {
       success: true,
       data: {
@@ -200,6 +216,7 @@ export async function cancelBookingProviderAction(
       },
       include: {
         payment: true,
+        service: { select: { title: true } },
       },
     });
 
@@ -242,6 +259,15 @@ export async function cancelBookingProviderAction(
           },
         });
       }
+    });
+
+    // Fire-and-forget: notify client that provider cancelled the booking
+    void sendNotification({
+      userId: booking.clientId,
+      type: "BOOKING_CANCELLED",
+      title: "Reservation annulee",
+      body: booking.service.title,
+      data: { bookingId },
     });
 
     return { success: true, data: undefined };

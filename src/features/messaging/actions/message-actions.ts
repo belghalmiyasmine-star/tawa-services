@@ -15,6 +15,7 @@ import { prisma } from "@/lib/prisma";
 import type { ActionResult } from "@/types/api";
 import { moderateMessageContent } from "../lib/message-moderation";
 import { sendMessageSchema } from "../schemas/message-schemas";
+import { sendNotification } from "@/features/notification/lib/send-notification";
 
 // ────────────────────────────────────────────────
 // HELPERS
@@ -23,11 +24,12 @@ import { sendMessageSchema } from "../schemas/message-schemas";
 /**
  * Verifies that the given userId is either the booking's client
  * or the booking's service provider user.
+ * Returns the recipient's userId (the other participant) for notification purposes.
  */
 async function verifyConversationParticipant(
   conversationId: string,
   userId: string,
-): Promise<{ authorized: boolean; bookingStatus: string }> {
+): Promise<{ authorized: boolean; bookingStatus: string; recipientId: string | null }> {
   const conversation = await prisma.conversation.findUnique({
     where: { id: conversationId, isDeleted: false },
     include: {
@@ -44,16 +46,24 @@ async function verifyConversationParticipant(
   });
 
   if (!conversation) {
-    return { authorized: false, bookingStatus: "" };
+    return { authorized: false, bookingStatus: "", recipientId: null };
   }
 
   const { booking } = conversation;
   const isClient = booking.clientId === userId;
   const isProvider = booking.provider.userId === userId;
 
+  // Recipient is the other party
+  const recipientId = isClient
+    ? booking.provider.userId
+    : isProvider
+      ? booking.clientId
+      : null;
+
   return {
     authorized: isClient || isProvider,
     bookingStatus: booking.status,
+    recipientId,
   };
 }
 
@@ -89,8 +99,8 @@ export async function sendMessageAction(formData: {
 
   const { conversationId, content } = parseResult.data;
 
-  // Verify participation and get booking status
-  const { authorized, bookingStatus } = await verifyConversationParticipant(
+  // Verify participation and get booking status + recipient
+  const { authorized, bookingStatus, recipientId } = await verifyConversationParticipant(
     conversationId,
     session.user.id,
   );
@@ -114,6 +124,17 @@ export async function sendMessageAction(formData: {
     },
     select: { id: true },
   });
+
+  // Fire-and-forget: notify recipient of new message
+  if (recipientId) {
+    void sendNotification({
+      userId: recipientId,
+      type: "NEW_MESSAGE",
+      title: "Nouveau message",
+      body: content.substring(0, 100),
+      data: { conversationId, senderId: session.user.id },
+    });
+  }
 
   return { success: true, data: { messageId: message.id } };
 }
@@ -141,7 +162,7 @@ export async function markMessagesAsReadAction(
     return { success: false, error: "invalid_conversation_id" };
   }
 
-  // Verify participation
+  // Verify participation (recipientId not needed for mark-read)
   const { authorized } = await verifyConversationParticipant(
     conversationId,
     session.user.id,

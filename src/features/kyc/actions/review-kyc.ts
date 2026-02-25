@@ -5,6 +5,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import type { ActionResult } from "@/types/api";
+import { sendNotification } from "@/features/notification/lib/send-notification";
 
 // ============================================================
 // TYPES
@@ -98,7 +99,7 @@ export async function approveKycAction(
       };
     }
 
-    // 5. Atomic transaction: update provider + create badge + create notification
+    // 5. Atomic transaction: update provider + create badge
     await prisma.$transaction(async (tx) => {
       // Update provider kycStatus to APPROVED
       await tx.provider.update({
@@ -129,16 +130,15 @@ export async function approveKycAction(
           awardedAt: new Date(),
         },
       });
+    });
 
-      // Create KYC_APPROVED notification
-      await tx.notification.create({
-        data: {
-          userId: provider.userId,
-          type: "KYC_APPROVED",
-          title: "Votre identite a ete verifiee",
-          body: "Felicitations ! Vous pouvez maintenant proposer vos services.",
-        },
-      });
+    // Fire-and-forget: notify provider of KYC approval (via sendNotification — respects preferences)
+    void sendNotification({
+      userId: provider.userId,
+      type: "KYC_APPROVED",
+      title: "Profil verifie",
+      body: "Votre identite a ete verifiee. Vous pouvez maintenant proposer vos services.",
+      data: {},
     });
 
     return { success: true, data: { providerId: provider.id } };
@@ -205,7 +205,7 @@ export async function rejectKycAction(data: {
       ? `${data.reason}: ${data.comment}`
       : data.reason;
 
-    // 7. Atomic transaction: update provider + create notification
+    // 7. Atomic transaction: update provider
     await prisma.$transaction(async (tx) => {
       // Update provider kycStatus to REJECTED
       await tx.provider.update({
@@ -216,16 +216,15 @@ export async function rejectKycAction(data: {
           kycRejectedReason: rejectionReason,
         },
       });
+    });
 
-      // Create KYC_REJECTED notification
-      await tx.notification.create({
-        data: {
-          userId: provider.userId,
-          type: "KYC_REJECTED",
-          title: "Verification d'identite rejetee",
-          body: `Votre dossier a ete rejete. Motif: ${rejectionReason}`,
-        },
-      });
+    // Fire-and-forget: notify provider of KYC rejection (via sendNotification — respects preferences)
+    void sendNotification({
+      userId: provider.userId,
+      type: "KYC_REJECTED",
+      title: "Verification refusee",
+      body: `Votre dossier a ete rejete. Motif: ${rejectionReason}`,
+      data: {},
     });
 
     return { success: true, data: { providerId: provider.id } };

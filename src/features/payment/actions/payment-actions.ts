@@ -7,6 +7,7 @@ import { prisma } from "@/lib/prisma";
 import type { ActionResult } from "@/types/api";
 import { processPaymentSchema } from "@/lib/validations/payment";
 import { paymentService } from "../services/simulated-payment.service";
+import { sendNotification } from "@/features/notification/lib/send-notification";
 
 // ============================================================
 // TYPES
@@ -127,15 +128,33 @@ export async function releasePaymentAction(
       return { success: false, error: result.error ?? "Erreur lors de la liberation du paiement" };
     }
 
-    // Fetch updated payment to return commission details
+    // Fetch updated payment to return commission details + booking for notification
     const payment = await prisma.payment.findUnique({
       where: { bookingId },
-      select: { commission: true, providerEarning: true },
+      select: {
+        commission: true,
+        providerEarning: true,
+        amount: true,
+        booking: {
+          select: {
+            provider: { select: { userId: true } },
+          },
+        },
+      },
     });
 
     if (!payment) {
       return { success: false, error: "Paiement introuvable apres liberation" };
     }
+
+    // Fire-and-forget: notify provider that payment was released
+    void sendNotification({
+      userId: payment.booking.provider.userId,
+      type: "PAYMENT_RECEIVED",
+      title: "Paiement recu",
+      body: `${payment.providerEarning.toFixed(2)} TND`,
+      data: { bookingId },
+    });
 
     return {
       success: true,

@@ -10,6 +10,7 @@ import {
   rejectBookingSchema,
 } from "@/lib/validations/booking";
 import { paymentService } from "@/features/payment/services/simulated-payment.service";
+import { sendNotification } from "@/features/notification/lib/send-notification";
 
 // ============================================================
 // ACTION 1: createBookingAction
@@ -188,6 +189,15 @@ export async function createBookingAction(
       return newBooking;
     });
 
+    // Fire-and-forget: notify provider of new booking request
+    void sendNotification({
+      userId: service.provider.userId,
+      type: "BOOKING_REQUEST",
+      title: "Nouvelle demande de reservation",
+      body: service.title,
+      data: { bookingId: booking.id },
+    });
+
     return { success: true, data: { bookingId: booking.id } };
   } catch (error) {
     console.error("[createBookingAction] Error:", error);
@@ -235,6 +245,9 @@ export async function acceptBookingAction(
         providerId: provider.id,
         isDeleted: false,
       },
+      include: {
+        service: { select: { title: true } },
+      },
     });
 
     if (!booking) {
@@ -251,6 +264,15 @@ export async function acceptBookingAction(
     await prisma.booking.update({
       where: { id: bookingId },
       data: { status: "ACCEPTED" },
+    });
+
+    // Fire-and-forget: notify client that booking was accepted
+    void sendNotification({
+      userId: booking.clientId,
+      type: "BOOKING_ACCEPTED",
+      title: "Reservation acceptee",
+      body: booking.service.title,
+      data: { bookingId },
     });
 
     return { success: true, data: { success: true } };
@@ -308,6 +330,9 @@ export async function rejectBookingAction(
         providerId: provider.id,
         isDeleted: false,
       },
+      include: {
+        service: { select: { title: true } },
+      },
     });
 
     if (!booking) {
@@ -327,6 +352,15 @@ export async function rejectBookingAction(
         status: "REJECTED",
         providerNote: reason ?? null,
       },
+    });
+
+    // Fire-and-forget: notify client that booking was rejected
+    void sendNotification({
+      userId: booking.clientId,
+      type: "BOOKING_REJECTED",
+      title: "Reservation refusee",
+      body: booking.service.title,
+      data: { bookingId },
     });
 
     return { success: true, data: { success: true } };
@@ -445,7 +479,10 @@ export async function completeBookingAction(
         providerId: provider.id,
         isDeleted: false,
       },
-      include: { payment: true },
+      include: {
+        payment: true,
+        service: { select: { title: true } },
+      },
     });
 
     if (!booking) {
@@ -502,6 +539,15 @@ export async function completeBookingAction(
       }
       // If already RELEASED or other status, no action needed
     }
+
+    // Fire-and-forget: notify client that booking was completed
+    void sendNotification({
+      userId: booking.clientId,
+      type: "BOOKING_COMPLETED",
+      title: "Service termine",
+      body: booking.service.title,
+      data: { bookingId },
+    });
 
     return { success: true, data: { success: true } };
   } catch (error) {

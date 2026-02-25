@@ -10,6 +10,7 @@ import {
   respondQuoteSchema,
   acceptQuoteSchema,
 } from "@/lib/validations/booking";
+import { sendNotification } from "@/features/notification/lib/send-notification";
 
 // ============================================================
 // ACTION 1: createQuoteAction
@@ -101,6 +102,15 @@ export async function createQuoteAction(
       },
     });
 
+    // Fire-and-forget: notify provider of new quote request
+    void sendNotification({
+      userId: service.provider.userId,
+      type: "QUOTE_RECEIVED",
+      title: "Nouvelle demande de devis",
+      body: service.title,
+      data: { quoteId: quote.id },
+    });
+
     return { success: true, data: { quoteId: quote.id } };
   } catch (error) {
     console.error("[createQuoteAction] Error:", error);
@@ -187,6 +197,15 @@ export async function respondQuoteAction(
       },
     });
 
+    // Fire-and-forget: notify client that their quote received a response
+    void sendNotification({
+      userId: quote.clientId,
+      type: "QUOTE_RESPONDED",
+      title: "Reponse a votre devis",
+      body: quote.service.title,
+      data: { quoteId },
+    });
+
     return { success: true, data: { success: true } };
   } catch (error) {
     console.error("[respondQuoteAction] Error:", error);
@@ -239,7 +258,7 @@ export async function acceptQuoteAction(
         service: {
           include: {
             provider: {
-              select: { id: true },
+              select: { id: true, userId: true },
             },
           },
         },
@@ -299,6 +318,15 @@ export async function acceptQuoteAction(
       });
 
       return booking;
+    });
+
+    // Fire-and-forget: notify provider that quote was accepted and booking created
+    void sendNotification({
+      userId: quote.service.provider.userId,
+      type: "BOOKING_REQUEST",
+      title: "Devis accepte, reservation creee",
+      body: quote.service.title,
+      data: { bookingId: result.id },
     });
 
     return { success: true, data: { bookingId: result.id } };
