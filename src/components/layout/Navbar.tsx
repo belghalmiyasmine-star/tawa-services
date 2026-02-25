@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { signOut, useSession } from "next-auth/react";
-import { Bell, CalendarCheck, ChevronDown, LogOut, Menu, Settings, User } from "lucide-react";
+import { CalendarCheck, ChevronDown, LogOut, Menu, Settings, User } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,6 +15,7 @@ import {
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ThemeToggle } from "@/components/shared/ThemeToggle";
 import { LocaleSwitcher } from "@/components/shared/LocaleSwitcher";
+import { NotificationBell } from "@/features/notification/components/NotificationBell";
 import { SearchAutocomplete } from "@/features/search/components/SearchAutocomplete";
 import { Link } from "@/i18n/routing";
 
@@ -152,10 +153,16 @@ export function Navbar() {
         <div className="flex items-center gap-2">
           <LocaleSwitcher />
           <ThemeToggle />
-          {/* Notifications placeholder — Phase 9 */}
-          <Button variant="ghost" size="icon" aria-label="Notifications">
-            <Bell className="h-5 w-5" />
-          </Button>
+          {/* NotificationBell — shows red unread badge, opens dropdown */}
+          {status === "authenticated" && session?.user ? (
+            <NotificationBell
+              allNotificationsUrl={
+                session.user.role === "PROVIDER"
+                  ? "/provider/notifications"
+                  : "/notifications"
+              }
+            />
+          ) : null}
           {/* Mes reservations — visible only for authenticated CLIENT users */}
           {status === "authenticated" && session?.user?.role === "CLIENT" && (
             <Button variant="ghost" asChild className="flex items-center gap-2">

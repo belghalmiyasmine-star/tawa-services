@@ -340,6 +340,89 @@ export async function getUnreadCountAction(): Promise<
 }
 
 // ────────────────────────────────────────────────
+// GET CONVERSATION DETAIL (for chat page header)
+// ────────────────────────────────────────────────
+
+export interface ConversationDetail {
+  id: string;
+  otherUser: {
+    name: string;
+    photoUrl: string | null;
+  };
+  booking: {
+    id: string;
+    serviceTitle: string;
+    status: string;
+  };
+}
+
+/**
+ * Returns metadata for a single conversation (other user name, booking context).
+ * Used by server pages to populate the chat header.
+ * Returns unauthorized if the user is not a participant.
+ */
+export async function getConversationDetailAction(
+  conversationId: string,
+): Promise<ActionResult<ConversationDetail>> {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) {
+    return { success: false, error: "unauthorized" };
+  }
+
+  const conversation = await prisma.conversation.findUnique({
+    where: { id: conversationId, isDeleted: false },
+    select: {
+      id: true,
+      booking: {
+        select: {
+          id: true,
+          status: true,
+          clientId: true,
+          client: { select: { name: true, avatarUrl: true } },
+          provider: {
+            select: {
+              userId: true,
+              displayName: true,
+              photoUrl: true,
+            },
+          },
+          service: { select: { title: true } },
+        },
+      },
+    },
+  });
+
+  if (!conversation) {
+    return { success: false, error: "conversation_not_found" };
+  }
+
+  const { booking } = conversation;
+  const isClient = booking.clientId === session.user.id;
+  const isProvider = booking.provider.userId === session.user.id;
+
+  if (!isClient && !isProvider) {
+    return { success: false, error: "unauthorized" };
+  }
+
+  const otherUser = isClient
+    ? { name: booking.provider.displayName, photoUrl: booking.provider.photoUrl }
+    : { name: booking.client.name ?? "Client", photoUrl: booking.client.avatarUrl };
+
+  return {
+    success: true,
+    data: {
+      id: conversation.id,
+      otherUser,
+      booking: {
+        id: booking.id,
+        serviceTitle: booking.service.title,
+        status: booking.status,
+      },
+    },
+  };
+}
+
+// ────────────────────────────────────────────────
 // GET OR CREATE CONVERSATION
 // ────────────────────────────────────────────────
 
