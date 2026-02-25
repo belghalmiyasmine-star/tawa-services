@@ -8,78 +8,15 @@ import type { ActionResult } from "@/types/api";
 import type { Review } from "@prisma/client";
 
 import { moderateReviewContent } from "../lib/moderation";
+import {
+  isReviewWindowOpen,
+  publishBothReviews,
+  updateProviderRating,
+} from "../lib/publication";
 import { reviewSubmitSchema, type ReviewSubmitInput } from "../schemas/review";
 
-// ============================================================
-// HELPERS
-// ============================================================
-
-/**
- * Recomputes the average rating for a provider and updates the provider record.
- * Called after both parties have reviewed a booking (double-blind publish).
- */
-export async function updateProviderRating(providerId: string): Promise<void> {
-  // Fetch all published, non-deleted reviews targeting this provider's userId
-  const provider = await prisma.provider.findUnique({
-    where: { id: providerId },
-    select: { userId: true },
-  });
-
-  if (!provider) return;
-
-  const reviews = await prisma.review.findMany({
-    where: {
-      targetId: provider.userId,
-      published: true,
-      flagged: false,
-      isDeleted: false,
-    },
-    select: { stars: true },
-  });
-
-  if (reviews.length === 0) {
-    await prisma.provider.update({
-      where: { id: providerId },
-      data: { rating: 0, ratingCount: 0 },
-    });
-    return;
-  }
-
-  const totalStars = reviews.reduce((sum, r) => sum + r.stars, 0);
-  const averageRating = totalStars / reviews.length;
-
-  await prisma.provider.update({
-    where: { id: providerId },
-    data: {
-      rating: Math.round(averageRating * 10) / 10, // Round to 1 decimal
-      ratingCount: reviews.length,
-    },
-  });
-}
-
-/**
- * Publishes both reviews for a booking (double-blind system).
- * Called when both the client and provider have submitted their review.
- */
-async function publishBothReviews(bookingId: string, providerId: string): Promise<void> {
-  const now = new Date();
-
-  // Publish both reviews atomically
-  await prisma.review.updateMany({
-    where: {
-      bookingId,
-      published: false,
-      isDeleted: false,
-    },
-    data: {
-      published: true,
-      publishedAt: now,
-    },
-  });
-
-  // Recompute provider rating after publishing
-  await updateProviderRating(providerId);
-}
+// Re-export updateProviderRating so existing imports from this module continue to work
+export { updateProviderRating };
 
 // ============================================================
 // SUBMIT REVIEW ACTION
@@ -162,16 +99,17 @@ export async function submitReviewAction(
       };
     }
 
-    // 6. Verify 10-day review window
+    // 6. Verify 10-day review window using shared isReviewWindowOpen helper
     if (!booking.completedAt) {
       return { success: false, error: "Date de completion de la réservation introuvable" };
     }
 
-    const windowDeadline = new Date(booking.completedAt);
-    windowDeadline.setDate(windowDeadline.getDate() + 10);
-    const now = new Date();
+    const { open: windowOpen } = isReviewWindowOpen({
+      completedAt: booking.completedAt,
+      status: booking.status,
+    });
 
-    if (now > windowDeadline) {
+    if (!windowOpen) {
       return {
         success: false,
         error:
@@ -196,6 +134,7 @@ export async function submitReviewAction(
     }
 
     // 8. Run auto-moderation
+    const now = new Date();
     const moderation = moderateReviewContent(validData.text);
 
     // 9. Determine targetId (who is being reviewed)
@@ -227,22 +166,10 @@ export async function submitReviewAction(
       },
     });
 
-    // 11. Check if both reviews now exist for this booking
-    const allReviews = await prisma.review.findMany({
-      where: {
-        bookingId: validData.bookingId,
-        isDeleted: false,
-      },
-      select: { authorId: true, authorRole: true },
-    });
-
-    const hasClientReview = allReviews.some((r) => r.authorRole === "CLIENT");
-    const hasProviderReview = allReviews.some((r) => r.authorRole === "PROVIDER");
-
-    if (hasClientReview && hasProviderReview) {
-      // Both parties reviewed — publish both reviews and update provider rating
-      await publishBothReviews(validData.bookingId, booking.providerId);
-    }
+    // 11. Attempt double-blind publication:
+    //     publishBothReviews checks internally if both CLIENT and PROVIDER reviews
+    //     exist — it publishes only when both are present.
+    await publishBothReviews(validData.bookingId);
 
     return { success: true, data: review };
   } catch (error) {
