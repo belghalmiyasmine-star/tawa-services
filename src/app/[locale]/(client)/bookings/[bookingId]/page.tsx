@@ -16,6 +16,7 @@ import type { Metadata } from "next";
 import { authOptions } from "@/lib/auth";
 import { redirect, Link } from "@/i18n/routing";
 import { getBookingDetailAction } from "@/features/booking/actions/booking-queries";
+import { getReviewWindowAction } from "@/features/review/actions/review-queries";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -129,6 +130,15 @@ export default async function ClientBookingDetailPage({ params }: Props) {
   if (booking.client.id !== session.user.id) {
     return notFound();
   }
+
+  // Fetch review window status for COMPLETED bookings
+  const reviewWindowResult =
+    booking.status === "COMPLETED"
+      ? await getReviewWindowAction(bookingId)
+      : null;
+  const reviewWindow = reviewWindowResult?.success
+    ? reviewWindowResult.data
+    : null;
 
   const statusConfig = STATUS_CONFIG[booking.status];
   const providerName = booking.provider.displayName;
@@ -495,6 +505,34 @@ export default async function ClientBookingDetailPage({ params }: Props) {
               }
               totalAmount={booking.totalAmount}
             />
+          </div>
+        )}
+
+        {/* Review CTA — only for COMPLETED bookings within review window */}
+        {booking.status === "COMPLETED" && reviewWindow && (
+          <div className="rounded-xl border bg-card p-4">
+            <h2 className="mb-3 text-sm font-semibold text-muted-foreground">
+              Evaluation
+            </h2>
+            {reviewWindow.hasReviewed ? (
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
+                <span>Avis soumis</span>
+                {!reviewWindow.otherPartyReviewed && (
+                  <span className="text-xs">
+                    — En attente de l&apos;avis du prestataire pour publication
+                  </span>
+                )}
+              </div>
+            ) : reviewWindow.canReview ? (
+              <Link
+                href={`/bookings/${booking.id}/review` as never}
+                className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+              >
+                <Star className="h-4 w-4" />
+                Laisser un avis
+              </Link>
+            ) : null}
           </div>
         )}
       </div>
