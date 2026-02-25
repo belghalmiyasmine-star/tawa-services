@@ -724,6 +724,47 @@
     "badgeTooltipTopProvider": "Note superieure a 4.5 avec plus de 10 missions terminees",
     "badgeNonVerified": "Non verifie"
   },
+  "messaging": {
+    "conversations": "Conversations",
+    "noConversations": "Aucune conversation",
+    "searchConversations": "Rechercher une conversation",
+    "newMessage": "Nouveau message",
+    "sendMessage": "Envoyer",
+    "typeMessage": "Ecrivez votre message...",
+    "unreadCount": "{count} non lu(s)",
+    "lastMessage": "Dernier message",
+    "contactInfoBlocked": "Les informations de contact (telephone, email, reseaux sociaux) ne peuvent pas etre partagees avant la confirmation de la reservation.",
+    "contactInfoBlockedTitle": "Message bloque",
+    "readReceipt": "Lu",
+    "deliveredReceipt": "Envoye",
+    "today": "Aujourd'hui",
+    "yesterday": "Hier",
+    "messageDeleted": "Ce message a ete supprime",
+    "noMessages": "Aucun message. Commencez la conversation!",
+    "loadMore": "Charger les messages precedents",
+    "online": "En ligne",
+    "offline": "Hors ligne",
+    "bookingContext": "Reservation",
+    "serviceContext": "Service",
+    "otherUser": "Interlocuteur",
+    "markAsRead": "Marquer comme lu",
+    "unread": "Non lu",
+    "messageCount": "{count} message(s)",
+    "conversationWith": "Conversation avec {name}",
+    "startConversation": "Demarrer une conversation",
+    "replyTo": "Repondre",
+    "messageSent": "Message envoye",
+    "messagesRead": "{count} message(s) marque(s) comme lu(s)",
+    "blockingInfo": "Les messages sont moderes avant la confirmation de la reservation.",
+    "conversationCreated": "Conversation creee",
+    "errors": {
+      "sendFailed": "Echec de l'envoi du message",
+      "loadFailed": "Echec du chargement des messages",
+      "conversationNotFound": "Conversation introuvable",
+      "notParticipant": "Vous n'etes pas participant de cette conversation",
+      "contactInfoDetected": "Message bloque: informations de contact detectees"
+    }
+  },
   "payment": {
     "method": {
       "CARD": "Carte bancaire",
@@ -813,6 +854,48 @@
       "APPROVED": "Approuve",
       "REJECTED": "Rejete",
       "PAID": "Paye"
+    }
+  },
+  "notification": {
+    "title": "Notifications",
+    "noNotifications": "Aucune notification",
+    "markAllRead": "Tout marquer comme lu",
+    "markRead": "Marquer comme lu",
+    "filters": {
+      "all": "Tout",
+      "unread": "Non lus"
+    },
+    "types": {
+      "BOOKING_REQUEST": "Nouvelle reservation",
+      "BOOKING_ACCEPTED": "Reservation acceptee",
+      "BOOKING_REJECTED": "Reservation refusee",
+      "BOOKING_COMPLETED": "Service termine",
+      "BOOKING_CANCELLED": "Reservation annulee",
+      "QUOTE_RECEIVED": "Nouveau devis",
+      "QUOTE_RESPONDED": "Reponse au devis",
+      "PAYMENT_RECEIVED": "Paiement recu",
+      "REVIEW_RECEIVED": "Nouvel avis",
+      "KYC_APPROVED": "Profil verifie",
+      "KYC_REJECTED": "Verification refusee",
+      "NEW_MESSAGE": "Nouveau message",
+      "SYSTEM": "Notification systeme"
+    },
+    "preferences": {
+      "title": "Preferences de notification",
+      "emailEnabled": "Notifications par email",
+      "inAppEnabled": "Notifications in-app",
+      "quietHours": "Heures de silence",
+      "quietHoursStart": "Debut",
+      "quietHoursEnd": "Fin",
+      "disabledTypes": "Types desactives",
+      "save": "Enregistrer les preferences",
+      "saved": "Preferences enregistrees"
+    },
+    "timeAgo": {
+      "justNow": "A l'instant",
+      "minutesAgo": "Il y a {count} min",
+      "hoursAgo": "Il y a {count}h",
+      "daysAgo": "Il y a {count}j"
     }
   }
 }
