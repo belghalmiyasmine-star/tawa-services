@@ -1,7 +1,7 @@
 import { getServerSession } from "next-auth";
 import { getLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
-import { Calendar, MapPin, User, CreditCard, FileText, Clock, Printer } from "lucide-react";
+import { Calendar, MapPin, User, CreditCard, FileText, Clock, Printer, Star } from "lucide-react";
 import type { Metadata } from "next";
 
 import { authOptions } from "@/lib/auth";
@@ -13,6 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Link } from "@/i18n/routing";
 import { BookingActions } from "@/features/booking/components/BookingActions";
+import { getReviewWindowAction } from "@/features/review/actions/review-queries";
 import type { BookingStatus } from "@prisma/client";
 
 export const metadata: Metadata = {
@@ -194,6 +195,15 @@ export default async function ProviderBookingDetailPage({ params }: Props) {
   }
 
   const booking = result.data;
+
+  // Fetch review window status for completed bookings
+  const reviewWindowResult =
+    booking.status === "COMPLETED"
+      ? await getReviewWindowAction(bookingId)
+      : null;
+  const reviewWindow = reviewWindowResult?.success
+    ? reviewWindowResult.data
+    : null;
   const statusConfig = STATUS_CONFIG[booking.status];
   const clientName = [booking.client.firstName, booking.client.lastName]
     .filter(Boolean)
@@ -474,6 +484,33 @@ export default async function ProviderBookingDetailPage({ params }: Props) {
             Actions
           </h2>
           <BookingActions bookingId={booking.id} status={booking.status} />
+        </div>
+      )}
+
+      {/* Review CTA for completed bookings */}
+      {booking.status === "COMPLETED" && reviewWindow && (
+        <div className="mt-6 rounded-xl border bg-card p-4">
+          <h2 className="mb-3 text-sm font-semibold text-muted-foreground">
+            Evaluation
+          </h2>
+          {reviewWindow.hasReviewed ? (
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
+              <span>Avis soumis</span>
+              {!reviewWindow.otherPartyReviewed && (
+                <span className="text-xs">
+                  — En attente de l&apos;avis du client pour publication
+                </span>
+              )}
+            </div>
+          ) : reviewWindow.canReview ? (
+            <Button asChild>
+              <Link href={`/provider/bookings/${booking.id}/review` as never}>
+                <Star className="mr-2 h-4 w-4" />
+                Evaluer le client
+              </Link>
+            </Button>
+          ) : null}
         </div>
       )}
     </div>
