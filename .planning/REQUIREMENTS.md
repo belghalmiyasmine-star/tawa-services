@@ -75,7 +75,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **REVW-03**: Criteria-based ratings: quality, punctuality, communication, cleanliness
 - [x] **REVW-04**: Photo upload with reviews (max 3 photos)
 - [x] **REVW-05**: 10-day submission window after service completion
-- [ ] **REVW-06**: Simultaneous publication (both parties review before either is visible)
+- [x] **REVW-06**: Simultaneous publication (both parties review before either is visible)
 - [x] **REVW-07**: Auto-moderation for defamatory/spam content
 - [ ] **REVW-08**: Rating aggregation displayed on profiles, used for search sorting
 
@@ -210,7 +210,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | REVW-03 | Phase 8 | Complete |
 | REVW-04 | Phase 8 | Complete |
 | REVW-05 | Phase 8 | Complete |
-| REVW-06 | Phase 8 | Pending |
+| REVW-06 | Phase 8 | Complete |
 | REVW-07 | Phase 8 | Complete |
 | REVW-08 | Phase 8 | Pending |
 | MSG-01 | Phase 9 | Pending |

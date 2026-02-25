@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-02-21)
 ## Current Position
 
 Phase: 8 of 11 (Avis & Evaluations)
-Plan: 1 of 4 in current phase — Plan 08-01 COMPLETE.
-Status: Plan 08-01 COMPLETE — Review backend foundation: Zod schemas, server actions (submit+query), auto-moderation (contact/spam), photo upload API, 40 i18n keys (19d81a3, f0dafe8). REVW-01 through REVW-05 + REVW-07 satisfied. Ready for Plan 08-02.
-Last activity: 2026-02-25 — Plan 08-01 complete. Review schema (5 criteria), double-blind publish, moderateReviewContent, getProviderReviewsAction, /api/review/photos.
+Plan: 4 of 7 in current phase — Plan 08-04 COMPLETE.
+Status: Plan 08-04 COMPLETE — Publication logic and cron: publication.ts (publishBothReviews, publishSoloReviewIfExpired, checkAndCloseExpiredWindows, isReviewWindowOpen), /api/cron/reviews endpoint, vercel.json updated (fda4f27, d27198e). REVW-05 + REVW-06 satisfied. Ready for Plan 08-05.
+Last activity: 2026-02-25 — Plan 08-04 complete. Double-blind publication logic extracted to publication.ts, daily cron for expired review windows, isReviewWindowOpen pure function.
 
 Progress: [###########] 73%
 
@@ -256,6 +256,11 @@ Recent decisions affecting current work:
 - [08-01]: getProviderReviewsAction accepts providerId (not userId) — resolves to userId internally for targetId matching
 - [08-01]: Photo upload route saves to /public/uploads/reviews/[userId]/[uuid].ext — max 3 photos enforced at schema level
 - [08-01]: Author first name only in getProviderReviewsAction — extracted from User.name full name for privacy
+- [08-04]: updateProviderRating moved to publication.ts (re-exported from review-actions.ts for backward compat) — avoids circular dependency
+- [08-04]: publishBothReviews(bookingId) — no longer takes providerId, fetches from booking internally
+- [08-04]: checkAndCloseExpiredWindows uses completedAt [11, 10] day window — daily cron processes each booking exactly once
+- [08-04]: cron/reviews schedule 0 2 * * * (daily 2 AM) — review windows are day-granularity not hour-critical
+- [08-04]: isReviewWindowOpen pure function — no DB call, reusable in server actions and UI components
 
 ### Pending Todos
 
@@ -268,5 +273,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-25
-Stopped at: Completed Phase 8 Plan 08-01 — Review backend foundation (Zod schema, server actions, auto-moderation, photo upload API, 40 i18n keys). 19d81a3, f0dafe8. REVW-01 through REVW-05 + REVW-07 complete. Ready for Plan 08-02.
+Stopped at: Completed Phase 8 Plan 08-04 — Publication logic and cron (publication.ts, /api/cron/reviews, vercel.json). fda4f27, d27198e. REVW-05 + REVW-06 complete. Ready for Plan 08-05.
 Resume file: None
