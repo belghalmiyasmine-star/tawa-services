@@ -16,8 +16,8 @@ Tawa Services est une plateforme marketplace de services locaux tunisienne const
 - [x] **Phase 4: Profil Prestataire & Services** - Profil, listing services, disponibilites, zone d'intervention, statistiques (completed 2026-02-23)
 - [x] **Phase 5: Recherche & Decouverte** - Parcourir par categorie, filtres ville/delegation, autocomplete, tri (completed 2026-02-24)
 - [x] **Phase 6: Systeme de Reservation** - Booking direct + sur devis, statuts, tableau de bord prestataire, annulation (completed 2026-02-24)
-- [ ] **Phase 7: Paiement Simule** - Checkout Tunisien, escrow model, earnings dashboard, factures, abstraction layer
-- [ ] **Phase 8: Avis & Evaluations** - Ratings bidirectionnels, criteres, photos, moderation, agregation
+- [x] **Phase 7: Paiement Simule** - Checkout Tunisien, escrow model, earnings dashboard, factures, abstraction layer (completed 2026-02-25)
+- [x] **Phase 8: Avis & Evaluations** - Ratings bidirectionnels, criteres, photos, moderation, agregation (completed 2026-02-25)
 - [ ] **Phase 9: Messagerie & Notifications** - Messagerie in-app, moderation contacts, notifications transactionnelles
 - [ ] **Phase 10: Panneau d'Administration** - User management, KYC review, reports, analytics KPIs, content management
 - [ ] **Phase 11: Demo Data, Polish & PFE Readiness** - Seed data, responsivite mobile, tests E2E, rapport-ready
@@ -457,7 +457,7 @@ Plans:
 - [x] 08-04-PLAN.md — Simultaneous publication logic, 10-day window enforcement, cron expiration job (completed 2026-02-25)
 - [x] 08-05-PLAN.md — Review display: ReviewCard, ReviewsList, RatingBreakdown, CriteriaRadarChart components (completed 2026-02-25)
 - [x] 08-06-PLAN.md — Provider profile Avis tab integration, admin review moderation page, rating aggregation (completed 2026-02-25)
-- [ ] 08-07-PLAN.md — Navigation wiring, booking list review indicators, end-to-end verification
+- [x] 08-07-PLAN.md — Navigation wiring, booking list review indicators, end-to-end verification (completed 2026-02-25)
 
 ---
 

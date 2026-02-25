@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-21)
 
 **Core value:** Clients can find, book, and pay a trusted local service provider in their city — and providers can get discovered and manage their business in one place.
-**Current focus:** Phase 8 — Avis & Evaluations. Phase 7 complete — payment simulation, checkout, earnings dashboard, invoices/statements verified end-to-end.
+**Current focus:** Phase 8 COMPLETE — Avis & Evaluations all 7 plans done. Phase 7 complete — payment simulation, checkout, earnings dashboard, invoices/statements verified end-to-end.
 
 ## Current Position
 
-Phase: 8 of 11 (Avis & Evaluations)
-Plan: 6 of 7 in current phase — Plans 08-01, 08-02, 08-03, 08-04, 08-05, 08-06 COMPLETE.
-Status: Plan 08-06 COMPLETE — Provider profile Avis tab (already integrated in 08-05), admin review moderation page (/admin/reviews with approve/reject), moderateReviewAction (soft-delete + rating recalculation), AdminReviewActions client component (ee93c0a). REVW-07, REVW-08 satisfied. Ready for Plan 08-07.
-Last activity: 2026-02-25 — Plan 08-06 complete. Admin review moderation queue and provider profile Avis tab integration verified.
+Phase: 8 of 11 (Avis & Evaluations) — PHASE COMPLETE
+Plan: 7 of 7 in current phase — Plans 08-01 through 08-07 ALL COMPLETE.
+Status: Plan 08-07 COMPLETE — Admin sidebar 'Moderation avis' link, BookingReviewStatus indicators on client/provider booking lists, E2E flow verified (c7fe9f6). REVW-01, REVW-08 satisfied. Phase 8 complete. Ready for Phase 9 (Messagerie & Notifications).
+Last activity: 2026-02-25 — Plan 08-07 complete. Full review system wired end-to-end.
 
-Progress: [#############] 78%
+Progress: [##############] 82%
 
 ## Performance Metrics
 
@@ -71,6 +71,7 @@ Progress: [#############] 78%
 | Phase 08-avis-evaluations P01 | 28 | 2 tasks | 6 files |
 | Phase 08-avis-evaluations P02 | 10 | 2 tasks | 6 files |
 | Phase 08-avis-evaluations P06 | 15 | 2 tasks | 4 files |
+| Phase 08-avis-evaluations P07 | 30 | 2 tasks (nav wiring + E2E verification) | 7 files |
 
 ## Accumulated Context
 
@@ -279,6 +280,9 @@ Recent decisions affecting current work:
 - [08-06]: Reject action soft-deletes and conditionally recalculates provider rating (only if review was published)
 - [08-06]: AdminReviewActions uses router.refresh() after moderation — reloads server component data without full navigation
 - [08-06]: Admin reviews page uses card layout — long review text and photo thumbnails require vertical space not suited for table layout
+- [08-07]: BookingReviewStatus derived server-side in list queries — reviews included in Prisma query, no extra server action call per booking card
+- [08-07]: Review status chip inline in booking cards — no additional client component needed (amber=can_review, gray=pending, green=published, window_closed=no indicator)
+- [08-07]: Task 2 E2E verification required no code changes — all review flow components correctly implemented in 08-01 through 08-06
 
 ### Pending Todos
 
@@ -291,5 +295,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-25
-Stopped at: Completed Phase 8 Plan 08-06 — Provider profile Avis tab integration (2d3004f from 08-05), admin review moderation page (/admin/reviews), moderateReviewAction, AdminReviewActions component (ee93c0a). REVW-07, REVW-08 complete. Ready for 08-07.
+Stopped at: Completed Phase 8 Plan 08-07 — Admin sidebar reviews link, booking list review status indicators (c7fe9f6), E2E flow verified. Phase 8 complete. Ready for Phase 9.
 Resume file: None
