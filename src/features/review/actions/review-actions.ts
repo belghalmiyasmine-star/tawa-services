@@ -19,6 +19,74 @@ import { reviewSubmitSchema, type ReviewSubmitInput } from "../schemas/review";
 export { updateProviderRating };
 
 // ============================================================
+// MODERATE REVIEW ACTION (Admin only)
+// ============================================================
+
+/**
+ * Admin action to approve or reject a flagged review.
+ *
+ * - approve: clears the flagged state, keeps published status (if already published)
+ * - reject: soft-deletes the review, recalculates provider rating if the review was published
+ */
+export async function moderateReviewAction(
+  reviewId: string,
+  action: "approve" | "reject",
+): Promise<ActionResult<void>> {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id || session.user.role !== "ADMIN") {
+      return { success: false, error: "Accès réservé aux administrateurs" };
+    }
+
+    const review = await prisma.review.findFirst({
+      where: { id: reviewId, isDeleted: false },
+      select: {
+        id: true,
+        published: true,
+        booking: { select: { providerId: true } },
+      },
+    });
+
+    if (!review) {
+      return { success: false, error: "Avis introuvable" };
+    }
+
+    const now = new Date();
+
+    if (action === "approve") {
+      // Clear flag — review becomes visible if it was already published
+      await prisma.review.update({
+        where: { id: reviewId },
+        data: {
+          flagged: false,
+          moderatedAt: now,
+        },
+      });
+    } else {
+      // Soft-delete the review
+      await prisma.review.update({
+        where: { id: reviewId },
+        data: {
+          isDeleted: true,
+          deletedAt: now,
+          moderatedAt: now,
+        },
+      });
+
+      // Recalculate provider rating if the review was published
+      if (review.published && review.booking.providerId) {
+        await updateProviderRating(review.booking.providerId);
+      }
+    }
+
+    return { success: true, data: undefined };
+  } catch (error) {
+    console.error("[moderateReviewAction] Error:", error);
+    return { success: false, error: "Erreur lors de la modération de l'avis" };
+  }
+}
+
+// ============================================================
 // SUBMIT REVIEW ACTION
 // ============================================================
 
