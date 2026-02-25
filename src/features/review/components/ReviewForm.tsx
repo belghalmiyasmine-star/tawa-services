@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
-import { useTransition } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -43,7 +43,7 @@ export function ReviewForm({
 }: ReviewFormProps) {
   const t = useTranslations("review");
   const { toast } = useToast();
-  const [isPending, startTransition] = useTransition();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     handleSubmit,
@@ -100,8 +100,9 @@ export function ReviewForm({
     },
   ];
 
-  const onSubmit = (data: ReviewFormValues) => {
-    startTransition(async () => {
+  const onSubmit = async (data: ReviewFormValues) => {
+    setIsSubmitting(true);
+    try {
       const result = await submitReviewAction(data);
 
       if (!result.success) {
@@ -116,13 +117,23 @@ export function ReviewForm({
 
       if (review.flagged) {
         toast({ description: t("contactInfoDetected") });
+      } else if (review.published) {
+        toast({ description: t("bothPublished") });
       } else {
         toast({ description: t("reviewSubmitted") });
         toast({ description: t("reviewPendingPublication") });
       }
 
       onSuccess?.();
-    });
+    } catch (error) {
+      console.error("[ReviewForm] Submit error:", error);
+      toast({
+        description: "Erreur lors de la soumission de l'avis",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -211,10 +222,10 @@ export function ReviewForm({
       {/* Submit button */}
       <Button
         type="submit"
-        disabled={isPending}
+        disabled={isSubmitting}
         className="w-full"
       >
-        {isPending ? "Envoi en cours..." : t("submitReview")}
+        {isSubmitting ? "Envoi en cours..." : t("submitReview")}
       </Button>
     </form>
   );

@@ -239,7 +239,12 @@ export async function submitReviewAction(
     //     exist — it publishes only when both are present.
     await publishBothReviews(validData.bookingId);
 
-    return { success: true, data: review };
+    // Re-fetch the review to get the updated published status after publication
+    const updatedReview = await prisma.review.findUnique({
+      where: { id: review.id },
+    });
+
+    return { success: true, data: updatedReview ?? review };
   } catch (error) {
     console.error("[submitReviewAction] Error:", error);
     return { success: false, error: "Erreur lors de la soumission de l'avis" };
