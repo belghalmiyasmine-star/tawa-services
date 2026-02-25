@@ -54,6 +54,24 @@ export interface ReviewWindowStatus {
   otherPartyReviewed: boolean;
 }
 
+export interface FlaggedReview {
+  id: string;
+  bookingId: string;
+  authorId: string;
+  targetId: string;
+  authorRole: string;
+  stars: number;
+  text: string | null;
+  photoUrls: string[];
+  flagged: boolean;
+  flaggedReason: string | null;
+  createdAt: Date;
+  authorName: string | null;
+  targetName: string | null;
+  serviceTitle: string | null;
+  bookingDate: Date | null;
+}
+
 // ============================================================
 // HELPERS
 // ============================================================
@@ -393,5 +411,81 @@ export async function getReviewWindowAction(
       success: false,
       error: "Erreur lors de la vérification de la période d'évaluation",
     };
+  }
+}
+
+/**
+ * Returns all flagged, non-deleted reviews for admin moderation.
+ * Includes booking context (service title, date) and author/target names.
+ * Ordered by createdAt desc (newest flagged first).
+ */
+export async function getFlaggedReviewsAction(): Promise<ActionResult<FlaggedReview[]>> {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id || session.user.role !== "ADMIN") {
+      return { success: false, error: "Accès réservé aux administrateurs" };
+    }
+
+    const rawReviews = await prisma.review.findMany({
+      where: {
+        flagged: true,
+        isDeleted: false,
+      },
+      orderBy: { createdAt: "desc" },
+      select: {
+        id: true,
+        bookingId: true,
+        authorId: true,
+        targetId: true,
+        authorRole: true,
+        stars: true,
+        text: true,
+        photoUrls: true,
+        flagged: true,
+        flaggedReason: true,
+        createdAt: true,
+        booking: {
+          select: {
+            scheduledAt: true,
+            service: { select: { title: true } },
+            client: { select: { name: true } },
+            provider: {
+              select: {
+                user: { select: { name: true } },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    const reviews: FlaggedReview[] = rawReviews.map((r) => ({
+      id: r.id,
+      bookingId: r.bookingId,
+      authorId: r.authorId,
+      targetId: r.targetId,
+      authorRole: r.authorRole,
+      stars: r.stars,
+      text: r.text,
+      photoUrls: r.photoUrls,
+      flagged: r.flagged,
+      flaggedReason: r.flaggedReason,
+      createdAt: r.createdAt,
+      authorName:
+        r.authorRole === "CLIENT"
+          ? (r.booking.client.name ?? null)
+          : (r.booking.provider.user.name ?? null),
+      targetName:
+        r.authorRole === "CLIENT"
+          ? (r.booking.provider.user.name ?? null)
+          : (r.booking.client.name ?? null),
+      serviceTitle: r.booking.service?.title ?? null,
+      bookingDate: r.booking.scheduledAt,
+    }));
+
+    return { success: true, data: reviews };
+  } catch (error) {
+    console.error("[getFlaggedReviewsAction] Error:", error);
+    return { success: false, error: "Erreur lors de la récupération des avis signalés" };
   }
 }

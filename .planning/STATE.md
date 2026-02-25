@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-21)
 ## Current Position
 
 Phase: 8 of 11 (Avis & Evaluations)
-Plan: 4 of 7 in current phase — Plans 08-01, 08-02, 08-03, 08-04 COMPLETE.
-Status: Plan 08-02 COMPLETE — Client review form UI: StarRating (hover preview, size variants), CriteriaRatingGroup (4 criteria + i18n), ReviewPhotoUploader (upload+thumbnails+remove), ReviewForm (react-hook-form+zodResolver+char counter), client review page (/bookings/[bookingId]/review), "Laisser un avis" CTA on booking detail (073cfe5, 37d8274). REVW-01, REVW-03, REVW-04 satisfied. Ready for Plan 08-05.
-Last activity: 2026-02-25 — Plan 08-02 complete. Client review form components and review page wired to booking detail.
+Plan: 5 of 7 in current phase — Plans 08-01, 08-02, 08-03, 08-04, 08-05 COMPLETE.
+Status: Plan 08-05 COMPLETE — Review display components: ReviewCard (avatar, stars, criteria mini-bars, text expand, photo lightbox), RatingBreakdown (average + 5-star distribution bars), CriteriaChart (CSS horizontal bars for 4 criteria), ReviewsList (sort dropdown, load-more pagination), provider profile Avis tab integrated with ReviewsList SSR (81088a2, 2d3004f). REVW-06, REVW-08 satisfied. Ready for Plan 08-06.
+Last activity: 2026-02-25 — Plan 08-05 complete. Review display components created and integrated into provider public profile page.
 
-Progress: [###########] 73%
+Progress: [############] 75%
 
 ## Performance Metrics
 
@@ -268,6 +268,11 @@ Recent decisions affecting current work:
 - [Phase 08-avis-evaluations]: ReviewForm uses setValue for StarRating fields — star clicks bypass native HTML input events, shouldValidate: true triggers Zod validation
 - [Phase 08-avis-evaluations]: Client review page gates on getReviewWindowAction — three states: canReview=form, hasReviewed=confirmation, expired=info message
 - [Phase 08-avis-evaluations]: Laisser un avis CTA only shown when reviewWindow != null (COMPLETED + 10-day window open)
+- [08-05]: CriteriaChart uses CSS-only horizontal bars — recharts not in package.json, avoids new dependency for PFE
+- [08-05]: CriteriaRadarChart.tsx is a re-export alias of CriteriaChart for plan spec compatibility
+- [08-05]: ReviewsList.buildDistribution() derives star distribution from current page reviews — approximate for display, server-side aggregates used for averages
+- [08-05]: Provider profile page fetches initialData server-side for SSR — eliminates Avis tab loading flash
+- [08-05]: ReviewCard photo lightbox uses Radix Dialog with DialogTitle sr-only for accessibility compliance
 
 ### Pending Todos
 
@@ -280,5 +285,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-25
-Stopped at: Completed Phase 8 Plan 08-02 — Client review form UI (StarRating hover preview, CriteriaRatingGroup, ReviewPhotoUploader, ReviewForm react-hook-form, client review page /bookings/[bookingId]/review, "Laisser un avis" CTA on booking detail). 073cfe5, 37d8274. REVW-01, REVW-03, REVW-04 complete.
+Stopped at: Completed Phase 8 Plan 08-05 — Review display components (ReviewCard, RatingBreakdown, CriteriaChart, ReviewsList) created and integrated into provider public profile Avis tab. 81088a2, 2d3004f. REVW-06, REVW-08 complete.
 Resume file: None

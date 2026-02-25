@@ -77,7 +77,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **REVW-05**: 10-day submission window after service completion
 - [x] **REVW-06**: Simultaneous publication (both parties review before either is visible)
 - [x] **REVW-07**: Auto-moderation for defamatory/spam content
-- [ ] **REVW-08**: Rating aggregation displayed on profiles, used for search sorting
+- [x] **REVW-08**: Rating aggregation displayed on profiles, used for search sorting
 
 ### Messaging
 
@@ -212,7 +212,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | REVW-05 | Phase 8 | Complete |
 | REVW-06 | Phase 8 | Complete |
 | REVW-07 | Phase 8 | Complete |
-| REVW-08 | Phase 8 | Pending |
+| REVW-08 | Phase 8 | Complete |
 | MSG-01 | Phase 9 | Pending |
 | MSG-02 | Phase 9 | Pending |
 | MSG-03 | Phase 9 | Pending |

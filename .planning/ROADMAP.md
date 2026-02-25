@@ -452,10 +452,10 @@ sequenceDiagram
 
 Plans:
 - [x] 08-01-PLAN.md — Backend: Zod schemas, review CRUD actions, auto-moderation utility, photo upload API, i18n keys (completed 2026-02-25)
-- [ ] 08-02-PLAN.md — Client review form: StarRating, CriteriaRatingGroup, ReviewPhotoUploader, ReviewForm, client review page
+- [x] 08-02-PLAN.md — Client review form: StarRating, CriteriaRatingGroup, ReviewPhotoUploader, ReviewForm, client review page (completed 2026-02-25)
 - [x] 08-03-PLAN.md — Provider review form: provider review page, booking detail integration (bidirectional) (completed 2026-02-25)
-- [ ] 08-04-PLAN.md — Simultaneous publication logic, 10-day window enforcement, cron expiration job
-- [ ] 08-05-PLAN.md — Review display: ReviewCard, ReviewsList, RatingBreakdown, CriteriaRadarChart components
+- [x] 08-04-PLAN.md — Simultaneous publication logic, 10-day window enforcement, cron expiration job (completed 2026-02-25)
+- [x] 08-05-PLAN.md — Review display: ReviewCard, ReviewsList, RatingBreakdown, CriteriaRadarChart components (completed 2026-02-25)
 - [ ] 08-06-PLAN.md — Provider profile Avis tab integration, admin review moderation page, rating aggregation
 - [ ] 08-07-PLAN.md — Navigation wiring, booking list review indicators, end-to-end verification
 
