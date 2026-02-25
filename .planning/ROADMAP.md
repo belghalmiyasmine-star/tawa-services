@@ -448,16 +448,16 @@ sequenceDiagram
   4. Un avis contenant des informations de contact (email, telephone) ou du contenu defamatoire est automatiquement signale et masque en attente de moderation
   5. La note moyenne sur le profil prestataire se met a jour immediatement apres publication des avis et est utilisee pour trier les resultats de recherche
 
-**Plans**: TBD (environ 6-7 plans)
+**Plans**: 7 plans
 
 Plans:
-- [ ] 08-01: Schema review — criteres notes, photos, statut publication, contrainte unicite par booking/auteur
-- [ ] 08-02: Formulaire evaluation client — react-hook-form, star rating par critere, upload 3 photos, soumission
-- [ ] 08-03: Formulaire evaluation prestataire — meme logique, interface adaptee role
-- [ ] 08-04: Logique publication simultanee — verifier si les deux parties ont soumis avant de rendre visible
-- [ ] 08-05: Fenetre de soumission — job expiration 10 jours, rappel notification J-2, fermeture automatique
-- [ ] 08-06: Auto-moderation — regex detection info contact, score spam, mise en file moderation admin
-- [ ] 08-07: Agregation et affichage — calcul moyenne par critere, recharts radar chart profil, integration tri recherche
+- [ ] 08-01-PLAN.md — Backend: Zod schemas, review CRUD actions, auto-moderation utility, photo upload API, i18n keys
+- [ ] 08-02-PLAN.md — Client review form: StarRating, CriteriaRatingGroup, ReviewPhotoUploader, ReviewForm, client review page
+- [ ] 08-03-PLAN.md — Provider review form: provider review page, booking detail integration (bidirectional)
+- [ ] 08-04-PLAN.md — Simultaneous publication logic, 10-day window enforcement, cron expiration job
+- [ ] 08-05-PLAN.md — Review display: ReviewCard, ReviewsList, RatingBreakdown, CriteriaRadarChart components
+- [ ] 08-06-PLAN.md — Provider profile Avis tab integration, admin review moderation page, rating aggregation
+- [ ] 08-07-PLAN.md — Navigation wiring, booking list review indicators, end-to-end verification
 
 ---
 
