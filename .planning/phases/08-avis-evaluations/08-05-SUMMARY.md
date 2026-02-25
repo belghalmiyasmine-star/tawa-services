@@ -129,3 +129,14 @@ None - no external service configuration required.
 ---
 *Phase: 08-avis-evaluations*
 *Completed: 2026-02-25*
+
+## Self-Check: PASSED
+
+- ReviewCard.tsx: FOUND at src/features/review/components/ReviewCard.tsx
+- RatingBreakdown.tsx: FOUND at src/features/review/components/RatingBreakdown.tsx
+- CriteriaChart.tsx: FOUND at src/features/review/components/CriteriaChart.tsx
+- CriteriaRadarChart.tsx: FOUND at src/features/review/components/CriteriaRadarChart.tsx
+- ReviewsList.tsx: FOUND at src/features/review/components/ReviewsList.tsx
+- Commit 81088a2: FOUND (feat: ReviewCard and RatingBreakdown)
+- Commit 2d3004f: FOUND (feat: ReviewsList and CriteriaChart)
+- Commit 6132128: FOUND (docs: SUMMARY, STATE, ROADMAP, REQUIREMENTS)
