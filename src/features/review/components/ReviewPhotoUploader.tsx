@@ -56,8 +56,8 @@ export function ReviewPhotoUploader({
         throw new Error(data.error ?? "Upload failed");
       }
 
-      const data = (await response.json()) as { url: string };
-      onAdd(data.url);
+      const data = (await response.json()) as { success: boolean; data: { url: string } };
+      onAdd(data.data.url);
       toast({ description: t("photoUploaded") });
     } catch (err) {
       const message = err instanceof Error ? err.message : "Erreur d'upload";
