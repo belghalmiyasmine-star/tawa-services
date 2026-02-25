@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-02-21)
 ## Current Position
 
 Phase: 8 of 11 (Avis & Evaluations)
-Plan: 4 of 7 in current phase — Plans 08-01, 08-03, 08-04 COMPLETE. Plan 08-02 not yet committed.
-Status: Plan 08-03 COMPLETE — Provider review page (/provider/bookings/[bookingId]/review), ReviewForm shared component (authorRole=PROVIDER), "Evaluer le client" CTA in booking detail (4fc0baf). REVW-02 + REVW-03 satisfied. Note: 08-04 was completed earlier (fda4f27, d27198e). Ready for remaining plans.
-Last activity: 2026-02-25 — Plan 08-03 complete. Provider review page, ReviewForm shared component, booking detail review CTA.
+Plan: 4 of 7 in current phase — Plans 08-01, 08-02, 08-03, 08-04 COMPLETE.
+Status: Plan 08-02 COMPLETE — Client review form UI: StarRating (hover preview, size variants), CriteriaRatingGroup (4 criteria + i18n), ReviewPhotoUploader (upload+thumbnails+remove), ReviewForm (react-hook-form+zodResolver+char counter), client review page (/bookings/[bookingId]/review), "Laisser un avis" CTA on booking detail (073cfe5, 37d8274). REVW-01, REVW-03, REVW-04 satisfied. Ready for Plan 08-05.
+Last activity: 2026-02-25 — Plan 08-02 complete. Client review form components and review page wired to booking detail.
 
 Progress: [###########] 73%
 
@@ -69,6 +69,7 @@ Progress: [###########] 73%
 | Phase 07-paiement-simule P03 | 34 | 2 tasks | 6 files |
 | Phase 07-paiement-simule P04 | 25 | 2 tasks | 11 files |
 | Phase 08-avis-evaluations P01 | 28 | 2 tasks | 6 files |
+| Phase 08-avis-evaluations P02 | 10 | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -264,6 +265,9 @@ Recent decisions affecting current work:
 - [08-03]: ReviewForm uses zodResolver(...) as never cast — Zod .default([]) creates input/output type split incompatible with react-hook-form generics
 - [08-03]: authorRole prop in ReviewForm is unused client-side — submitReviewAction determines role from session to prevent spoofing
 - [08-03]: Provider review page reuses getBookingDetailAction ownership guard — no separate ownership check needed in review page
+- [Phase 08-avis-evaluations]: ReviewForm uses setValue for StarRating fields — star clicks bypass native HTML input events, shouldValidate: true triggers Zod validation
+- [Phase 08-avis-evaluations]: Client review page gates on getReviewWindowAction — three states: canReview=form, hasReviewed=confirmation, expired=info message
+- [Phase 08-avis-evaluations]: Laisser un avis CTA only shown when reviewWindow != null (COMPLETED + 10-day window open)
 
 ### Pending Todos
 
@@ -276,5 +280,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-25
-Stopped at: Completed Phase 8 Plan 08-03 — Provider review page, ReviewForm shared component, "Evaluer le client" CTA in booking detail. 4fc0baf. REVW-02 + REVW-03 complete. Note: 08-02 work (StarRating, CriteriaRatingGroup, ReviewPhotoUploader, client review pages) exists but not formally committed under 08-02.
+Stopped at: Completed Phase 8 Plan 08-02 — Client review form UI (StarRating hover preview, CriteriaRatingGroup, ReviewPhotoUploader, ReviewForm react-hook-form, client review page /bookings/[bookingId]/review, "Laisser un avis" CTA on booking detail). 073cfe5, 37d8274. REVW-01, REVW-03, REVW-04 complete.
 Resume file: None

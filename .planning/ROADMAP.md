@@ -591,7 +591,7 @@ Plans:
 | 5. Recherche & Decouverte | 5/5 | Complete   | 2026-02-24 |
 | 6. Systeme de Reservation | 7/7 | Complete    | 2026-02-24 |
 | 7. Paiement Simule | 4/5 | In progress | 2026-02-24 |
-| 8. Avis & Evaluations | 2/7 | In Progress|  |
+| 8. Avis & Evaluations | 4/7 | In Progress|  |
 | 9. Messagerie & Notifications | 0/8 | Not started | - |
 | 10. Panneau d'Administration | 0/9 | Not started | - |
 | 11. Demo Data, Polish & PFE Readiness | 0/7 | Not started | - |
