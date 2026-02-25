@@ -5,14 +5,15 @@
 See: .planning/PROJECT.md (updated 2026-02-21)
 
 **Core value:** Clients can find, book, and pay a trusted local service provider in their city — and providers can get discovered and manage their business in one place.
-**Current focus:** Phase 9 IN PROGRESS — Messagerie & Notifications. Plan 09-04 complete: notification UI (NotificationBell, dropdown, full notifications page, preferences form).
+**Current focus:** Phase 9 IN PROGRESS — Messagerie & Notifications. Plan 09-03 complete: messaging UI (ConversationList, ChatView, MessageBubble, MessageInput, ChatPageLayout, 4 app pages for client+provider). Plan 09-04 complete: notification UI (NotificationBell, dropdown, full notifications page, preferences form).
 
 ## Current Position
 
 Phase: 9 of 11 (Messagerie & Notifications) — IN PROGRESS
 Plan: 4 of N in current phase — Plan 09-04 COMPLETE.
-Status: Plan 09-04 COMPLETE — NotificationBell (polling 10s, red badge), NotificationDropdown (5 recent notifications), NotificationItem (7 type-icons, unread highlight), NotificationsList (Tout/Non lus tabs, cursor pagination), NotificationPreferencesForm (per-type toggles + quiet hours), all client+provider pages. NOTF-01, NOTF-03, NOTF-04 satisfied. Commits: 1056ab6, 5a9c188, 7cb2623.
-Last activity: 2026-02-25 — Plan 09-04 complete. Full notification UI built.
+Status: Plan 09-03 COMPLETE — MessageBubble (right-blue/left-gray bubbles, read receipts Lu/Envoye), MessageInput (Enter-to-send, contact-info-blocked toast), ChatView (forwardRef+useImperativeHandle, 5s polling, auto-scroll, date groups), ChatPageLayout (onMessageSent callback wiring), ConversationList (unread badge, timeAgo, 5s polling). Client+provider app pages at /messages and /messages/[id]. MSG-01, MSG-03, MSG-04 satisfied. Commits: 1056ab6 (components), 495e375 (pages).
+Plan 09-04 COMPLETE — NotificationBell (polling 10s, red badge), NotificationDropdown (5 recent notifications), NotificationItem (7 type-icons, unread highlight), NotificationsList (Tout/Non lus tabs, cursor pagination), NotificationPreferencesForm (per-type toggles + quiet hours), all client+provider pages. NOTF-01, NOTF-03, NOTF-04 satisfied. Commits: 1056ab6, 5a9c188, 7cb2623.
+Last activity: 2026-02-25 — Plans 09-03 and 09-04 complete. Full messaging and notification UI built.
 
 Progress: [################] 89%
 
@@ -74,6 +75,7 @@ Progress: [################] 89%
 | Phase 08-avis-evaluations P07 | 30 | 2 tasks (nav wiring + E2E verification) | 7 files |
 | Phase 09-messagerie-notifications P01 | 25 | 2 tasks | 5 files |
 | Phase 09-messagerie-notifications P02 | 30 | 2 tasks | 6 files |
+| Phase 09-messagerie-notifications P03 | 45 | 2 tasks | 10 files |
 | Phase 09-messagerie-notifications P04 | 45 | 2 tasks | 10 files |
 
 ## Accumulated Context
@@ -302,6 +304,12 @@ Recent decisions affecting current work:
 - [09-04]: NotificationBell allNotificationsUrl prop — role-aware: PROVIDER gets /provider/notifications, CLIENT gets /notifications, passed from Navbar session check
 - [09-04]: fetchUnreadCount wrapped in useCallback with empty deps — satisfies exhaustive-deps ESLint rule, stable across renders
 - [09-04]: Per-type toggles use disabledTypes array for both in-app and email — both channels disabled/enabled by same type entry; master toggles control global channel state independently
+- [09-03]: ChatView uses forwardRef + useImperativeHandle — addOptimisticMessage exposed imperatively to ChatPageLayout, avoids prop drilling while keeping ChatView self-contained
+- [09-03]: ChatPageLayout client wrapper pattern — server pages cannot use hooks, wrapper separates concerns; server provides conversation metadata, client manages interactive state
+- [09-03]: Dynamic href cast as any for Link in ConversationList — typedRoutes: true cannot validate runtime-computed path strings; established pattern from other feature pages
+- [09-03]: getConversationDetailAction added to conversation-queries.ts — server pages need minimal conversation metadata for chat header (otherUser.name, booking.serviceTitle)
+- [09-03]: Near-bottom auto-scroll threshold 100px — isNearBottom() check prevents force-scrolling when user is reading older messages
+- [09-03]: existingIds Set comparison in ChatView polling — O(1) duplicate detection vs O(n) array.find per fetched message
 
 ### Pending Todos
 
@@ -314,5 +322,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-25
-Stopped at: Completed Phase 9 Plan 09-04 — Notification UI: NotificationBell (polling 10s), NotificationDropdown, NotificationItem (7 type icons), NotificationsList (Tout/Non lus tabs), NotificationPreferencesForm (per-type toggles + quiet hours). NOTF-01, NOTF-03, NOTF-04 satisfied.
+Stopped at: Completed Phase 9 Plan 09-03 — Messaging UI: MessageBubble, MessageInput, ChatView (forwardRef+5s polling), ChatPageLayout, ConversationList (5s polling+unread badge), 4 app pages for client+provider. MSG-01, MSG-03, MSG-04 satisfied. Commits: 1056ab6 (components), 495e375 (pages).
 Resume file: None

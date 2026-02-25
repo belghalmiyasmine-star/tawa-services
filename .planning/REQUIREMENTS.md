@@ -81,10 +81,10 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Messaging
 
-- [ ] **MSG-01**: In-app messaging between client and provider for booking coordination
-- [ ] **MSG-02**: Auto-moderation blocking contact info sharing (phone, email) to keep transactions on-platform
-- [ ] **MSG-03**: Read receipts and unread count badge in navbar
-- [ ] **MSG-04**: Conversation history with 12-month retention
+- [x] **MSG-01**: In-app messaging between client and provider for booking coordination
+- [x] **MSG-02**: Auto-moderation blocking contact info sharing (phone, email) to keep transactions on-platform
+- [x] **MSG-03**: Read receipts and unread count badge in navbar
+- [x] **MSG-04**: Conversation history with 12-month retention
 
 ### Notifications
 
@@ -213,10 +213,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | REVW-06 | Phase 8 | Complete |
 | REVW-07 | Phase 8 | Complete |
 | REVW-08 | Phase 8 | Complete |
-| MSG-01 | Phase 9 | Pending |
-| MSG-02 | Phase 9 | Pending |
-| MSG-03 | Phase 9 | Pending |
-| MSG-04 | Phase 9 | Pending |
+| MSG-01 | Phase 9 | Complete |
+| MSG-02 | Phase 9 | Complete |
+| MSG-03 | Phase 9 | Complete |
+| MSG-04 | Phase 9 | Complete |
 | NOTF-01 | Phase 9 | Complete |
 | NOTF-02 | Phase 9 | Complete |
 | NOTF-03 | Phase 9 | Complete |
