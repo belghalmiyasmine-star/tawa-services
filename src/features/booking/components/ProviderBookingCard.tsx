@@ -1,12 +1,13 @@
 "use client";
 
-import { Calendar, User, MapPin } from "lucide-react";
+import { Calendar, User, MapPin, Star, Clock, CheckCircle } from "lucide-react";
 import Image from "next/image";
 
 import { Link } from "@/i18n/routing";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import type { BookingStatus } from "@prisma/client";
+import type { BookingReviewStatus } from "@/features/booking/actions/booking-queries";
 
 interface ProviderBookingCardProps {
   booking: {
@@ -23,6 +24,7 @@ interface ProviderBookingCardProps {
       firstName: string | null;
       lastName: string | null;
     } | null;
+    reviewStatus?: BookingReviewStatus;
   };
 }
 
@@ -138,6 +140,26 @@ export function ProviderBookingCard({ booking }: ProviderBookingCardProps) {
                 <p className="mt-1 truncate text-xs text-muted-foreground">
                   &quot;{booking.clientNote}&quot;
                 </p>
+              )}
+
+              {/* Review status indicator for COMPLETED bookings */}
+              {booking.reviewStatus === "can_review" && (
+                <div className="mt-2 flex items-center gap-1.5 text-xs font-medium text-amber-600">
+                  <Star className="h-3 w-3" />
+                  <span>Laisser un avis</span>
+                </div>
+              )}
+              {booking.reviewStatus === "pending_publication" && (
+                <div className="mt-2 flex items-center gap-1.5 text-xs text-muted-foreground">
+                  <Clock className="h-3 w-3" />
+                  <span>Avis soumis, en attente</span>
+                </div>
+              )}
+              {booking.reviewStatus === "published" && (
+                <div className="mt-2 flex items-center gap-1.5 text-xs text-green-600">
+                  <CheckCircle className="h-3 w-3" />
+                  <span>Avis publie</span>
+                </div>
               )}
             </div>
           </div>

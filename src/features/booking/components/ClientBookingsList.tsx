@@ -57,6 +57,7 @@ function toCardBooking(b: BookingListItem): {
   service: { title: string; photoUrls: string[] };
   provider: { displayName: string; photoUrl: string | null } | null;
   payment: { method: string; status: string } | null;
+  reviewStatus: BookingListItem["reviewStatus"];
 } {
   return {
     id: b.id,
@@ -79,6 +80,7 @@ function toCardBooking(b: BookingListItem): {
           status: b.payment.status,
         }
       : null,
+    reviewStatus: b.reviewStatus,
   };
 }
 

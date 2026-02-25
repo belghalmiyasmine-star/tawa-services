@@ -1,6 +1,6 @@
 "use client";
 
-import { Calendar, MapPin, User, CreditCard } from "lucide-react";
+import { Calendar, MapPin, User, CreditCard, Star, Clock, CheckCircle } from "lucide-react";
 import Image from "next/image";
 
 import { Link } from "@/i18n/routing";
@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import type { BookingStatus } from "@prisma/client";
+import type { BookingReviewStatus } from "@/features/booking/actions/booking-queries";
 
 // ============================================================
 // TYPES
@@ -31,6 +32,7 @@ export interface ClientBookingCardProps {
       method: string;
       status: string;
     } | null;
+    reviewStatus?: BookingReviewStatus;
   };
   /** Called when "Annuler" is clicked — parent opens CancelBookingDialog */
   onCancelClick?: (bookingId: string) => void;
@@ -231,6 +233,36 @@ export function ClientBookingCard({
                 )}
               </div>
             </div>
+
+            {/* Review status indicator for COMPLETED bookings */}
+            {booking.reviewStatus === "can_review" && (
+              <div className="mt-2 border-t pt-2">
+                <Link
+                  href={`/bookings/${booking.id}/review` as never}
+                  className="flex items-center gap-1.5 text-xs font-medium text-amber-600 hover:text-amber-700"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <Star className="h-3 w-3" />
+                  <span>Laisser un avis</span>
+                </Link>
+              </div>
+            )}
+            {booking.reviewStatus === "pending_publication" && (
+              <div className="mt-2 border-t pt-2">
+                <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                  <Clock className="h-3 w-3" />
+                  <span>Avis soumis, en attente</span>
+                </div>
+              </div>
+            )}
+            {booking.reviewStatus === "published" && (
+              <div className="mt-2 border-t pt-2">
+                <div className="flex items-center gap-1.5 text-xs text-green-600">
+                  <CheckCircle className="h-3 w-3" />
+                  <span>Avis publie</span>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </CardContent>

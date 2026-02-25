@@ -87,6 +87,7 @@ export function ProviderBookingsList({
         photoUrls: b.service.photoUrl ? [b.service.photoUrl] : [],
       },
       client: b.client ?? null,
+      reviewStatus: b.reviewStatus,
     };
   }
 

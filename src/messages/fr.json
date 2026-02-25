@@ -52,7 +52,8 @@
     "availability": "Disponibilites",
     "portfolio": "Portfolio",
     "certifications": "Certifications",
-    "allCategories": "Toutes les categories"
+    "allCategories": "Toutes les categories",
+    "adminReviews": "Moderation avis"
   },
   "home": {
     "title": "Tawa Services",
@@ -518,7 +519,11 @@
     "contactInfoDetected": "Votre avis contient des informations de contact et sera examine par un moderateur",
     "criteriaRatings": "Notes par critere",
     "photosLabel": "Photos",
-    "verifiedBooking": "Reservation verifiee"
+    "verifiedBooking": "Reservation verifiee",
+    "statusPending": "Avis soumis, en attente",
+    "statusPublished": "Avis publie",
+    "leaveReview": "Laisser un avis",
+    "windowClosed": "Periode d'evaluation terminee"
   },
   "errors": {
     "required": "Ce champ est requis",

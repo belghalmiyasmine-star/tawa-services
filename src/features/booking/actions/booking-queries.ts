@@ -11,6 +11,20 @@ import type { BookingStatus, QuoteStatus } from "@prisma/client";
 // TYPES
 // ============================================================
 
+/**
+ * Review status for a completed booking from the current user's perspective.
+ * - "can_review": window open, not yet reviewed
+ * - "pending_publication": reviewed but waiting for other party
+ * - "published": both reviews published
+ * - "window_closed": window expired, not reviewed
+ */
+export type BookingReviewStatus =
+  | "can_review"
+  | "pending_publication"
+  | "published"
+  | "window_closed"
+  | null;
+
 export interface BookingListItem {
   id: string;
   status: BookingStatus;
@@ -36,6 +50,8 @@ export interface BookingListItem {
     method: string;
     status: string;
   } | null;
+  /** Review status indicator for COMPLETED bookings. Null for non-completed bookings. */
+  reviewStatus: BookingReviewStatus;
 }
 
 export interface BookingDetail {
@@ -184,6 +200,14 @@ export async function getClientBookingsAction(filters?: {
               status: true,
             },
           },
+          reviews: {
+            where: { isDeleted: false },
+            select: {
+              authorId: true,
+              authorRole: true,
+              published: true,
+            },
+          },
         },
         orderBy: { createdAt: "desc" },
         skip,
@@ -191,33 +215,57 @@ export async function getClientBookingsAction(filters?: {
       }),
     ]);
 
-    const bookings: BookingListItem[] = rawBookings.map((b) => ({
-      id: b.id,
-      status: b.status,
-      scheduledAt: b.scheduledAt,
-      completedAt: b.completedAt,
-      totalAmount: b.totalAmount,
-      createdAt: b.createdAt,
-      service: {
-        title: b.service.title,
-        photoUrl: b.service.photoUrls[0] ?? null,
-        pricingType: b.service.pricingType,
-        fixedPrice: b.service.fixedPrice,
-      },
-      provider: b.provider
-        ? {
-            displayName: b.provider.displayName,
-            photoUrl: b.provider.photoUrl,
-          }
-        : null,
-      client: null,
-      payment: b.payment
-        ? {
-            method: b.payment.method,
-            status: b.payment.status,
-          }
-        : null,
-    }));
+    const bookings: BookingListItem[] = rawBookings.map((b) => {
+      // Compute review status for COMPLETED bookings
+      let reviewStatus: BookingReviewStatus = null;
+      if (b.status === "COMPLETED" && b.completedAt) {
+        const deadline = new Date(b.completedAt);
+        deadline.setDate(deadline.getDate() + 10);
+        const windowOpen = new Date() <= deadline;
+
+        const myReview = b.reviews.find((r) => r.authorId === userId);
+        const otherReview = b.reviews.find((r) => r.authorId !== userId);
+
+        if (myReview) {
+          // Already reviewed
+          const bothPublished = myReview.published && otherReview?.published;
+          reviewStatus = bothPublished ? "published" : "pending_publication";
+        } else if (windowOpen) {
+          reviewStatus = "can_review";
+        } else {
+          reviewStatus = "window_closed";
+        }
+      }
+
+      return {
+        id: b.id,
+        status: b.status,
+        scheduledAt: b.scheduledAt,
+        completedAt: b.completedAt,
+        totalAmount: b.totalAmount,
+        createdAt: b.createdAt,
+        service: {
+          title: b.service.title,
+          photoUrl: b.service.photoUrls[0] ?? null,
+          pricingType: b.service.pricingType,
+          fixedPrice: b.service.fixedPrice,
+        },
+        provider: b.provider
+          ? {
+              displayName: b.provider.displayName,
+              photoUrl: b.provider.photoUrl,
+            }
+          : null,
+        client: null,
+        payment: b.payment
+          ? {
+              method: b.payment.method,
+              status: b.payment.status,
+            }
+          : null,
+        reviewStatus,
+      };
+    });
 
     return {
       success: true,
@@ -301,6 +349,14 @@ export async function getProviderBookingsAction(filters?: {
               status: true,
             },
           },
+          reviews: {
+            where: { isDeleted: false },
+            select: {
+              authorId: true,
+              authorRole: true,
+              published: true,
+            },
+          },
         },
         orderBy: { createdAt: "desc" },
         skip,
@@ -313,6 +369,26 @@ export async function getProviderBookingsAction(filters?: {
       const nameParts = b.client.name?.split(" ") ?? [];
       const firstName = nameParts[0] ?? null;
       const lastName = nameParts.slice(1).join(" ") || null;
+
+      // Compute review status for COMPLETED bookings
+      let reviewStatus: BookingReviewStatus = null;
+      if (b.status === "COMPLETED" && b.completedAt) {
+        const deadline = new Date(b.completedAt);
+        deadline.setDate(deadline.getDate() + 10);
+        const windowOpen = new Date() <= deadline;
+
+        const myReview = b.reviews.find((r) => r.authorId === userId);
+        const otherReview = b.reviews.find((r) => r.authorId !== userId);
+
+        if (myReview) {
+          const bothPublished = myReview.published && otherReview?.published;
+          reviewStatus = bothPublished ? "published" : "pending_publication";
+        } else if (windowOpen) {
+          reviewStatus = "can_review";
+        } else {
+          reviewStatus = "window_closed";
+        }
+      }
 
       return {
         id: b.id,
@@ -332,6 +408,7 @@ export async function getProviderBookingsAction(filters?: {
         payment: b.payment
           ? { method: b.payment.method, status: b.payment.status }
           : null,
+        reviewStatus,
       };
     });
 
