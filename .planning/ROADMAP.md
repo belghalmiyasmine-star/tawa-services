@@ -479,7 +479,7 @@ Plans:
 **Plans**: 5 plans
 
 Plans:
-- [ ] 09-01-PLAN.md — Messaging backend: Zod schemas, server actions CRUD, message moderation, i18n keys
+- [x] 09-01-PLAN.md — Messaging backend: Zod schemas, server actions CRUD, message moderation, i18n keys
 - [ ] 09-02-PLAN.md — Notification backend: server actions, central dispatcher, email templates (Resend), i18n keys
 - [ ] 09-03-PLAN.md — Messaging UI: conversation list, chat view with 5s polling, message bubbles, read receipts
 - [ ] 09-04-PLAN.md — Notification UI: bell dropdown, notifications page (Tout/Non lus), preferences form

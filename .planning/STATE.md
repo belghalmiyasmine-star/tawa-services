@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-21)
 
 **Core value:** Clients can find, book, and pay a trusted local service provider in their city — and providers can get discovered and manage their business in one place.
-**Current focus:** Phase 8 COMPLETE — Avis & Evaluations all 7 plans done. Phase 7 complete — payment simulation, checkout, earnings dashboard, invoices/statements verified end-to-end.
+**Current focus:** Phase 9 IN PROGRESS — Messagerie & Notifications. Plan 09-01 complete: messaging backend (schemas, moderation, server actions, conversation queries).
 
 ## Current Position
 
-Phase: 8 of 11 (Avis & Evaluations) — PHASE COMPLETE
-Plan: 7 of 7 in current phase — Plans 08-01 through 08-07 ALL COMPLETE.
-Status: Plan 08-07 COMPLETE — Admin sidebar 'Moderation avis' link, BookingReviewStatus indicators on client/provider booking lists, E2E flow verified (c7fe9f6). REVW-01, REVW-08 satisfied. Phase 8 complete. Ready for Phase 9 (Messagerie & Notifications).
-Last activity: 2026-02-25 — Plan 08-07 complete. Full review system wired end-to-end.
+Phase: 9 of 11 (Messagerie & Notifications) — IN PROGRESS
+Plan: 1 of N in current phase — Plan 09-01 COMPLETE.
+Status: Plan 09-01 COMPLETE — Messaging schemas, moderation utility (contact info blocking pre-booking), sendMessageAction, markMessagesAsReadAction, getConversationsAction, getConversationMessagesAction (cursor-paginated), getUnreadCountAction, getOrCreateConversationAction. MSG-01, MSG-02, MSG-04 satisfied. Commits: b48500c, 7345d6f.
+Last activity: 2026-02-25 — Plan 09-01 complete. Full messaging data layer built.
 
-Progress: [##############] 82%
+Progress: [###############] 85%
 
 ## Performance Metrics
 
@@ -72,6 +72,7 @@ Progress: [##############] 82%
 | Phase 08-avis-evaluations P02 | 10 | 2 tasks | 6 files |
 | Phase 08-avis-evaluations P06 | 15 | 2 tasks | 4 files |
 | Phase 08-avis-evaluations P07 | 30 | 2 tasks (nav wiring + E2E verification) | 7 files |
+| Phase 09-messagerie-notifications P01 | 25 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -283,6 +284,11 @@ Recent decisions affecting current work:
 - [08-07]: BookingReviewStatus derived server-side in list queries — reviews included in Prisma query, no extra server action call per booking card
 - [08-07]: Review status chip inline in booking cards — no additional client component needed (amber=can_review, gray=pending, green=published, window_closed=no indicator)
 - [08-07]: Task 2 E2E verification required no code changes — all review flow components correctly implemented in 08-01 through 08-06
+- [09-01]: Regex patterns copied from review/lib/moderation.ts rather than imported — messaging moderation may evolve independently of review moderation
+- [09-01]: moderateMessageContent accepts bookingStatus as string (not BookingStatus enum) — avoids importing Prisma enum into moderation utility; Set<string> comparison works correctly
+- [09-01]: Cursor-based pagination uses createdAt ISO string as cursor — messages fetched DESC then reversed for oldest-first display
+- [09-01]: verifyConversationParticipant is a shared internal helper (not exported) used by sendMessageAction and markMessagesAsReadAction
+- [09-01]: getOrCreateConversationAction uses prisma.conversation.upsert with bookingId unique constraint — idempotent, safe to call multiple times
 
 ### Pending Todos
 
@@ -295,5 +301,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-25
-Stopped at: Completed Phase 8 Plan 08-07 — Admin sidebar reviews link, booking list review status indicators (c7fe9f6), E2E flow verified. Phase 8 complete. Ready for Phase 9.
+Stopped at: Completed Phase 9 Plan 09-01 — Messaging schemas, moderation, server actions, conversation queries (b48500c, 7345d6f). MSG-01, MSG-02, MSG-04 satisfied. Ready for Plan 09-02.
 Resume file: None
