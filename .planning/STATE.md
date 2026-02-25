@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-02-21)
 ## Current Position
 
 Phase: 8 of 11 (Avis & Evaluations)
-Plan: 4 of 7 in current phase — Plan 08-04 COMPLETE.
-Status: Plan 08-04 COMPLETE — Publication logic and cron: publication.ts (publishBothReviews, publishSoloReviewIfExpired, checkAndCloseExpiredWindows, isReviewWindowOpen), /api/cron/reviews endpoint, vercel.json updated (fda4f27, d27198e). REVW-05 + REVW-06 satisfied. Ready for Plan 08-05.
-Last activity: 2026-02-25 — Plan 08-04 complete. Double-blind publication logic extracted to publication.ts, daily cron for expired review windows, isReviewWindowOpen pure function.
+Plan: 4 of 7 in current phase — Plans 08-01, 08-03, 08-04 COMPLETE. Plan 08-02 not yet committed.
+Status: Plan 08-03 COMPLETE — Provider review page (/provider/bookings/[bookingId]/review), ReviewForm shared component (authorRole=PROVIDER), "Evaluer le client" CTA in booking detail (4fc0baf). REVW-02 + REVW-03 satisfied. Note: 08-04 was completed earlier (fda4f27, d27198e). Ready for remaining plans.
+Last activity: 2026-02-25 — Plan 08-03 complete. Provider review page, ReviewForm shared component, booking detail review CTA.
 
 Progress: [###########] 73%
 
@@ -261,6 +261,9 @@ Recent decisions affecting current work:
 - [08-04]: checkAndCloseExpiredWindows uses completedAt [11, 10] day window — daily cron processes each booking exactly once
 - [08-04]: cron/reviews schedule 0 2 * * * (daily 2 AM) — review windows are day-granularity not hour-critical
 - [08-04]: isReviewWindowOpen pure function — no DB call, reusable in server actions and UI components
+- [08-03]: ReviewForm uses zodResolver(...) as never cast — Zod .default([]) creates input/output type split incompatible with react-hook-form generics
+- [08-03]: authorRole prop in ReviewForm is unused client-side — submitReviewAction determines role from session to prevent spoofing
+- [08-03]: Provider review page reuses getBookingDetailAction ownership guard — no separate ownership check needed in review page
 
 ### Pending Todos
 
@@ -273,5 +276,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-25
-Stopped at: Completed Phase 8 Plan 08-04 — Publication logic and cron (publication.ts, /api/cron/reviews, vercel.json). fda4f27, d27198e. REVW-05 + REVW-06 complete. Ready for Plan 08-05.
+Stopped at: Completed Phase 8 Plan 08-03 — Provider review page, ReviewForm shared component, "Evaluer le client" CTA in booking detail. 4fc0baf. REVW-02 + REVW-03 complete. Note: 08-02 work (StarRating, CriteriaRatingGroup, ReviewPhotoUploader, client review pages) exists but not formally committed under 08-02.
 Resume file: None
