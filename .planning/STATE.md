@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-21)
 
 **Core value:** Clients can find, book, and pay a trusted local service provider in their city — and providers can get discovered and manage their business in one place.
-**Current focus:** Phase 7 — Paiement Simule. Phase 6 complete — full dual-flow booking system (direct + sur devis) verified end-to-end.
+**Current focus:** Phase 8 — Avis & Evaluations. Phase 7 complete — payment simulation, checkout, earnings dashboard, invoices/statements verified end-to-end.
 
 ## Current Position
 
-Phase: 7 of 11 (Paiement Simule)
-Plan: 4 of 5 in current phase — Plan 07-04 COMPLETE.
-Status: Plan 07-04 COMPLETE — Invoice generation (TAWA-INV numbers, printable HTML), monthly statement page, navigation links wired between earnings dashboard and invoices/statements (a71dc26, def94a1). Ready for Plan 07-05.
-Last activity: 2026-02-24 — Plan 07-04 complete. PAY-04 (auto-generated invoices), PAY-05 (monthly statements), PAY-07 (5-year retention notice) requirements satisfied.
+Phase: 8 of 11 (Avis & Evaluations)
+Plan: 1 of 4 in current phase — Plan 08-01 COMPLETE.
+Status: Plan 08-01 COMPLETE — Review backend foundation: Zod schemas, server actions (submit+query), auto-moderation (contact/spam), photo upload API, 40 i18n keys (19d81a3, f0dafe8). REVW-01 through REVW-05 + REVW-07 satisfied. Ready for Plan 08-02.
+Last activity: 2026-02-25 — Plan 08-01 complete. Review schema (5 criteria), double-blind publish, moderateReviewContent, getProviderReviewsAction, /api/review/photos.
 
-Progress: [##########] 70%
+Progress: [###########] 73%
 
 ## Performance Metrics
 
@@ -68,6 +68,7 @@ Progress: [##########] 70%
 | Phase 07-paiement-simule P02 | 35 | 2 tasks | 5 files |
 | Phase 07-paiement-simule P03 | 34 | 2 tasks | 6 files |
 | Phase 07-paiement-simule P04 | 25 | 2 tasks | 11 files |
+| Phase 08-avis-evaluations P01 | 28 | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -249,6 +250,12 @@ Recent decisions affecting current work:
 - [07-04]: @media print targets #invoice-printable and #statement-printable divs — allows clean printing without nav/footer
 - [07-04]: Provider invoice page fetches payment first to extract bookingId, then calls getInvoiceDataAction — single auth source
 - [07-04]: getMonthlyStatementAction uses startOfMonth/startOfNextMonth date range for precise month filtering
+- [08-01]: Double-blind publish: both client and provider must review before either review is published — prevents bias from seeing the other's review first
+- [08-01]: moderateReviewContent returns flagged=true if hasContact OR spamScore > 60 — flagged reviews stored but not auto-published
+- [08-01]: updateProviderRating is not exported as server action — internal helper called only within publishBothReviews
+- [08-01]: getProviderReviewsAction accepts providerId (not userId) — resolves to userId internally for targetId matching
+- [08-01]: Photo upload route saves to /public/uploads/reviews/[userId]/[uuid].ext — max 3 photos enforced at schema level
+- [08-01]: Author first name only in getProviderReviewsAction — extracted from User.name full name for privacy
 
 ### Pending Todos
 
@@ -260,6 +267,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-02-24
-Stopped at: Completed Phase 7 Plan 07-04 — invoice generation (TAWA-INV numbers, printable HTML template), monthly statement page, navigation links wired (a71dc26, def94a1). PAY-04, PAY-05, PAY-07 complete. Ready for Plan 07-05.
+Last session: 2026-02-25
+Stopped at: Completed Phase 8 Plan 08-01 — Review backend foundation (Zod schema, server actions, auto-moderation, photo upload API, 40 i18n keys). 19d81a3, f0dafe8. REVW-01 through REVW-05 + REVW-07 complete. Ready for Plan 08-02.
 Resume file: None

@@ -451,7 +451,7 @@ sequenceDiagram
 **Plans**: 7 plans
 
 Plans:
-- [ ] 08-01-PLAN.md — Backend: Zod schemas, review CRUD actions, auto-moderation utility, photo upload API, i18n keys
+- [x] 08-01-PLAN.md — Backend: Zod schemas, review CRUD actions, auto-moderation utility, photo upload API, i18n keys (completed 2026-02-25)
 - [ ] 08-02-PLAN.md — Client review form: StarRating, CriteriaRatingGroup, ReviewPhotoUploader, ReviewForm, client review page
 - [ ] 08-03-PLAN.md — Provider review form: provider review page, booking detail integration (bidirectional)
 - [ ] 08-04-PLAN.md — Simultaneous publication logic, 10-day window enforcement, cron expiration job

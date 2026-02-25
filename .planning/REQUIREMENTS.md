@@ -70,13 +70,13 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Reviews & Ratings
 
-- [ ] **REVW-01**: Client can rate provider 1-5 stars with text review after service completion
-- [ ] **REVW-02**: Provider can rate client (bidirectional rating system)
-- [ ] **REVW-03**: Criteria-based ratings: quality, punctuality, communication, cleanliness
-- [ ] **REVW-04**: Photo upload with reviews (max 3 photos)
-- [ ] **REVW-05**: 10-day submission window after service completion
+- [x] **REVW-01**: Client can rate provider 1-5 stars with text review after service completion
+- [x] **REVW-02**: Provider can rate client (bidirectional rating system)
+- [x] **REVW-03**: Criteria-based ratings: quality, punctuality, communication, cleanliness
+- [x] **REVW-04**: Photo upload with reviews (max 3 photos)
+- [x] **REVW-05**: 10-day submission window after service completion
 - [ ] **REVW-06**: Simultaneous publication (both parties review before either is visible)
-- [ ] **REVW-07**: Auto-moderation for defamatory/spam content
+- [x] **REVW-07**: Auto-moderation for defamatory/spam content
 - [ ] **REVW-08**: Rating aggregation displayed on profiles, used for search sorting
 
 ### Messaging
@@ -205,13 +205,13 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PAY-06 | Phase 7 | Complete |
 | PAY-07 | Phase 7 | Complete |
 | PAY-08 | Phase 7 | Complete |
-| REVW-01 | Phase 8 | Pending |
-| REVW-02 | Phase 8 | Pending |
-| REVW-03 | Phase 8 | Pending |
-| REVW-04 | Phase 8 | Pending |
-| REVW-05 | Phase 8 | Pending |
+| REVW-01 | Phase 8 | Complete |
+| REVW-02 | Phase 8 | Complete |
+| REVW-03 | Phase 8 | Complete |
+| REVW-04 | Phase 8 | Complete |
+| REVW-05 | Phase 8 | Complete |
 | REVW-06 | Phase 8 | Pending |
-| REVW-07 | Phase 8 | Pending |
+| REVW-07 | Phase 8 | Complete |
 | REVW-08 | Phase 8 | Pending |
 | MSG-01 | Phase 9 | Pending |
 | MSG-02 | Phase 9 | Pending |
