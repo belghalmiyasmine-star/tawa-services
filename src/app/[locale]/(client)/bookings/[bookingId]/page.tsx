@@ -22,6 +22,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { StatusTimeline } from "@/features/booking/components/StatusTimeline";
 import { CancelBookingButton } from "@/features/booking/components/CancelBookingButton";
+import { ContactButton } from "@/features/messaging/components/ContactButton";
 import type { BookingStatus } from "@prisma/client";
 
 export const metadata: Metadata = {
@@ -144,6 +145,10 @@ export default async function ClientBookingDetailPage({ params }: Props) {
   const providerName = booking.provider.displayName;
   const canCancel =
     booking.status === "PENDING" || booking.status === "ACCEPTED";
+  const canContact =
+    booking.status === "PENDING" ||
+    booking.status === "ACCEPTED" ||
+    booking.status === "IN_PROGRESS";
 
   return (
     <div className="container mx-auto max-w-3xl px-4 py-8">
@@ -492,19 +497,30 @@ export default async function ClientBookingDetailPage({ params }: Props) {
           </div>
         </div>
 
-        {/* Cancel button — only for PENDING or ACCEPTED bookings */}
-        {canCancel && (
+        {/* Actions — cancel (PENDING/ACCEPTED) and contact (PENDING/ACCEPTED/IN_PROGRESS) */}
+        {(canCancel || canContact) && (
           <div className="rounded-xl border bg-card p-4">
             <h2 className="mb-3 text-sm font-semibold text-muted-foreground">
               Actions
             </h2>
-            <CancelBookingButton
-              bookingId={booking.id}
-              scheduledAt={
-                booking.scheduledAt ? new Date(booking.scheduledAt) : null
-              }
-              totalAmount={booking.totalAmount}
-            />
+            <div className="flex flex-wrap gap-3">
+              {canContact && (
+                <ContactButton
+                  bookingId={booking.id}
+                  label="Contacter le prestataire"
+                  basePath="/messages"
+                />
+              )}
+              {canCancel && (
+                <CancelBookingButton
+                  bookingId={booking.id}
+                  scheduledAt={
+                    booking.scheduledAt ? new Date(booking.scheduledAt) : null
+                  }
+                  totalAmount={booking.totalAmount}
+                />
+              )}
+            </div>
           </div>
         )}
 

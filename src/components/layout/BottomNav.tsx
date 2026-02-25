@@ -1,5 +1,6 @@
 "use client";
 
+import { useCallback, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import {
   Home,
@@ -12,6 +13,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Link, usePathname } from "@/i18n/routing";
+import { getUnreadCountAction } from "@/features/messaging/actions/conversation-queries";
 
 type NavItem = {
   href: string;
@@ -33,7 +35,7 @@ const PROVIDER_ITEMS: NavItem[] = [
   { href: "/provider/dashboard", icon: LayoutDashboard, labelKey: "dashboard" },
   { href: "/provider/services", icon: Briefcase, labelKey: "services" },
   { href: "/provider/bookings", icon: CalendarCheck, labelKey: "bookings" },
-  { href: "/messages", icon: MessageSquare, labelKey: "messages" },
+  { href: "/provider/messages", icon: MessageSquare, labelKey: "messages" },
   { href: "/profile", icon: User, labelKey: "profile" },
 ];
 
@@ -46,11 +48,32 @@ export function BottomNav({ role = "CLIENT" }: BottomNavProps) {
   const t = useTranslations("navigation");
   const items = role === "PROVIDER" ? PROVIDER_ITEMS : CLIENT_ITEMS;
 
+  // Unread message count for badge on messages link
+  const [unreadMessages, setUnreadMessages] = useState(0);
+
+  const fetchUnreadCount = useCallback(async () => {
+    try {
+      const result = await getUnreadCountAction();
+      if (result.success) {
+        setUnreadMessages(result.data.total);
+      }
+    } catch {
+      // Badge is non-critical — silently ignore errors
+    }
+  }, []);
+
+  useEffect(() => {
+    void fetchUnreadCount();
+    const interval = setInterval(() => void fetchUnreadCount(), 10000);
+    return () => clearInterval(interval);
+  }, [fetchUnreadCount]);
+
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 border-t bg-background md:hidden">
       <div className="flex h-16 items-center justify-around px-2">
         {items.map((item) => {
           const Icon = item.icon;
+          const isMessages = item.labelKey === "messages";
           const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
 
           return (
@@ -62,7 +85,15 @@ export function BottomNav({ role = "CLIENT" }: BottomNavProps) {
                 isActive ? "text-primary" : "text-muted-foreground hover:text-foreground"
               )}
             >
-              <Icon className={cn("h-5 w-5", isActive && "stroke-[2.5px]")} />
+              {/* Icon with unread badge for messages */}
+              <div className="relative">
+                <Icon className={cn("h-5 w-5", isActive && "stroke-[2.5px]")} />
+                {isMessages && unreadMessages > 0 && (
+                  <span className="absolute -right-1.5 -top-1.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-destructive px-0.5 text-[9px] font-bold text-destructive-foreground">
+                    {unreadMessages > 99 ? "99+" : unreadMessages}
+                  </span>
+                )}
+              </div>
               <span className={cn(isActive && "font-medium")}>{t(item.labelKey)}</span>
             </Link>
           );

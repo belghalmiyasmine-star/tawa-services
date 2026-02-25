@@ -2,8 +2,8 @@
 
 import { useTranslations } from "next-intl";
 import { signOut, useSession } from "next-auth/react";
-import { CalendarCheck, ChevronDown, LogOut, Menu, Settings, User } from "lucide-react";
-import { useEffect, useState } from "react";
+import { CalendarCheck, ChevronDown, LogOut, Menu, MessageSquare, Settings, User } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -18,6 +18,7 @@ import { LocaleSwitcher } from "@/components/shared/LocaleSwitcher";
 import { NotificationBell } from "@/features/notification/components/NotificationBell";
 import { SearchAutocomplete } from "@/features/search/components/SearchAutocomplete";
 import { Link } from "@/i18n/routing";
+import { getUnreadCountAction } from "@/features/messaging/actions/conversation-queries";
 
 // ============================================================
 // TYPES
@@ -59,6 +60,9 @@ export function Navbar() {
   const [categories, setCategories] = useState<NavCategory[]>([]);
   const [categoriesLoaded, setCategoriesLoaded] = useState(false);
 
+  // Unread message count for badge on messages icon
+  const [unreadMessages, setUnreadMessages] = useState(0);
+
   useEffect(() => {
     let cancelled = false;
 
@@ -82,6 +86,24 @@ export function Navbar() {
       cancelled = true;
     };
   }, []);
+
+  const fetchUnreadMessages = useCallback(async () => {
+    if (status !== "authenticated") return;
+    try {
+      const result = await getUnreadCountAction();
+      if (result.success) {
+        setUnreadMessages(result.data.total);
+      }
+    } catch {
+      // Badge is non-critical — silently ignore errors
+    }
+  }, [status]);
+
+  useEffect(() => {
+    void fetchUnreadMessages();
+    const interval = setInterval(() => void fetchUnreadMessages(), 10000);
+    return () => clearInterval(interval);
+  }, [fetchUnreadMessages]);
 
   return (
     <header className="sticky top-0 z-50 hidden w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 md:block">
@@ -153,6 +175,21 @@ export function Navbar() {
         <div className="flex items-center gap-2">
           <LocaleSwitcher />
           <ThemeToggle />
+          {/* Messages icon with unread badge — for authenticated users */}
+          {status === "authenticated" && session?.user ? (
+            <Button variant="ghost" size="sm" asChild className="relative px-2">
+              <Link
+                href={(session.user.role === "PROVIDER" ? "/provider/messages" : "/messages") as never}
+              >
+                <MessageSquare className="h-5 w-5" />
+                {unreadMessages > 0 && (
+                  <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-destructive px-0.5 text-[9px] font-bold text-destructive-foreground">
+                    {unreadMessages > 99 ? "99+" : unreadMessages}
+                  </span>
+                )}
+              </Link>
+            </Button>
+          ) : null}
           {/* NotificationBell — shows red unread badge, opens dropdown */}
           {status === "authenticated" && session?.user ? (
             <NotificationBell

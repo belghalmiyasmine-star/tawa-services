@@ -14,6 +14,7 @@ import { Separator } from "@/components/ui/separator";
 import { Link } from "@/i18n/routing";
 import { BookingActions } from "@/features/booking/components/BookingActions";
 import { getReviewWindowAction } from "@/features/review/actions/review-queries";
+import { ContactButton } from "@/features/messaging/components/ContactButton";
 import type { BookingStatus } from "@prisma/client";
 
 export const metadata: Metadata = {
@@ -483,7 +484,14 @@ export default async function ProviderBookingDetailPage({ params }: Props) {
           <h2 className="mb-3 text-sm font-semibold text-muted-foreground">
             Actions
           </h2>
-          <BookingActions bookingId={booking.id} status={booking.status} />
+          <div className="flex flex-wrap gap-3">
+            <ContactButton
+              bookingId={booking.id}
+              label="Contacter le client"
+              basePath="/provider/messages"
+            />
+            <BookingActions bookingId={booking.id} status={booking.status} />
+          </div>
         </div>
       )}
 

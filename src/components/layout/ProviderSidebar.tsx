@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { signOut } from "next-auth/react";
 import { Link, usePathname } from "@/i18n/routing";
@@ -11,6 +11,8 @@ import {
   UserPen,
   ShieldCheck,
   DollarSign,
+  MessageSquare,
+  Bell,
   ChevronLeft,
   ChevronRight,
   LogOut,
@@ -19,12 +21,15 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { getProviderBookingsAction } from "@/features/booking/actions/booking-queries";
+import { getUnreadCountAction } from "@/features/messaging/actions/conversation-queries";
 
 const NAV_ITEMS = [
   { href: "/provider/dashboard", icon: LayoutDashboard, labelKey: "dashboard" },
   { href: "/provider/profile/edit", icon: UserPen, labelKey: "editProfile" },
   { href: "/provider/services", icon: Briefcase, labelKey: "myServices" },
   { href: "/provider/bookings", icon: CalendarCheck, labelKey: "reservations" },
+  { href: "/provider/messages", icon: MessageSquare, labelKey: "messages" },
+  { href: "/provider/notifications", icon: Bell, labelKey: "notifications" },
   { href: "/provider/earnings", icon: DollarSign, labelKey: "earnings" },
   { href: "/provider/kyc", icon: ShieldCheck, labelKey: "kyc" },
 ];
@@ -32,6 +37,7 @@ const NAV_ITEMS = [
 export function ProviderSidebar() {
   const [collapsed, setCollapsed] = useState(false);
   const [pendingCount, setPendingCount] = useState<number>(0);
+  const [unreadMessages, setUnreadMessages] = useState<number>(0);
   const pathname = usePathname();
   const t = useTranslations("navigation");
   const tLayout = useTranslations("layout");
@@ -51,6 +57,24 @@ export function ProviderSidebar() {
     }
     void fetchPendingCount();
   }, []);
+
+  // Fetch unread message count for badge on Messages link
+  const fetchUnreadMessages = useCallback(async () => {
+    try {
+      const result = await getUnreadCountAction();
+      if (result.success) {
+        setUnreadMessages(result.data.total);
+      }
+    } catch {
+      // Badge is non-critical — silently ignore errors
+    }
+  }, []);
+
+  useEffect(() => {
+    void fetchUnreadMessages();
+    const interval = setInterval(() => void fetchUnreadMessages(), 10000);
+    return () => clearInterval(interval);
+  }, [fetchUnreadMessages]);
 
   return (
     <aside
@@ -84,6 +108,7 @@ export function ProviderSidebar() {
           const Icon = item.icon;
           const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
           const isBookings = item.href === "/provider/bookings";
+          const isMessages = item.href === "/provider/messages";
 
           return (
             <Link
@@ -98,7 +123,15 @@ export function ProviderSidebar() {
               )}
               title={collapsed ? t(item.labelKey) : undefined}
             >
-              <Icon className="h-4 w-4 flex-shrink-0" />
+              <div className="relative flex-shrink-0">
+                <Icon className="h-4 w-4" />
+                {/* Unread messages badge on messages link */}
+                {isMessages && unreadMessages > 0 && (
+                  <span className="absolute -right-1.5 -top-1.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-destructive px-0.5 text-[9px] font-bold text-destructive-foreground">
+                    {unreadMessages > 99 ? "99+" : unreadMessages}
+                  </span>
+                )}
+              </div>
               {!collapsed && <span className="flex-1">{t(item.labelKey)}</span>}
               {/* Pending badge — shown only for the bookings link when count > 0 */}
               {isBookings && pendingCount > 0 && (
