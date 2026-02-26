@@ -1,32 +1,70 @@
 import type { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
 
-import { BarChart3 } from "lucide-react";
+import {
+  getAnalyticsDataAction,
+  getGeographicBreakdownAction,
+  getTopCategoriesAction,
+} from "@/features/admin/actions/analytics-queries";
+import { AnalyticsPageClient } from "@/features/admin/components/AnalyticsPageClient";
 
-export async function generateMetadata(): Promise<Metadata> {
+export const metadata: Metadata = {
+  title: "Analytique | Admin",
+};
+
+// ============================================================
+// HELPERS
+// ============================================================
+
+function getDefaultDates(): { startDate: string; endDate: string } {
+  const now = new Date();
+  const sixMonthsAgo = new Date(now);
+  sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
   return {
-    title: "Analytique | Admin",
+    startDate: sixMonthsAgo.toISOString().split("T")[0] ?? "",
+    endDate: now.toISOString().split("T")[0] ?? "",
   };
 }
 
-export default async function AdminAnalyticsPage() {
-  const t = await getTranslations("navigation");
-  const tPlaceholder = await getTranslations("placeholder");
+// ============================================================
+// PAGE
+// ============================================================
+
+interface SearchParams {
+  startDate?: string;
+  endDate?: string;
+}
+
+interface AdminAnalyticsPageProps {
+  searchParams: Promise<SearchParams>;
+}
+
+export default async function AdminAnalyticsPage({
+  searchParams,
+}: AdminAnalyticsPageProps) {
+  const params = await searchParams;
+
+  const defaults = getDefaultDates();
+  const startDate = params.startDate ?? defaults.startDate;
+  const endDate = params.endDate ?? defaults.endDate;
+
+  // Fetch all analytics data in parallel
+  const [analyticsResult, geoResult, categoriesResult] = await Promise.all([
+    getAnalyticsDataAction(startDate, endDate),
+    getGeographicBreakdownAction(startDate, endDate),
+    getTopCategoriesAction(startDate, endDate),
+  ]);
+
+  const analyticsData = analyticsResult.success ? analyticsResult.data : null;
+  const geoData = geoResult.success ? geoResult.data : [];
+  const topCategories = categoriesResult.success ? categoriesResult.data : [];
 
   return (
-    <div>
-      <div className="flex items-center gap-3">
-        <BarChart3 className="h-8 w-8 text-primary" />
-        <h1 className="text-3xl font-bold">{t("analytics")}</h1>
-      </div>
-      <div className="mt-8 rounded-lg border bg-card p-8 text-center">
-        <p className="text-lg font-medium text-muted-foreground">
-          {tPlaceholder("comingSoon")}
-        </p>
-        <p className="mt-2 text-sm text-muted-foreground">
-          {tPlaceholder("analyticsDescription")}
-        </p>
-      </div>
-    </div>
+    <AnalyticsPageClient
+      analyticsData={analyticsData}
+      geoData={geoData}
+      topCategories={topCategories}
+      startDate={startDate}
+      endDate={endDate}
+    />
   );
 }

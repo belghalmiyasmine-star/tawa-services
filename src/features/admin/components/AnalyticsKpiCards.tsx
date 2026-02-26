@@ -104,13 +104,6 @@ export function AnalyticsKpiCards({ kpis }: AnalyticsKpiCardsProps) {
 
   const conversionColor: "green" | "red" =
     kpis.conversionRate >= conversionTarget ? "green" : "red";
-  const validationColor: "green" | "red" =
-    kpis.avgProviderValidationHours <= validationTarget &&
-    kpis.avgProviderValidationHours > 0
-      ? "green"
-      : kpis.avgProviderValidationHours === 0
-        ? "neutral" as unknown as "red"
-        : "red";
 
   return (
     <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">

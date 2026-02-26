@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
-
 import { Grid2X2 } from "lucide-react";
+
+import { getCategoriesTreeAction } from "@/features/admin/actions/category-actions";
+import { CategoryTreeView } from "@/features/admin/components/CategoryTreeView";
+import type { CategoryTreeItem } from "@/features/admin/actions/category-actions";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -10,22 +12,18 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function AdminCategoriesPage() {
-  const t = await getTranslations("navigation");
-  const tPlaceholder = await getTranslations("placeholder");
+  const result = await getCategoriesTreeAction();
+  const categories: CategoryTreeItem[] = result.success ? result.data : [];
 
   return (
     <div>
       <div className="flex items-center gap-3">
         <Grid2X2 className="h-8 w-8 text-primary" />
-        <h1 className="text-3xl font-bold">{t("categories")}</h1>
+        <h1 className="text-3xl font-bold">Gestion des categories</h1>
       </div>
-      <div className="mt-8 rounded-lg border bg-card p-8 text-center">
-        <p className="text-lg font-medium text-muted-foreground">
-          {tPlaceholder("comingSoon")}
-        </p>
-        <p className="mt-2 text-sm text-muted-foreground">
-          {tPlaceholder("categoriesDescription")}
-        </p>
+
+      <div className="mt-8">
+        <CategoryTreeView categories={categories} />
       </div>
     </div>
   );
