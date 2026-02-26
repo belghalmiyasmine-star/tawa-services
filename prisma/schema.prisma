@@ -158,6 +158,8 @@ model User {
   emailVerifications EmailVerification[]
   passwordResets     PasswordReset[]
   loginRecords       LoginRecord[]
+  reportsMade        Report[]               @relation("ReporterReports")
+  reportsReceived    Report[]               @relation("ReportedReports")
 
   @@map("users")
 }
@@ -662,4 +664,98 @@ model NotificationPreference {
   updatedAt       DateTime @updatedAt
 
   @@map("notification_preferences")
+}
+
+// ============================================================
+// ADMIN - REPORTS, FAQ, LEGAL, BANNERS
+// ============================================================
+
+enum ReportPriority {
+  CRITICAL    // SLA < 2h
+  IMPORTANT   // SLA < 24h
+  MINOR       // SLA < 48h
+}
+
+enum ReportStatus {
+  OPEN
+  INVESTIGATING
+  RESOLVED
+  DISMISSED
+}
+
+enum ReportType {
+  USER
+  SERVICE
+  REVIEW
+  MESSAGE
+}
+
+model Report {
+  id            String         @id @default(cuid())
+  reporterId    String
+  reporter      User           @relation("ReporterReports", fields: [reporterId], references: [id])
+  reportedId    String?        // userId of reported person (nullable for service/review reports)
+  reported      User?          @relation("ReportedReports", fields: [reportedId], references: [id])
+  type          ReportType
+  reason        String         @db.Text
+  description   String?        @db.Text
+  priority      ReportPriority @default(MINOR)
+  status        ReportStatus   @default(OPEN)
+  adminNote     String?        @db.Text
+  assignedTo    String?        // admin userId
+  referenceId   String?        // ID of reported service/review/message
+  slaDeadline   DateTime?      // computed from priority + createdAt
+  resolvedAt    DateTime?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  isDeleted     Boolean        @default(false)
+  deletedAt     DateTime?
+
+  @@map("reports")
+}
+
+model Faq {
+  id        String   @id @default(cuid())
+  question  String   @db.Text
+  answer    String   @db.Text
+  category  String?  // "general", "booking", "payment", "provider"
+  sortOrder Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  isDeleted Boolean  @default(false)
+  deletedAt DateTime?
+
+  @@map("faqs")
+}
+
+model LegalPage {
+  id        String   @id @default(cuid())
+  slug      String   @unique  // "cgu", "privacy", "legal-mentions"
+  title     String
+  content   String   @db.Text
+  updatedBy String?  // admin userId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("legal_pages")
+}
+
+model Banner {
+  id         String   @id @default(cuid())
+  title      String
+  subtitle   String?
+  imageUrl   String?
+  linkUrl    String?
+  position   String   @default("homepage")  // "homepage", "search", "category"
+  isActive   Boolean  @default(true)
+  sortOrder  Int      @default(0)
+  startDate  DateTime?
+  endDate    DateTime?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  isDeleted  Boolean  @default(false)
+  deletedAt  DateTime?
+
+  @@map("banners")
 }
