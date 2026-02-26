@@ -505,11 +505,11 @@ Plans:
 **Plans**: 8 plans
 
 Plans:
-- [ ] 10-01-PLAN.md — Schema additions (Report/FAQ/Banner/LegalPage), admin server actions (user/service/report CRUD), i18n keys
-- [ ] 10-02-PLAN.md — Dashboard homepage (real stats, KPI trend arrows) + user management (datatable, search/filter, ban/unban, detail)
+- [x] 10-01-PLAN.md — Schema additions (Report/FAQ/Banner/LegalPage), admin server actions (user/service/report CRUD), i18n keys
+- [x] 10-02-PLAN.md — Dashboard homepage (real stats, KPI trend arrows) + user management (datatable, search/filter, ban/unban, detail)
 - [ ] 10-03-PLAN.md — Service management (datatable, approve/suspend, featured toggle) + category CRUD (tree view, add/edit/delete dialogs)
 - [ ] 10-04-PLAN.md — Reports/signalements (prioritized table, SLA countdown badges, detail Sheet, investigate/resolve/dismiss workflow)
-- [ ] 10-05-PLAN.md — Analytics dashboard (recharts: revenue line, bookings bar, categories pie, user growth area, KPI cards, date range, breakdowns)
+- [x] 10-05-PLAN.md — Analytics dashboard (recharts: revenue line, bookings bar, categories pie, user growth area, KPI cards, date range, breakdowns)
 - [ ] 10-06-PLAN.md — Export CSV/PDF (generator utilities, API route, column selection, download/print)
 - [ ] 10-07-PLAN.md — Content management (FAQ editor with categories, legal page editor, banner manager with scheduling)
 - [ ] 10-08-PLAN.md — Commission oversight (12% tracking, provider payouts) + system notifications + sidebar update + breadcrumbs
