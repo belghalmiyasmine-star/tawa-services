@@ -335,6 +335,38 @@ export async function suspendServiceAction(
   }
 }
 
+/**
+ * Toggle the isFeatured flag on a service.
+ */
+export async function toggleFeaturedAction(
+  serviceId: string,
+): Promise<ActionResult<{ isFeatured: boolean }>> {
+  const authResult = await requireAdmin();
+  if (!authResult.success) return authResult;
+
+  try {
+    const service = await prisma.service.findUnique({
+      where: { id: serviceId, isDeleted: false },
+      select: { id: true, isFeatured: true },
+    });
+
+    if (!service) {
+      return { success: false, error: "Service introuvable" };
+    }
+
+    const updated = await prisma.service.update({
+      where: { id: serviceId },
+      data: { isFeatured: !service.isFeatured },
+      select: { isFeatured: true },
+    });
+
+    return { success: true, data: { isFeatured: updated.isFeatured } };
+  } catch (error) {
+    console.error("[toggleFeaturedAction] Error:", error);
+    return { success: false, error: "Une erreur est survenue" };
+  }
+}
+
 // ============================================================
 // REPORT ACTIONS
 // ============================================================
