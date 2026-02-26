@@ -5,17 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-21)
 
 **Core value:** Clients can find, book, and pay a trusted local service provider in their city — and providers can get discovered and manage their business in one place.
-**Current focus:** Phase 9 IN PROGRESS — Messagerie & Notifications. Plan 09-03 complete: messaging UI (ConversationList, ChatView, MessageBubble, MessageInput, ChatPageLayout, 4 app pages for client+provider). Plan 09-04 complete: notification UI (NotificationBell, dropdown, full notifications page, preferences form).
+**Current focus:** Phase 10 IN PROGRESS — Panneau d'Administration. Plan 10-01 complete: Prisma schema additions (Report, Faq, LegalPage, Banner models + 3 enums), admin server actions for user/service/report management, Zod validation schemas, admin i18n namespace in fr.json.
 
 ## Current Position
 
-Phase: 9 of 11 (Messagerie & Notifications) — IN PROGRESS
-Plan: 4 of N in current phase — Plan 09-04 COMPLETE.
-Status: Plan 09-03 COMPLETE — MessageBubble (right-blue/left-gray bubbles, read receipts Lu/Envoye), MessageInput (Enter-to-send, contact-info-blocked toast), ChatView (forwardRef+useImperativeHandle, 5s polling, auto-scroll, date groups), ChatPageLayout (onMessageSent callback wiring), ConversationList (unread badge, timeAgo, 5s polling). Client+provider app pages at /messages and /messages/[id]. MSG-01, MSG-03, MSG-04 satisfied. Commits: 1056ab6 (components), 495e375 (pages).
-Plan 09-04 COMPLETE — NotificationBell (polling 10s, red badge), NotificationDropdown (5 recent notifications), NotificationItem (7 type-icons, unread highlight), NotificationsList (Tout/Non lus tabs, cursor pagination), NotificationPreferencesForm (per-type toggles + quiet hours), all client+provider pages. NOTF-01, NOTF-03, NOTF-04 satisfied. Commits: 1056ab6, 5a9c188, 7cb2623.
-Last activity: 2026-02-25 — Plans 09-03 and 09-04 complete. Full messaging and notification UI built.
+Phase: 10 of 11 (Panneau d'Administration) — IN PROGRESS
+Plan: 1 of N in current phase — Plan 10-01 COMPLETE.
+Status: Plan 10-01 COMPLETE — Report/Faq/LegalPage/Banner Prisma models + enums (ReportPriority/ReportStatus/ReportType), prisma generate + db push done. Admin feature folder: schemas/admin-schemas.ts (Zod), actions/admin-queries.ts (getAdminUsersAction, getAdminServicesAction, getAdminReportsAction, getAdminStatsAction, getUserDetailAction, getReportDetailAction), actions/admin-actions.ts (banUser, unbanUser, activateUser, deactivateUser, deleteUser, approveService, suspendService, createReport, updateReport). fr.json admin namespace with 11 sub-sections, 150+ keys. ADMN-01, ADMN-02, ADMN-03 satisfied. Commits: 09301c1, 49e5c26.
+Last activity: 2026-02-26 — Plan 10-01 complete. Admin panel data foundation established.
 
-Progress: [################] 89%
+Progress: [#################] 92%
 
 ## Performance Metrics
 
@@ -310,6 +309,11 @@ Recent decisions affecting current work:
 - [09-03]: getConversationDetailAction added to conversation-queries.ts — server pages need minimal conversation metadata for chat header (otherUser.name, booking.serviceTitle)
 - [09-03]: Near-bottom auto-scroll threshold 100px — isNearBottom() check prevents force-scrolling when user is reading older messages
 - [09-03]: existingIds Set comparison in ChatView polling — O(1) duplicate detection vs O(n) array.find per fetched message
+- [10-01]: Prisma.UserWhereInput used instead of Parameters<typeof prisma.user.findMany>[0]['where'] — latter fails TypeScript strict mode with Prisma v7
+- [10-01]: requireAdmin() helper centralizes ADMIN role check — called at top of every admin action
+- [10-01]: computeSlaDeadline() is a pure function accepting optional 'from' Date for testability — SLA: CRITICAL +2h, IMPORTANT +24h, MINOR +48h
+- [10-01]: Priority sort in getAdminReportsAction done in memory on page results — avoids complex Prisma ORDER BY on enum value mapping
+- [10-01]: createReportAction is available to any authenticated user (not ADMIN-only) — users can report other users/services/reviews
 
 ### Pending Todos
 
@@ -321,6 +325,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-02-25
-Stopped at: Completed Phase 9 Plan 09-03 — Messaging UI: MessageBubble, MessageInput, ChatView (forwardRef+5s polling), ChatPageLayout, ConversationList (5s polling+unread badge), 4 app pages for client+provider. MSG-01, MSG-03, MSG-04 satisfied. Commits: 1056ab6 (components), 495e375 (pages).
+Last session: 2026-02-26
+Stopped at: Completed Phase 10 Plan 10-01 — Admin Panel Foundation: Report/Faq/LegalPage/Banner Prisma models, admin server actions (user ban/unban/activate/deactivate/delete, service approve/suspend, report CRUD + stats), admin Zod schemas, admin i18n namespace (150+ keys in fr.json). ADMN-01, ADMN-02, ADMN-03 satisfied. Commits: 09301c1, 49e5c26.
 Resume file: None

@@ -95,9 +95,9 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Admin
 
-- [ ] **ADMN-01**: Admin can view, approve, ban users and validate KYC submissions
-- [ ] **ADMN-02**: Admin can approve/suspend services, manage service categories, feature listings
-- [ ] **ADMN-03**: Admin can handle reports/signalements with priority levels (critical <2h, important <24h, minor <48h)
+- [x] **ADMN-01**: Admin can view, approve, ban users and validate KYC submissions
+- [x] **ADMN-02**: Admin can approve/suspend services, manage service categories, feature listings
+- [x] **ADMN-03**: Admin can handle reports/signalements with priority levels (critical <2h, important <24h, minor <48h)
 - [ ] **ADMN-04**: Analytics dashboard with KPIs: active users, transaction count, revenue, conversion rate, satisfaction rate, category/geographic breakdowns
 - [ ] **ADMN-05**: Data export as CSV/PDF
 - [ ] **ADMN-06**: Content management: homepage content, banners, FAQ, CGU (Terms & Conditions), legal pages
@@ -221,9 +221,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | NOTF-02 | Phase 9 | Complete |
 | NOTF-03 | Phase 9 | Complete |
 | NOTF-04 | Phase 9 | Complete |
-| ADMN-01 | Phase 10 | Pending |
-| ADMN-02 | Phase 10 | Pending |
-| ADMN-03 | Phase 10 | Pending |
+| ADMN-01 | Phase 10 | Complete |
+| ADMN-02 | Phase 10 | Complete |
+| ADMN-03 | Phase 10 | Complete |
 | ADMN-04 | Phase 10 | Pending |
 | ADMN-05 | Phase 10 | Pending |
 | ADMN-06 | Phase 10 | Pending |
