@@ -96,7 +96,7 @@ Each task was committed atomically:
 1. **Task 1: Commission oversight page with provider payouts table** - `fbf5a95` (feat)
 2. **Task 2: System notifications + sidebar update + breadcrumbs** - `8cb9f41` (feat, committed in prior 10-06 session)
 
-**Plan metadata:** (pending docs commit)
+**Plan metadata:** `f2a904c` (docs: complete plan)
 
 ## Files Created/Modified
 
@@ -159,6 +159,24 @@ None - no external service configuration required.
 - Commission model ready for future real payment gateway integration
 - System notifications ready for marketing/operational communications
 - Ready for Phase 11 (polish and final deployment)
+
+## Self-Check: PASSED
+
+All created files confirmed present on disk:
+- `src/features/admin/actions/commission-queries.ts` - FOUND
+- `src/features/admin/components/CommissionOverview.tsx` - FOUND
+- `src/features/admin/components/ProviderPayoutsTable.tsx` - FOUND
+- `src/app/[locale]/(admin)/admin/commission/page.tsx` - FOUND
+- `src/features/admin/actions/system-notification-actions.ts` - FOUND
+- `src/features/admin/components/SystemNotificationForm.tsx` - FOUND
+- `src/features/admin/components/AdminBreadcrumbs.tsx` - FOUND
+
+All commits confirmed in git log:
+- `fbf5a95` feat(10-08): commission oversight page - FOUND
+- `8cb9f41` feat(10-06): system notifications and breadcrumbs - FOUND
+- `f2a904c` docs(10-08): plan summary and state updates - FOUND
+
+TypeScript check: EXIT_CODE 0 (no errors)
 
 ---
 *Phase: 10-panneau-administration*
