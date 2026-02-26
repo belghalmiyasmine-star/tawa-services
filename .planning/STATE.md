@@ -5,14 +5,14 @@
 See: .planning/PROJECT.md (updated 2026-02-21)
 
 **Core value:** Clients can find, book, and pay a trusted local service provider in their city — and providers can get discovered and manage their business in one place.
-**Current focus:** Phase 10 IN PROGRESS — Panneau d'Administration. Plan 10-01 complete: Prisma schema additions (Report, Faq, LegalPage, Banner models + 3 enums), admin server actions for user/service/report management, Zod validation schemas, admin i18n namespace in fr.json.
+**Current focus:** Phase 10 IN PROGRESS — Panneau d'Administration. Plan 10-02 complete: Admin dashboard with real stats/KPI cards with trend arrows, DashboardStatsCards, DashboardCharts placeholder, UsersDataTable with search/filter/pagination, UserActionsDropdown, UserDetailActions, /admin/users and /admin/users/[id] pages.
 
 ## Current Position
 
 Phase: 10 of 11 (Panneau d'Administration) — IN PROGRESS
-Plan: 1 of N in current phase — Plan 10-01 COMPLETE.
-Status: Plan 10-01 COMPLETE — Report/Faq/LegalPage/Banner Prisma models + enums (ReportPriority/ReportStatus/ReportType), prisma generate + db push done. Admin feature folder: schemas/admin-schemas.ts (Zod), actions/admin-queries.ts (getAdminUsersAction, getAdminServicesAction, getAdminReportsAction, getAdminStatsAction, getUserDetailAction, getReportDetailAction), actions/admin-actions.ts (banUser, unbanUser, activateUser, deactivateUser, deleteUser, approveService, suspendService, createReport, updateReport). fr.json admin namespace with 11 sub-sections, 150+ keys. ADMN-01, ADMN-02, ADMN-03 satisfied. Commits: 09301c1, 49e5c26.
-Last activity: 2026-02-26 — Plan 10-01 complete. Admin panel data foundation established.
+Plan: 2 of N in current phase — Plan 10-02 COMPLETE.
+Status: Plan 10-02 COMPLETE — Admin dashboard homepage with real DB stats (users/providers/bookings/revenue) and KPI trend arrows comparing current vs previous month. Complete user management interface: UsersDataTable with 300ms debounce search, role/status filters, pagination via URL params. UserActionsDropdown with ban/unban/activate/deactivate/delete + AlertDialog confirmations. User detail page at /admin/users/[id] with profile, KYC info, stats grid, action buttons. Commits: 4b4ccbe, f0c16f1. ADMN-01 satisfied.
+Last activity: 2026-02-26 — Plan 10-02 complete. Admin dashboard and user management UI complete.
 
 Progress: [#################] 92%
 
@@ -76,6 +76,7 @@ Progress: [#################] 92%
 | Phase 09-messagerie-notifications P02 | 30 | 2 tasks | 6 files |
 | Phase 09-messagerie-notifications P03 | 45 | 2 tasks | 10 files |
 | Phase 09-messagerie-notifications P04 | 45 | 2 tasks | 10 files |
+| Phase 10-panneau-administration P02 | 45 | 2 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -314,6 +315,12 @@ Recent decisions affecting current work:
 - [10-01]: computeSlaDeadline() is a pure function accepting optional 'from' Date for testability — SLA: CRITICAL +2h, IMPORTANT +24h, MINOR +48h
 - [10-01]: Priority sort in getAdminReportsAction done in memory on page results — avoids complex Prisma ORDER BY on enum value mapping
 - [10-01]: createReportAction is available to any authenticated user (not ADMIN-only) — users can report other users/services/reviews
+- [10-02]: AdminStats type extended with currentMonthUsers/previousMonthUsers and equivalents for bookings/revenue — trend arrows require month-over-month comparison
+- [10-02]: TrendPercent is a proper React component (PascalCase) using useTranslations — avoids passing translation string as prop
+- [10-02]: DashboardCharts is placeholder only — recharts wired in Plan 10-06 per plan spec
+- [10-02]: URL searchParams as filter state in UsersDataTable — consistent with Phase 05 established pattern
+- [10-02]: UserDetailActions extracted as separate client component — server detail page cannot use useState/onClick
+- [10-02]: Native Intl.DateTimeFormat for dates — date-fns not in package.json (consistent with Phase 07-04 decision)
 
 ### Pending Todos
 
@@ -326,5 +333,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-26
-Stopped at: Completed Phase 10 Plan 10-01 — Admin Panel Foundation: Report/Faq/LegalPage/Banner Prisma models, admin server actions (user ban/unban/activate/deactivate/delete, service approve/suspend, report CRUD + stats), admin Zod schemas, admin i18n namespace (150+ keys in fr.json). ADMN-01, ADMN-02, ADMN-03 satisfied. Commits: 09301c1, 49e5c26.
+Stopped at: Completed Phase 10 Plan 10-02 — Admin Dashboard and User Management: DashboardStatsCards with KPI trend arrows, DashboardCharts placeholder, UsersDataTable with search/filter/pagination, UserActionsDropdown, UserDetailActions, /admin/users and /admin/users/[id] pages. Commits: 4b4ccbe, f0c16f1.
 Resume file: None

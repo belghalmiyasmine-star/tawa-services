@@ -589,7 +589,7 @@ Plans:
 | 7. Paiement Simule | 4/5 | In progress | 2026-02-24 |
 | 8. Avis & Evaluations | 7/7 | Complete | 2026-02-25 |
 | 9. Messagerie & Notifications | 3/5 | In Progress|  |
-| 10. Panneau d'Administration | 1/8 | In Progress|  |
+| 10. Panneau d'Administration | 2/8 | In Progress|  |
 | 11. Demo Data, Polish & PFE Readiness | 0/7 | Not started | - |
 
 **Total plans estimated:** ~74 plans across 11 sprints
