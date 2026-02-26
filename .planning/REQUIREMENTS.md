@@ -98,7 +98,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **ADMN-01**: Admin can view, approve, ban users and validate KYC submissions
 - [x] **ADMN-02**: Admin can approve/suspend services, manage service categories, feature listings
 - [x] **ADMN-03**: Admin can handle reports/signalements with priority levels (critical <2h, important <24h, minor <48h)
-- [ ] **ADMN-04**: Analytics dashboard with KPIs: active users, transaction count, revenue, conversion rate, satisfaction rate, category/geographic breakdowns
+- [x] **ADMN-04**: Analytics dashboard with KPIs: active users, transaction count, revenue, conversion rate, satisfaction rate, category/geographic breakdowns
 - [ ] **ADMN-05**: Data export as CSV/PDF
 - [ ] **ADMN-06**: Content management: homepage content, banners, FAQ, CGU (Terms & Conditions), legal pages
 - [ ] **ADMN-07**: System notifications and newsletters to users
