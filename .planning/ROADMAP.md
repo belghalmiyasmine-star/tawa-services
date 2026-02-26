@@ -561,16 +561,16 @@ graph TD
   4. Les scores Lighthouse (performance, accessibilite, SEO) atteignent au minimum 75/100 sur les pages publiques
   5. Le switcher de langue est visible dans la navbar et le mecanisme i18n fonctionne — pret pour ajout traductions AR/EN
 
-**Plans**: TBD (environ 5-7 plans)
+**Plans**: 7 plans
 
 Plans:
-- [ ] 11-01: Script de seed — faker.js avec donnees tunisiennes realistes (noms, villes, prix TND, numeros +216)
-- [ ] 11-02: Polish responsivite mobile — audit complet pages, corrections bottom nav, cards, forms sur mobile
-- [ ] 11-03: Tests E2E flows critiques — Playwright ou Cypress : inscription → booking → paiement → avis → admin review
-- [ ] 11-04: Optimisation performances — lazy loading images, Suspense boundaries, prefetch routes critiques
-- [ ] 11-05: Audit accessibilite et SEO — meta tags, aria labels, og:image, sitemap, audit Lighthouse
-- [ ] 11-06: Language switcher UI — composant selecteur langue dans navbar, pret pour ajout traductions
-- [ ] 11-07: Documentation technique PFE — README deploiement, schema DB export, guide demarrage rapide
+- [ ] 11-01-PLAN.md — Script de seed avec donnees tunisiennes realistes (10+ prestataires, 20+ services, 30+ reservations, 50+ avis, transactions TND)
+- [ ] 11-02-PLAN.md — Polish responsivite mobile — audit et corrections pages publiques + authentifiees sur 375px et 1280px
+- [ ] 11-03-PLAN.md — Language switcher UI — composant Globe dropdown dans navbar, i18n pret pour AR/EN
+- [ ] 11-04-PLAN.md — Optimisation performances — Suspense boundaries, lazy loading images, Next.js config tuning
+- [ ] 11-05-PLAN.md — Audit accessibilite et SEO — meta tags, robots.txt, sitemap.xml, aria labels, alt text
+- [ ] 11-06-PLAN.md — Verification E2E demo flow sur donnees seedees + checkpoint humain
+- [ ] 11-07-PLAN.md — Documentation technique PFE — DEPLOYMENT.md avec guide setup, schema DB, comptes demo
 
 ---
 
