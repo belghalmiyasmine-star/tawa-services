@@ -53,7 +53,8 @@
     "portfolio": "Portfolio",
     "certifications": "Certifications",
     "allCategories": "Toutes les categories",
-    "adminReviews": "Moderation avis"
+    "adminReviews": "Moderation avis",
+    "commission": "Commissions"
   },
   "home": {
     "title": "Tawa Services",
@@ -1132,7 +1133,9 @@
       "analytics": "Analytique",
       "content": "Contenu",
       "notifications": "Notifications",
-      "commission": "Commissions"
+      "commission": "Commissions",
+      "kyc": "KYC",
+      "reviews": "Avis"
     },
     "common": {
       "noResults": "Aucun resultat",

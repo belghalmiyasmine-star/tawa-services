@@ -5,6 +5,7 @@ import { Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { getAdminUsersAction } from "@/features/admin/actions/admin-queries";
 import { UsersDataTable } from "@/features/admin/components/UsersDataTable";
+import { ExportButton } from "@/features/admin/components/ExportButton";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -12,12 +13,33 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
+// ============================================================
+// EXPORT COLUMNS FOR USERS
+// ============================================================
+
+const USER_EXPORT_COLUMNS = [
+  { key: "nom", label: "Nom" },
+  { key: "email", label: "Email" },
+  { key: "role", label: "Role" },
+  { key: "statut", label: "Statut" },
+  { key: "telephone", label: "Telephone" },
+  { key: "dateInscription", label: "Date d'inscription" },
+];
+
+// ============================================================
+// SEARCH PARAMS TYPE
+// ============================================================
+
 type SearchParams = {
   search?: string;
   role?: string;
   status?: string;
   page?: string;
 };
+
+// ============================================================
+// PAGE
+// ============================================================
 
 export default async function AdminUsersPage({
   searchParams,
@@ -45,14 +67,22 @@ export default async function AdminUsersPage({
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex items-center gap-3">
-        <Users className="h-8 w-8 text-primary" />
-        <div>
-          <h1 className="text-3xl font-bold">{t("title")}</h1>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <Users className="h-8 w-8 text-primary" />
+          <div>
+            <h1 className="text-3xl font-bold">{t("title")}</h1>
+          </div>
+          <Badge variant="secondary" className="ml-2 text-base">
+            {total}
+          </Badge>
         </div>
-        <Badge variant="secondary" className="ml-2 text-base">
-          {total}
-        </Badge>
+
+        {/* Export Button */}
+        <ExportButton
+          exportType="users"
+          availableColumns={USER_EXPORT_COLUMNS}
+        />
       </div>
 
       {/* Error */}

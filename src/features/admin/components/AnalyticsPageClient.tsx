@@ -1,10 +1,9 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { BarChart3, Download, FileText } from "lucide-react";
+import { BarChart3 } from "lucide-react";
 import { useRouter } from "@/i18n/routing";
 
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
@@ -21,8 +20,31 @@ import { RevenueLineChart } from "./RevenueLineChart";
 import { BookingsBarChart } from "./BookingsBarChart";
 import { CategoriesPieChart } from "./CategoriesPieChart";
 import { UserGrowthAreaChart } from "./UserGrowthAreaChart";
+import { ExportButton } from "./ExportButton";
 
 import type { AnalyticsData, GeographicBreakdownItem, TopCategoryItem } from "../actions/analytics-queries";
+
+// ============================================================
+// EXPORT COLUMN DEFINITIONS
+// ============================================================
+
+const TRANSACTION_COLUMNS = [
+  { key: "reference", label: "Reference" },
+  { key: "client", label: "Client" },
+  { key: "prestataire", label: "Prestataire" },
+  { key: "montant", label: "Montant" },
+  { key: "commission", label: "Commission (5%)" },
+  { key: "statut", label: "Statut" },
+  { key: "date", label: "Date" },
+];
+
+const REVENUE_COLUMNS = [
+  { key: "mois", label: "Mois" },
+  { key: "revenu", label: "Revenu brut (TND)" },
+  { key: "commission", label: "Commission 5% (TND)" },
+  { key: "net", label: "Net prestataires (TND)" },
+  { key: "transactions", label: "Transactions" },
+];
 
 // ============================================================
 // EMPTY KPIs
@@ -84,16 +106,20 @@ export function AnalyticsPageClient({
           <h1 className="text-2xl font-bold">{tNav("analytics")}</h1>
         </div>
 
-        {/* Export buttons — placeholder for Plan 10-06 */}
+        {/* Export buttons — Plan 10-06 */}
         <div className="flex gap-2">
-          <Button variant="outline" size="sm" disabled>
-            <Download className="mr-2 h-4 w-4" />
-            {t("exportCsv")}
-          </Button>
-          <Button variant="outline" size="sm" disabled>
-            <FileText className="mr-2 h-4 w-4" />
-            {t("exportPdf")}
-          </Button>
+          <ExportButton
+            exportType="transactions"
+            availableColumns={TRANSACTION_COLUMNS}
+            startDate={startDate}
+            endDate={endDate}
+          />
+          <ExportButton
+            exportType="revenue"
+            availableColumns={REVENUE_COLUMNS}
+            startDate={startDate}
+            endDate={endDate}
+          />
         </div>
       </div>
 

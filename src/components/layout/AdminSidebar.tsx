@@ -18,6 +18,7 @@ import {
   ChevronRight,
   LogOut,
   Briefcase,
+  Banknote,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -32,6 +33,7 @@ const NAV_ITEMS = [
   { href: "/admin/categories", icon: Grid2X2, labelKey: "categories" },
   { href: "/admin/reports", icon: Flag, labelKey: "reports" },
   { href: "/admin/analytics", icon: BarChart3, labelKey: "analytics" },
+  { href: "/admin/commission", icon: Banknote, labelKey: "commission" },
   { href: "/admin/content", icon: FileText, labelKey: "content" },
   { href: "/admin/notifications", icon: Bell, labelKey: "notifications" },
 ];

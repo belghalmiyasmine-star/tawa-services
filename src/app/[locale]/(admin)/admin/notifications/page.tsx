@@ -1,32 +1,33 @@
 import type { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
-
 import { Bell } from "lucide-react";
 
-export async function generateMetadata(): Promise<Metadata> {
-  return {
-    title: "Notifications | Admin",
-  };
-}
+import { getSystemNotificationHistoryAction } from "@/features/admin/actions/system-notification-actions";
+import { SystemNotificationForm } from "@/features/admin/components/SystemNotificationForm";
+
+export const metadata: Metadata = {
+  title: "Notifications | Admin",
+};
 
 export default async function AdminNotificationsPage() {
-  const t = await getTranslations("navigation");
-  const tPlaceholder = await getTranslations("placeholder");
+  const historyResult = await getSystemNotificationHistoryAction(1, 20);
 
   return (
-    <div>
+    <div className="space-y-6">
+      {/* Header */}
       <div className="flex items-center gap-3">
         <Bell className="h-8 w-8 text-primary" />
-        <h1 className="text-3xl font-bold">{t("notifications")}</h1>
+        <div>
+          <h1 className="text-3xl font-bold">Notifications systeme</h1>
+          <p className="text-muted-foreground">
+            Envoyez des notifications a tous les utilisateurs ou segments specifiques
+          </p>
+        </div>
       </div>
-      <div className="mt-8 rounded-lg border bg-card p-8 text-center">
-        <p className="text-lg font-medium text-muted-foreground">
-          {tPlaceholder("comingSoon")}
-        </p>
-        <p className="mt-2 text-sm text-muted-foreground">
-          {tPlaceholder("notificationsDescription")}
-        </p>
-      </div>
+
+      {/* Notification Form + History */}
+      <SystemNotificationForm
+        history={historyResult.success ? historyResult.data.items : []}
+      />
     </div>
   );
 }
