@@ -63,6 +63,12 @@ export type AdminStats = {
   pendingKyc: number;
   activeServices: number;
   openReports: number;
+  previousMonthUsers: number;
+  previousMonthBookings: number;
+  previousMonthRevenue: number;
+  currentMonthUsers: number;
+  currentMonthBookings: number;
+  currentMonthRevenue: number;
   monthlyRevenue: { month: string; revenue: number }[];
   bookingsByStatus: { status: string; count: number }[];
   userGrowth: { month: string; count: number }[];
@@ -441,6 +447,14 @@ export async function getAdminStatsAction(): Promise<ActionResult<AdminStats>> {
     const sixMonthsAgo = new Date(now);
     sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
 
+    // Current month boundaries
+    const currentMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    const nextMonthStart = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+
+    // Previous month boundaries
+    const prevMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const prevMonthEnd = currentMonthStart;
+
     const [
       totalUsers,
       totalProviders,
@@ -451,6 +465,12 @@ export async function getAdminStatsAction(): Promise<ActionResult<AdminStats>> {
       payments,
       bookingsByStatusRaw,
       usersLast6Months,
+      currentMonthUsers,
+      previousMonthUsers,
+      currentMonthBookings,
+      previousMonthBookings,
+      currentMonthPayments,
+      previousMonthPayments,
     ] = await Promise.all([
       prisma.user.count({ where: { isDeleted: false } }),
       prisma.provider.count({ where: { isDeleted: false } }),
@@ -498,6 +518,27 @@ export async function getAdminStatsAction(): Promise<ActionResult<AdminStats>> {
         },
         select: { createdAt: true },
         orderBy: { createdAt: "asc" },
+      }),
+      // Current month counts for trend arrows
+      prisma.user.count({
+        where: { isDeleted: false, createdAt: { gte: currentMonthStart, lt: nextMonthStart } },
+      }),
+      prisma.user.count({
+        where: { isDeleted: false, createdAt: { gte: prevMonthStart, lt: prevMonthEnd } },
+      }),
+      prisma.booking.count({
+        where: { isDeleted: false, createdAt: { gte: currentMonthStart, lt: nextMonthStart } },
+      }),
+      prisma.booking.count({
+        where: { isDeleted: false, createdAt: { gte: prevMonthStart, lt: prevMonthEnd } },
+      }),
+      prisma.payment.aggregate({
+        where: { isDeleted: false, status: { in: ["RELEASED", "HELD"] }, createdAt: { gte: currentMonthStart, lt: nextMonthStart } },
+        _sum: { amount: true },
+      }),
+      prisma.payment.aggregate({
+        where: { isDeleted: false, status: { in: ["RELEASED", "HELD"] }, createdAt: { gte: prevMonthStart, lt: prevMonthEnd } },
+        _sum: { amount: true },
       }),
     ]);
 
@@ -569,6 +610,12 @@ export async function getAdminStatsAction(): Promise<ActionResult<AdminStats>> {
         pendingKyc,
         activeServices,
         openReports,
+        currentMonthUsers,
+        previousMonthUsers,
+        currentMonthBookings,
+        previousMonthBookings,
+        currentMonthRevenue: currentMonthPayments._sum.amount ?? 0,
+        previousMonthRevenue: previousMonthPayments._sum.amount ?? 0,
         monthlyRevenue,
         bookingsByStatus,
         userGrowth,
