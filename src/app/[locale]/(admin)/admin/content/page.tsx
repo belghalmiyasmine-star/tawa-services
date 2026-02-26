@@ -1,32 +1,62 @@
 import type { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
 
 import { FileText } from "lucide-react";
 
-export async function generateMetadata(): Promise<Metadata> {
-  return {
-    title: "Contenu | Admin",
-  };
+import {
+  getFaqsAction,
+  getLegalPagesAction,
+  getBannersAction,
+} from "@/features/admin/actions/content-actions";
+import { ContentPageClient } from "@/features/admin/components/ContentPageClient";
+
+export const metadata: Metadata = {
+  title: "Contenu | Admin",
+};
+
+// ============================================================
+// PAGE
+// ============================================================
+
+interface SearchParams {
+  tab?: string;
 }
 
-export default async function AdminContentPage() {
-  const t = await getTranslations("navigation");
-  const tPlaceholder = await getTranslations("placeholder");
+interface AdminContentPageProps {
+  searchParams: Promise<SearchParams>;
+}
+
+export default async function AdminContentPage({
+  searchParams,
+}: AdminContentPageProps) {
+  const params = await searchParams;
+  const activeTab = params.tab ?? "faq";
+
+  // Fetch all content data in parallel
+  const [faqsResult, legalResult, bannersResult] = await Promise.all([
+    getFaqsAction(),
+    getLegalPagesAction(),
+    getBannersAction(),
+  ]);
+
+  const faqs = faqsResult.success ? faqsResult.data : [];
+  const legalPages = legalResult.success ? legalResult.data : [];
+  const banners = bannersResult.success ? bannersResult.data : [];
 
   return (
-    <div>
+    <div className="space-y-6">
+      {/* Header */}
       <div className="flex items-center gap-3">
         <FileText className="h-8 w-8 text-primary" />
-        <h1 className="text-3xl font-bold">{t("content")}</h1>
+        <h1 className="text-3xl font-bold">Gestion du contenu</h1>
       </div>
-      <div className="mt-8 rounded-lg border bg-card p-8 text-center">
-        <p className="text-lg font-medium text-muted-foreground">
-          {tPlaceholder("comingSoon")}
-        </p>
-        <p className="mt-2 text-sm text-muted-foreground">
-          {tPlaceholder("contentDescription")}
-        </p>
-      </div>
+
+      {/* Tabs */}
+      <ContentPageClient
+        activeTab={activeTab}
+        faqs={faqs}
+        legalPages={legalPages}
+        banners={banners}
+      />
     </div>
   );
 }
