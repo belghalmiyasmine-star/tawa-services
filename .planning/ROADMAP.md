@@ -502,18 +502,17 @@ Plans:
   4. Le tableau de bord analytics affiche en temps reel : utilisateurs actifs, nombre de transactions, revenus totaux, taux de conversion, taux de satisfaction, repartitions par categorie et par region
   5. Un admin peut exporter n'importe quel rapport (utilisateurs, transactions, revenus) en CSV et PDF depuis l'interface
 
-**Plans**: TBD (environ 7-9 plans)
+**Plans**: 8 plans
 
 Plans:
-- [ ] 10-01: Layout admin — sidebar navigation, protection route ADMIN, breadcrumbs
-- [ ] 10-02: Gestion utilisateurs — datatable filtre/tri, actions ban/unban, detail utilisateur
-- [ ] 10-03: Interface KYC review — file documents en attente, visualiseur, approbation/rejet avec commentaire
-- [ ] 10-04: Gestion services et categories — approbation services, CRUD categories, featured listings
-- [ ] 10-05: Systeme signalements — liste reports priorisee, timer SLA, workflow traitement, cloture
-- [ ] 10-06: Analytics dashboard — recharts graphiques KPIs, filtres periode, breakdown categories/regions
-- [ ] 10-07: Export CSV/PDF — generation cote serveur, telechargement direct, selection colonnes
-- [ ] 10-08: Gestion contenu — editeur FAQ, CGU, banners homepage, pages legales
-- [ ] 10-09: Notifications systeme — envoi newsletters/notifications a segments utilisateurs
+- [ ] 10-01-PLAN.md — Schema additions (Report/FAQ/Banner/LegalPage), admin server actions (user/service/report CRUD), i18n keys
+- [ ] 10-02-PLAN.md — Dashboard homepage (real stats, KPI trend arrows) + user management (datatable, search/filter, ban/unban, detail)
+- [ ] 10-03-PLAN.md — Service management (datatable, approve/suspend, featured toggle) + category CRUD (tree view, add/edit/delete dialogs)
+- [ ] 10-04-PLAN.md — Reports/signalements (prioritized table, SLA countdown badges, detail Sheet, investigate/resolve/dismiss workflow)
+- [ ] 10-05-PLAN.md — Analytics dashboard (recharts: revenue line, bookings bar, categories pie, user growth area, KPI cards, date range, breakdowns)
+- [ ] 10-06-PLAN.md — Export CSV/PDF (generator utilities, API route, column selection, download/print)
+- [ ] 10-07-PLAN.md — Content management (FAQ editor with categories, legal page editor, banner manager with scheduling)
+- [ ] 10-08-PLAN.md — Commission oversight (12% tracking, provider payouts) + system notifications + sidebar update + breadcrumbs
 
 ```mermaid
 graph TD
@@ -590,7 +589,7 @@ Plans:
 | 7. Paiement Simule | 4/5 | In progress | 2026-02-24 |
 | 8. Avis & Evaluations | 7/7 | Complete | 2026-02-25 |
 | 9. Messagerie & Notifications | 3/5 | In Progress|  |
-| 10. Panneau d'Administration | 0/9 | Not started | - |
+| 10. Panneau d'Administration | 0/8 | Not started | - |
 | 11. Demo Data, Polish & PFE Readiness | 0/7 | Not started | - |
 
 **Total plans estimated:** ~74 plans across 11 sprints
