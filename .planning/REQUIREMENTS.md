@@ -101,8 +101,8 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **ADMN-04**: Analytics dashboard with KPIs: active users, transaction count, revenue, conversion rate, satisfaction rate, category/geographic breakdowns
 - [x] **ADMN-05**: Data export as CSV/PDF
 - [x] **ADMN-06**: Content management: homepage content, banners, FAQ, CGU (Terms & Conditions), legal pages
-- [ ] **ADMN-07**: System notifications and newsletters to users
-- [ ] **ADMN-08**: Provider earnings and commission oversight
+- [x] **ADMN-07**: System notifications and newsletters to users
+- [x] **ADMN-08**: Provider earnings and commission oversight
 
 ### UI/UX & Infrastructure
 
@@ -224,11 +224,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | ADMN-01 | Phase 10 | Complete |
 | ADMN-02 | Phase 10 | Complete |
 | ADMN-03 | Phase 10 | Complete |
-| ADMN-04 | Phase 10 | Pending |
+| ADMN-04 | Phase 10 | Complete |
 | ADMN-05 | Phase 10 | Complete |
 | ADMN-06 | Phase 10 | Complete |
-| ADMN-07 | Phase 10 | Pending |
-| ADMN-08 | Phase 10 | Pending |
+| ADMN-07 | Phase 10 | Complete |
+| ADMN-08 | Phase 10 | Complete |
 
 **Coverage:**
 - v1 requirements: 60 total

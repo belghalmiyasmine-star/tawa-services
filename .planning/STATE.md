@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-21)
 
 **Core value:** Clients can find, book, and pay a trusted local service provider in their city — and providers can get discovered and manage their business in one place.
-**Current focus:** Phase 10 IN PROGRESS — Panneau d'Administration. Plan 10-07 complete: content management system with FaqEditor (categorized CRUD), LegalPageEditor (3 independent page editors), BannerManager (grid with active toggle and date scheduling), and 3-tab ContentPageClient with URL-persisted tab state. ADMN-06 satisfied.
+**Current focus:** Phase 10 IN PROGRESS — Panneau d'Administration. Plan 10-08 complete: commission oversight (12% rate, provider payouts table), system notifications (bulk send to user segments), AdminSidebar with 11 nav items, AdminBreadcrumbs on all admin pages. ADMN-07 and ADMN-08 satisfied.
 
 ## Current Position
 
 Phase: 10 of 11 (Panneau d'Administration) — IN PROGRESS
-Plan: 8 of N in current phase — Plan 10-07 COMPLETE.
-Status: Plan 10-07 COMPLETE — Content management system: content-schemas.ts (Zod schemas), content-actions.ts (11 server actions: FAQ/LegalPage/Banner CRUD with ADMIN role), FaqEditor (categorized list with add/edit/delete), LegalPageEditor (3 independent page editors), BannerManager (grid with active toggle and date scheduling), ContentPageClient (3-tab URL-persisted), admin/content/page.tsx (server component parallel fetch). Commits: 100574b (schemas+actions+editors), e7b8459 (BannerManager+ContentPageClient+page). ADMN-06 satisfied.
-Last activity: 2026-02-26 — Plan 10-07 complete. Content management interface with FAQ/Legal/Banner CRUD complete.
+Plan: 9 of N in current phase — Plan 10-08 COMPLETE.
+Status: Plan 10-08 COMPLETE — Commission oversight: commission-queries.ts (getCommissionOverviewAction, getProviderPayoutsAction), CommissionOverview (4 stats cards), ProviderPayoutsTable (paginated), admin/commission/page.tsx. System notifications: system-notification-actions.ts (bulk createMany, history grouping), SystemNotificationForm (react-hook-form), notifications page rewritten. AdminSidebar: 11 nav items including Commission. AdminBreadcrumbs: client component with usePathname segment mapping. Admin layout updated with breadcrumbs. Commits: fbf5a95 (Task 1), 8cb9f41 (Task 2, from prior 10-06 session). ADMN-07, ADMN-08 satisfied.
+Last activity: 2026-02-26 — Plan 10-08 complete. Commission and notifications admin panels complete with breadcrumbs navigation.
 
-Progress: [##################] 93%
+Progress: [###################] 96%
 
 ## Performance Metrics
 
@@ -341,6 +341,10 @@ Recent decisions affecting current work:
 - [Phase 10-07]: getLegalPagesAction uses upsert by slug to seed 3 default legal pages idempotently — safe to call multiple times
 - [Phase 10-07]: Banner imageUrl accepts URL string (not file upload) — admin provides external URL or /public/uploads/ path
 - [Phase 10-07]: ContentPageClient as separate 'use client' file — server page fetches data, client wrapper owns URL tab state
+- [Phase 10-08]: Provider payout data fetched from Payment model directly (not via provider.providerBookings nested filter) — avoids TypeScript strict mode incompatibility with Prisma v7 nested relation where filters
+- [Phase 10-08]: Commission grouped in-memory from Payment records using Map accumulation — avoids Prisma groupBy limitation with floating point precision
+- [Phase 10-08]: Notification history grouped by title+body+minute to detect batches without a batchId schema field
+- [Phase 10-08]: AdminBreadcrumbs uses try-catch for t() calls — graceful fallback for unknown URL segments to raw segment string
 
 ### Pending Todos
 
@@ -353,5 +357,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-26
-Stopped at: Completed Phase 10 Plan 10-07 — Content Management System: content-schemas.ts (Zod schemas), content-actions.ts (11 CRUD actions with ADMIN role), FaqEditor (categorized CRUD), LegalPageEditor (3 independent page editors), BannerManager (grid with active toggle and date scheduling), ContentPageClient (3-tab URL-persisted), admin/content/page.tsx (parallel fetch). Commits: 100574b, e7b8459. ADMN-06 satisfied.
+Stopped at: Completed Phase 10 Plan 10-08 — Commission oversight (commission-queries.ts, CommissionOverview, ProviderPayoutsTable, commission page), system notifications (system-notification-actions.ts, SystemNotificationForm, notifications page rewritten), AdminSidebar with 11 nav items including Commission, AdminBreadcrumbs client component, admin layout updated. Commits: fbf5a95 (Task 1), 8cb9f41 (Task 2 from prior session). ADMN-07, ADMN-08 satisfied.
 Resume file: None
