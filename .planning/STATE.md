@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-21)
 
 **Core value:** Clients can find, book, and pay a trusted local service provider in their city — and providers can get discovered and manage their business in one place.
-**Current focus:** Phase 10 IN PROGRESS — Panneau d'Administration. Plan 10-05 complete: recharts analytics dashboard with 4 chart types (revenue line, bookings bar, categories pie, user growth area), 6 KPI cards with targets, DateRangePicker presets, 3 analytics server actions (getAnalyticsDataAction, getGeographicBreakdownAction, getTopCategoriesAction), URL date range filtering.
+**Current focus:** Phase 10 IN PROGRESS — Panneau d'Administration. Plan 10-07 complete: content management system with FaqEditor (categorized CRUD), LegalPageEditor (3 independent page editors), BannerManager (grid with active toggle and date scheduling), and 3-tab ContentPageClient with URL-persisted tab state. ADMN-06 satisfied.
 
 ## Current Position
 
 Phase: 10 of 11 (Panneau d'Administration) — IN PROGRESS
-Plan: 6 of N in current phase — Plan 10-04 COMPLETE.
-Status: Plan 10-04 COMPLETE — Reports management system: ReportActionsDropdown (investigate/resolve/dismiss inline), ReportsDataTable (priority-ordered with SLA badges, search+filters+pagination), admin/reports/page.tsx (server component with searchParams filtering). SlaBadge + ReportDetailSheet were already committed in prior 10-03 session. Commits: 7d7c3f9 (SlaBadge+ReportDetailSheet), 3ffc493 (ReportActionsDropdown+ReportsDataTable+page). ADMN-03 satisfied.
-Last activity: 2026-02-26 — Plan 10-04 complete. Reports management interface with prioritized table and SLA countdown complete.
+Plan: 8 of N in current phase — Plan 10-07 COMPLETE.
+Status: Plan 10-07 COMPLETE — Content management system: content-schemas.ts (Zod schemas), content-actions.ts (11 server actions: FAQ/LegalPage/Banner CRUD with ADMIN role), FaqEditor (categorized list with add/edit/delete), LegalPageEditor (3 independent page editors), BannerManager (grid with active toggle and date scheduling), ContentPageClient (3-tab URL-persisted), admin/content/page.tsx (server component parallel fetch). Commits: 100574b (schemas+actions+editors), e7b8459 (BannerManager+ContentPageClient+page). ADMN-06 satisfied.
+Last activity: 2026-02-26 — Plan 10-07 complete. Content management interface with FAQ/Legal/Banner CRUD complete.
 
-Progress: [#################] 92%
+Progress: [##################] 93%
 
 ## Performance Metrics
 
@@ -79,6 +79,7 @@ Progress: [#################] 92%
 | Phase 10-panneau-administration P02 | 45 | 2 tasks | 9 files |
 | Phase 10-panneau-administration P05 | 35 | 2 tasks | 9 files |
 | Phase 10-panneau-administration P04 | 35 | 2 tasks | 5 files |
+| Phase 10-panneau-administration P07 | 35 | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -328,10 +329,18 @@ Recent decisions affecting current work:
 - [10-05]: recharts Tooltip formatter typed as (value: number | undefined) to satisfy recharts v3 strict TypeScript types
 - [10-05]: avgProviderValidationHours computed from kycSubmittedAt -> kycApprovedAt diff — more accurate than createdAt
 - [10-05]: Export buttons disabled (placeholder) — Plan 10-06 will implement CSV/PDF export
+- [10-06]: generateCsv prepends UTF-8 BOM (\uFEFF) — required for Excel to recognize French accented characters in CSV
+- [10-06]: PDF export returns text/html opened in new tab — window.print() avoids heavy pdf-lib/puppeteer dependency
+- [10-06]: ExportButton uses fetch+blob for CSV downloads — enables loading spinner state tracking
+- [10-06]: API route accepts ?columns=key1,key2 param — server filters columns before generation, reduces payload size
+- [10-06]: ExportButton is reusable via exportType + availableColumns props — consistent export pattern across all admin pages
 - [10-05]: SVG defs/linearGradient inline in AreaChart for gradient fill — no separate recharts import needed for SVG primitives
 - [10-04]: Server action as prop pattern — handleGetReportDetail defined inline with "use server" in server page and passed to ReportsDataTable client component for on-demand detail fetch
 - [10-04]: SLA countdown uses setInterval(60000) in SlaBadge — minute-granularity sufficient, reduces re-renders vs 1000ms
 - [10-04]: Priority ordering applied in-memory on paginated results — consistent with 10-01 decision (avoids complex Prisma ORDER BY on enum)
+- [Phase 10-07]: getLegalPagesAction uses upsert by slug to seed 3 default legal pages idempotently — safe to call multiple times
+- [Phase 10-07]: Banner imageUrl accepts URL string (not file upload) — admin provides external URL or /public/uploads/ path
+- [Phase 10-07]: ContentPageClient as separate 'use client' file — server page fetches data, client wrapper owns URL tab state
 
 ### Pending Todos
 
@@ -344,5 +353,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-26
-Stopped at: Completed Phase 10 Plan 10-04 — Reports Management System: ReportActionsDropdown, ReportsDataTable (CRITICAL-first priority ordering, SLA badges, search/filter/pagination), admin/reports/page.tsx (server component). SlaBadge + ReportDetailSheet confirmed already committed in 10-03. Commits: 7d7c3f9 (prior), 3ffc493. ADMN-03 satisfied.
+Stopped at: Completed Phase 10 Plan 10-06 — CSV/PDF Export System: generateCsv (RFC 4180, UTF-8 BOM), generatePdfHtml (printable HTML), getExportDataAction (5 types), /api/admin/export route (ADMIN auth), ExportButton component (column checkboxes, CSV fetch+blob, PDF new-tab) integrated into users and analytics pages. Commits: fbf5a95 (Task 1 pre-committed), 8cb9f41 (Task 2). ADMN-05 satisfied.
 Resume file: None

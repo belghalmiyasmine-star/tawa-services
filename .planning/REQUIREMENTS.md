@@ -99,8 +99,8 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **ADMN-02**: Admin can approve/suspend services, manage service categories, feature listings
 - [x] **ADMN-03**: Admin can handle reports/signalements with priority levels (critical <2h, important <24h, minor <48h)
 - [x] **ADMN-04**: Analytics dashboard with KPIs: active users, transaction count, revenue, conversion rate, satisfaction rate, category/geographic breakdowns
-- [ ] **ADMN-05**: Data export as CSV/PDF
-- [ ] **ADMN-06**: Content management: homepage content, banners, FAQ, CGU (Terms & Conditions), legal pages
+- [x] **ADMN-05**: Data export as CSV/PDF
+- [x] **ADMN-06**: Content management: homepage content, banners, FAQ, CGU (Terms & Conditions), legal pages
 - [ ] **ADMN-07**: System notifications and newsletters to users
 - [ ] **ADMN-08**: Provider earnings and commission oversight
 
@@ -225,8 +225,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | ADMN-02 | Phase 10 | Complete |
 | ADMN-03 | Phase 10 | Complete |
 | ADMN-04 | Phase 10 | Pending |
-| ADMN-05 | Phase 10 | Pending |
-| ADMN-06 | Phase 10 | Pending |
+| ADMN-05 | Phase 10 | Complete |
+| ADMN-06 | Phase 10 | Complete |
 | ADMN-07 | Phase 10 | Pending |
 | ADMN-08 | Phase 10 | Pending |
 
