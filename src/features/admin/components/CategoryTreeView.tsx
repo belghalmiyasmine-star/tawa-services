@@ -9,6 +9,8 @@ import {
   Plus,
   Pencil,
   Trash2,
+  icons,
+  type LucideIcon,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -32,6 +34,16 @@ import {
   deleteCategoryAction,
   type CategoryTreeItem,
 } from "../actions/category-actions";
+
+// ============================================================
+// ICON RESOLVER
+// ============================================================
+
+function resolveIcon(name: string | null): LucideIcon | null {
+  if (!name) return null;
+  const Icon = icons[name as keyof typeof icons];
+  return Icon ?? null;
+}
 
 // ============================================================
 // TREE BUILDING
@@ -145,9 +157,10 @@ function CategoryRow({ node, depth, allCategories, onRefresh }: CategoryRowProps
         )}
 
         {/* Icon */}
-        {node.icon && (
-          <span className="text-base flex-shrink-0">{node.icon}</span>
-        )}
+        {node.icon && (() => {
+          const Icon = resolveIcon(node.icon);
+          return Icon ? <Icon className="h-4 w-4 flex-shrink-0 text-muted-foreground" /> : null;
+        })()}
 
         {/* Name */}
         <span className={`flex-1 text-sm font-medium ${depth === 0 ? "font-semibold" : ""}`}>

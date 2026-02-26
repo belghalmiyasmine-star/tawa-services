@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "@/i18n/routing";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { MoreHorizontal, Eye, CheckCircle, XCircle, Star } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -40,6 +40,7 @@ interface ServiceActionsDropdownProps {
 
 export function ServiceActionsDropdown({ service }: ServiceActionsDropdownProps) {
   const router = useRouter();
+  const locale = useLocale();
   const t = useTranslations("admin.services");
   const { toast } = useToast();
   const [suspendOpen, setSuspendOpen] = useState(false);
@@ -112,7 +113,7 @@ export function ServiceActionsDropdown({ service }: ServiceActionsDropdownProps)
         <DropdownMenuContent align="end">
           <DropdownMenuItem asChild>
             <a
-              href={`/fr/services/${service.id}`}
+              href={`/${locale}/services/${service.id}`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex cursor-pointer items-center gap-2"

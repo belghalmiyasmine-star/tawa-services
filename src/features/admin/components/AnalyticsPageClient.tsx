@@ -28,22 +28,19 @@ import type { AnalyticsData, GeographicBreakdownItem, TopCategoryItem } from "..
 // EXPORT COLUMN DEFINITIONS
 // ============================================================
 
-const TRANSACTION_COLUMNS = [
+const ANALYTICS_COLUMNS = [
   { key: "reference", label: "Reference" },
   { key: "client", label: "Client" },
   { key: "prestataire", label: "Prestataire" },
   { key: "montant", label: "Montant" },
-  { key: "commission", label: "Commission (5%)" },
+  { key: "commission", label: "Commission (12%)" },
   { key: "statut", label: "Statut" },
   { key: "date", label: "Date" },
-];
-
-const REVENUE_COLUMNS = [
-  { key: "mois", label: "Mois" },
-  { key: "revenu", label: "Revenu brut (TND)" },
-  { key: "commission", label: "Commission 5% (TND)" },
-  { key: "net", label: "Net prestataires (TND)" },
-  { key: "transactions", label: "Transactions" },
+  { key: "mois", label: "Mois (resume)" },
+  { key: "revenuMensuel", label: "Revenu brut mensuel (TND)" },
+  { key: "commissionMensuelle", label: "Commission 12% mensuelle (TND)" },
+  { key: "netMensuel", label: "Net prestataires mensuel (TND)" },
+  { key: "transactionsMensuelles", label: "Transactions mensuelles" },
 ];
 
 // ============================================================
@@ -106,21 +103,13 @@ export function AnalyticsPageClient({
           <h1 className="text-2xl font-bold">{tNav("analytics")}</h1>
         </div>
 
-        {/* Export buttons — Plan 10-06 */}
-        <div className="flex gap-2">
-          <ExportButton
-            exportType="transactions"
-            availableColumns={TRANSACTION_COLUMNS}
-            startDate={startDate}
-            endDate={endDate}
-          />
-          <ExportButton
-            exportType="revenue"
-            availableColumns={REVENUE_COLUMNS}
-            startDate={startDate}
-            endDate={endDate}
-          />
-        </div>
+        {/* Export button */}
+        <ExportButton
+          exportType="analytics"
+          availableColumns={ANALYTICS_COLUMNS}
+          startDate={startDate}
+          endDate={endDate}
+        />
       </div>
 
       {/* Date Range Picker */}

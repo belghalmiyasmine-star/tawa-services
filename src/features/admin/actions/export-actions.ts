@@ -4,6 +4,7 @@ import { getServerSession } from "next-auth";
 
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { COMMISSION_RATE } from "@/lib/constants";
 import type { ActionResult } from "@/types/api";
 
 // ============================================================
@@ -25,7 +26,8 @@ export type ExportType =
   | "services"
   | "transactions"
   | "revenue"
-  | "reports";
+  | "reports"
+  | "analytics";
 
 export type ExportFilters = {
   startDate?: string;
@@ -109,6 +111,9 @@ export async function getExportDataAction(
 
       case "reports":
         return await exportReports(filters);
+
+      case "analytics":
+        return await exportAnalytics(filters);
 
       default:
         return { success: false, error: "Type d'export invalide" };
@@ -227,7 +232,7 @@ async function exportTransactions(
     { key: "client", label: "Client" },
     { key: "prestataire", label: "Prestataire" },
     { key: "montant", label: "Montant" },
-    { key: "commission", label: "Commission (5%)" },
+    { key: "commission", label: `Commission (${COMMISSION_RATE * 100}%)` },
     { key: "statut", label: "Statut" },
     { key: "date", label: "Date" },
   ];
@@ -272,7 +277,7 @@ async function exportTransactions(
     client: p.booking.client.name ?? "",
     prestataire: p.booking.service.provider.displayName,
     montant: formatAmount(p.amount),
-    commission: formatAmount(p.amount * 0.05),
+    commission: formatAmount(p.amount * COMMISSION_RATE),
     statut: statusLabels[p.status] ?? p.status,
     date: formatDate(p.createdAt),
   }));
@@ -286,7 +291,7 @@ async function exportRevenue(
   const columns: ExportColumn[] = [
     { key: "mois", label: "Mois" },
     { key: "revenu", label: "Revenu brut (TND)" },
-    { key: "commission", label: "Commission 5% (TND)" },
+    { key: "commission", label: `Commission ${COMMISSION_RATE * 100}% (TND)` },
     { key: "net", label: "Net prestataires (TND)" },
     { key: "transactions", label: "Transactions" },
   ];
@@ -339,7 +344,7 @@ async function exportRevenue(
     .map(([monthKey, values]) => {
       const [year, month] = monthKey.split("-").map(Number);
       const date = new Date(year ?? 2024, (month ?? 1) - 1, 1);
-      const commission = values.revenu * 0.05;
+      const commission = values.revenu * COMMISSION_RATE;
       return {
         mois: monthFormatter.format(date),
         revenu: values.revenu.toFixed(2),
@@ -413,6 +418,125 @@ async function exportReports(
     dateCreation: formatDate(r.createdAt),
     dateResolution: formatDate(r.resolvedAt),
   }));
+
+  return { success: true, data: { columns, data } };
+}
+
+async function exportAnalytics(
+  filters?: ExportFilters,
+): Promise<ActionResult<ExportData>> {
+  const columns: ExportColumn[] = [
+    { key: "reference", label: "Reference" },
+    { key: "client", label: "Client" },
+    { key: "prestataire", label: "Prestataire" },
+    { key: "montant", label: "Montant" },
+    { key: "commission", label: `Commission (${COMMISSION_RATE * 100}%)` },
+    { key: "statut", label: "Statut" },
+    { key: "date", label: "Date" },
+    { key: "mois", label: "Mois (resume)" },
+    { key: "revenuMensuel", label: "Revenu brut mensuel (TND)" },
+    { key: "commissionMensuelle", label: `Commission ${COMMISSION_RATE * 100}% mensuelle (TND)` },
+    { key: "netMensuel", label: "Net prestataires mensuel (TND)" },
+    { key: "transactionsMensuelles", label: "Transactions mensuelles" },
+  ];
+
+  const dateRange = parseDateRange(filters);
+
+  const payments = await prisma.payment.findMany({
+    where: {
+      isDeleted: false,
+      createdAt: dateRange,
+    },
+    orderBy: { createdAt: "desc" },
+    select: {
+      amount: true,
+      status: true,
+      createdAt: true,
+      booking: {
+        select: {
+          id: true,
+          client: { select: { name: true } },
+          service: {
+            select: {
+              provider: { select: { displayName: true } },
+            },
+          },
+        },
+      },
+    },
+  });
+
+  const statusLabels: Record<string, string> = {
+    PENDING: "En attente",
+    HELD: "Retenu",
+    RELEASED: "Libere",
+    REFUNDED: "Rembourse",
+    FAILED: "Echoue",
+  };
+
+  // Transaction rows
+  const transactionRows = payments.map((p) => ({
+    reference: p.booking.id.slice(0, 8).toUpperCase(),
+    client: p.booking.client.name ?? "",
+    prestataire: p.booking.service.provider.displayName,
+    montant: formatAmount(p.amount),
+    commission: formatAmount(p.amount * COMMISSION_RATE),
+    statut: statusLabels[p.status] ?? p.status,
+    date: formatDate(p.createdAt),
+    mois: "",
+    revenuMensuel: "",
+    commissionMensuelle: "",
+    netMensuel: "",
+    transactionsMensuelles: "",
+  }));
+
+  // Monthly revenue summary rows
+  const monthMap = new Map<string, { revenu: number; transactions: number }>();
+  const cursor = new Date(dateRange.gte);
+  cursor.setDate(1);
+  while (cursor <= dateRange.lte) {
+    const key = `${cursor.getFullYear()}-${String(cursor.getMonth() + 1).padStart(2, "0")}`;
+    monthMap.set(key, { revenu: 0, transactions: 0 });
+    cursor.setMonth(cursor.getMonth() + 1);
+  }
+
+  for (const p of payments.filter((pay) => ["RELEASED", "HELD"].includes(pay.status))) {
+    const key = `${p.createdAt.getFullYear()}-${String(p.createdAt.getMonth() + 1).padStart(2, "0")}`;
+    const current = monthMap.get(key);
+    if (current) {
+      current.revenu += p.amount;
+      current.transactions += 1;
+    }
+  }
+
+  const monthFormatter = new Intl.DateTimeFormat("fr-TN", {
+    month: "long",
+    year: "numeric",
+  });
+
+  const revenueRows = Array.from(monthMap.entries())
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([monthKey, values]) => {
+      const [year, month] = monthKey.split("-").map(Number);
+      const date = new Date(year ?? 2024, (month ?? 1) - 1, 1);
+      const comm = values.revenu * COMMISSION_RATE;
+      return {
+        reference: "",
+        client: "",
+        prestataire: "",
+        montant: "",
+        commission: "",
+        statut: "",
+        date: "",
+        mois: monthFormatter.format(date),
+        revenuMensuel: values.revenu.toFixed(2),
+        commissionMensuelle: comm.toFixed(2),
+        netMensuel: (values.revenu - comm).toFixed(2),
+        transactionsMensuelles: String(values.transactions),
+      };
+    });
+
+  const data = [...transactionRows, ...revenueRows];
 
   return { success: true, data: { columns, data } };
 }

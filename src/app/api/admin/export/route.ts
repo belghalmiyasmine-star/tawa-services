@@ -17,6 +17,7 @@ const VALID_TYPES: ExportType[] = [
   "transactions",
   "revenue",
   "reports",
+  "analytics",
 ];
 
 const VALID_FORMATS = ["csv", "pdf"] as const;
@@ -125,6 +126,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     transactions: "Transactions",
     revenue: "Revenus mensuels",
     reports: "Signalements",
+    analytics: "Analytique (Transactions + Revenus)",
   };
 
   const title = `Rapport ${typeLabels[type]}`;

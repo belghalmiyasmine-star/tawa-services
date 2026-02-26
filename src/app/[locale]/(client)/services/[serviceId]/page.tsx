@@ -1,10 +1,12 @@
 import { notFound } from "next/navigation";
 
 import { getTranslations } from "next-intl/server";
+import { getServerSession } from "next-auth";
 import type { Metadata } from "next";
 import { CheckCircle2, XCircle } from "lucide-react";
 
 import { prisma } from "@/lib/prisma";
+import { authOptions } from "@/lib/auth";
 import { Badge } from "@/components/ui/badge";
 import { ServiceImageGallery } from "@/features/search/components/ServiceImageGallery";
 import { ProviderMiniCard } from "@/features/search/components/ProviderMiniCard";
@@ -46,9 +48,11 @@ function formatDuration(minutes: number | null): string | null {
 
 export async function generateMetadata({ params }: ServicePageProps): Promise<Metadata> {
   const { serviceId } = await params;
+  const session = await getServerSession(authOptions);
+  const isAdmin = session?.user?.role === "ADMIN";
 
   const service = await prisma.service.findUnique({
-    where: { id: serviceId, isDeleted: false, status: "ACTIVE" },
+    where: { id: serviceId, isDeleted: false, ...(isAdmin ? {} : { status: "ACTIVE" }) },
     select: { title: true, description: true },
   });
 
@@ -76,10 +80,13 @@ export async function generateMetadata({ params }: ServicePageProps): Promise<Me
 export default async function ServiceDetailPage({ params }: ServicePageProps) {
   const { serviceId } = await params;
   const t = await getTranslations("search");
+  const session = await getServerSession(authOptions);
+  const isAdmin = session?.user?.role === "ADMIN";
 
   // Fetch service with all related data
+  // Admins can view services in any status (draft, suspended, etc.)
   const service = await prisma.service.findUnique({
-    where: { id: serviceId, isDeleted: false, status: "ACTIVE" },
+    where: { id: serviceId, isDeleted: false, ...(isAdmin ? {} : { status: "ACTIVE" }) },
     include: {
       category: { include: { parent: true } },
       provider: {
