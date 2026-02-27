@@ -26,9 +26,15 @@ export interface ModerationResult {
 /** Email address pattern */
 const EMAIL_REGEX = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
 
-/** Tunisian phone number: +216 XX XXX XXX variants */
+/** Tunisian phone number: +216 XX XXX XXX variants (including parentheses and slash separators) */
 const PHONE_TN_REGEX =
-  /(\+?216[\s.-]?\d{2}[\s.-]?\d{3}[\s.-]?\d{3}|\b\d{2}[\s.-]?\d{3}[\s.-]?\d{3}\b)/g;
+  /(\+?216[\s./()-]?\d{2}[\s./()-]?\d{3}[\s./()-]?\d{3}|\b\d{2}[\s./()-]?\d{3}[\s./()-]?\d{3}\b)/g;
+
+/** Spaced-out digits anti-evasion: 8 individual digits separated by spaces/dots/dashes */
+const SPACED_DIGITS_REGEX = /\b\d[\s.,-]\d[\s.,-]\d[\s.,-]\d[\s.,-]\d[\s.,-]\d[\s.,-]\d[\s.,-]\d\b/g;
+
+/** Obfuscated email evasion: "user at gmail dot com" / "user chez gmail point com" */
+const EMAIL_OBFUSCATED_REGEX = /\b\w+\s*(at|chez)\s*\w+\s*(dot|point)\s*\w+\b/gi;
 
 /** Generic phone pattern (0XXXXXXXXX format) */
 const PHONE_GENERIC_REGEX = /\b0?\d[\s.-]?\d{2}[\s.-]?\d{3}[\s.-]?\d{3}\b/g;
@@ -56,8 +62,18 @@ export function detectContactInfo(text: string): ContactDetectionResult {
   const phoneGenericMatches = text.match(PHONE_GENERIC_REGEX) ?? [];
   const messagingMatches = text.match(MESSAGING_APPS_REGEX) ?? [];
   const socialMatches = text.match(SOCIAL_MEDIA_REGEX) ?? [];
+  const spacedDigitsMatches = text.match(SPACED_DIGITS_REGEX) ?? [];
+  const emailObfuscatedMatches = text.match(EMAIL_OBFUSCATED_REGEX) ?? [];
 
-  matches.push(...emailMatches, ...phoneTnMatches, ...phoneGenericMatches, ...messagingMatches, ...socialMatches);
+  matches.push(
+    ...emailMatches,
+    ...phoneTnMatches,
+    ...phoneGenericMatches,
+    ...messagingMatches,
+    ...socialMatches,
+    ...spacedDigitsMatches,
+    ...emailObfuscatedMatches,
+  );
 
   // Deduplicate matches
   const uniqueMatches = [...new Set(matches)];
