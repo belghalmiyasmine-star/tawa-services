@@ -12,7 +12,7 @@ See: .planning/PROJECT.md (updated 2026-02-27)
 Phase: 12 of 15 (Bug Fixes)
 Plan: 3 of 5 complete (12-01, 12-02, 12-03 done)
 Status: Executing
-Last activity: 2026-02-27 — Plan 12-03 complete (analytics charts verified, unsuspend action, category filter fix)
+Last activity: 2026-02-27 — Plan 12-01 executed (French accent fixes, autocomplete icons, navbar dashboard link)
 
 Progress: [███░░░░░░░░░░░░░░░░] 9% (v1.1 milestone — 5/31 requirements complete)
 
@@ -51,6 +51,8 @@ Recent decisions affecting current work:
 - [12-02 Decision]: Withdrawal math verified correct — providerEarning = amount * 0.88, no fix needed
 - [Phase 12-bug-fixes]: Analytics charts already correct - data flow verified, no code changes for BUGF-08
 - [Phase 12-bug-fixes]: Category filter uses Prisma OR relation filter for parent+child categories (BUGF-10)
+- [12-01 Decision]: Used icons object from lucide-react for dynamic icon rendering — avoids static import of all icons
+- [12-01 Decision]: getLucideIcon() converts kebab-case DB string to PascalCase lucide component name pattern
 
 ### Pending Todos
 
@@ -63,5 +65,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-27
-Stopped at: Completed 12-03-PLAN.md (analytics charts verified, unsuspend action, category filter fix)
+Stopped at: Completed 12-01-PLAN.md (French accents, autocomplete icons, navbar fix)
 Resume file: None

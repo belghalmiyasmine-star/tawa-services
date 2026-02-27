@@ -415,7 +415,7 @@ Plans:
 | 9. Messagerie & Notifications | v1.0 | 4/5 | Complete | 2026-02-26 |
 | 10. Panneau d'Administration | v1.0 | 8/8 | Complete | 2026-02-26 |
 | 11. Demo Data, Polish & PFE Readiness | v1.0 | 0/7 | Rolled into v1.1 | - |
-| 12. Bug Fixes | 2/5 | In Progress|  | - |
+| 12. Bug Fixes | 3/5 | In Progress|  | - |
 | 13. UX Polish & Missing Pages | v1.1 | 0/TBD | Not started | - |
 | 14. Integration Wiring | v1.1 | 0/TBD | Not started | - |
 | 15. PFE Readiness | v1.1 | 0/TBD | Not started | - |

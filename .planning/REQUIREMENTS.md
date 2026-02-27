@@ -9,10 +9,10 @@ Requirements for milestone v1.1 — Polish, Bug Fixes & PFE Readiness. Continues
 
 ### Bug Fixes
 
-- [ ] **BUGF-01**: French accents display correctly in all i18n translations (é, è, ê, ç, à, etc.)
-- [ ] **BUGF-02**: Search autocomplete shows proper icons instead of icon names rendered as text
-- [ ] **BUGF-03**: Footer links (FAQ, CGU, Contact, Comment ça marche) navigate to correct pages
-- [ ] **BUGF-04**: Client navbar dashboard link points to correct destination
+- [x] **BUGF-01**: French accents display correctly in all i18n translations (é, è, ê, ç, à, etc.)
+- [x] **BUGF-02**: Search autocomplete shows proper icons instead of icon names rendered as text
+- [x] **BUGF-03**: Footer links (FAQ, CGU, Contact, Comment ça marche) navigate to correct pages
+- [x] **BUGF-04**: Client navbar dashboard link points to correct destination
 - [x] **BUGF-05**: Favorites feature works correctly (save/unsave providers or services)
 - [x] **BUGF-06**: Client dashboard displays real statistics (bookings count, spending, reviews given)
 - [x] **BUGF-07**: Provider withdrawal calculation uses correct amounts (available balance minus commission)
@@ -106,10 +106,10 @@ Deferred to future release. Tracked but not in current roadmap.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| BUGF-01 | Phase 12 | Pending |
-| BUGF-02 | Phase 12 | Pending |
-| BUGF-03 | Phase 12 | Pending |
-| BUGF-04 | Phase 12 | Pending |
+| BUGF-01 | Phase 12 | Complete |
+| BUGF-02 | Phase 12 | Complete |
+| BUGF-03 | Phase 12 | Complete |
+| BUGF-04 | Phase 12 | Complete |
 | BUGF-05 | Phase 12 | Complete |
 | BUGF-06 | Phase 12 | Complete |
 | BUGF-07 | Phase 12 | Complete |
