@@ -24,7 +24,7 @@ const FROM_EMAIL =
     ? "Tawa Services <noreply@tawa-services.com>"
     : "Tawa Services <onboarding@resend.dev>";
 
-const APP_URL = env.NEXTAUTH_URL ?? "http://localhost:3000";
+const APP_URL = (env.NEXTAUTH_URL ?? "http://localhost:3000").replace(/\/+$/, "");
 
 /**
  * Send a verification email with a magic link.
