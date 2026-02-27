@@ -146,7 +146,6 @@ export function StatusTimeline({ booking }: StatusTimelineProps) {
         const isCurrent = isTerminal
           ? index === steps.length - 1
           : step.status === status;
-        const isFuture = !isTerminal && stepStatusIndex > currentStatusIndex;
         const isTerminalStep = isTerminal && isCurrent;
 
         // Dot styling

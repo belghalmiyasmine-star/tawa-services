@@ -173,18 +173,10 @@ export function BookingWizard({ service }: BookingWizardProps) {
   }
 
   // Get existing bookings for selected date as HH:MM strings
-  function getBookingsForDate(date: Date): string[] {
-    const dateStr = toDateString(date);
+  function getBookingsForDate(_date: Date): string[] {
     // This is provided by the API in the calendar component; here we use empty array
     // (conflicts are also checked server-side in createBookingAction)
     return [];
-  }
-
-  function toDateString(d: Date): string {
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, "0");
-    const day = String(d.getDate()).padStart(2, "0");
-    return `${y}-${m}-${day}`;
   }
 
   // Handle date selection (resets time when date changes)

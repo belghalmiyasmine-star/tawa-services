@@ -1,5 +1,6 @@
 import { getServerSession } from "next-auth";
-import { NextRequest, NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 
 import { authOptions } from "@/lib/auth";
 import { getExportDataAction } from "@/features/admin/actions/export-actions";
@@ -95,7 +96,8 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     );
   }
 
-  let { columns, data } = result.data;
+  const { columns: rawColumns, data } = result.data;
+  let columns = rawColumns;
 
   // ── Column filtering ─────────────────────────────────────────
   if (columnsParam) {

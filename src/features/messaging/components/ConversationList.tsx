@@ -79,7 +79,7 @@ interface ConversationListProps {
 
 export function ConversationList({
   conversations: initialConversations,
-  currentUserId,
+  currentUserId: _currentUserId,
   basePath,
 }: ConversationListProps) {
   const tMessaging = useTranslations("messaging");

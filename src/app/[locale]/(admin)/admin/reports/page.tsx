@@ -49,7 +49,6 @@ export default async function AdminReportsPage({
 
   const reports = reportsResult.success ? reportsResult.data.items : [];
   const total = reportsResult.success ? reportsResult.data.total : 0;
-  const totalPages = reportsResult.success ? reportsResult.data.totalPages : 0;
 
   // Count CRITICAL open reports for the header badge
   const criticalOpenCount = reports.filter(

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
-import { Clock, CheckCircle2, XCircle, AlertCircle, Timer } from "lucide-react";
+import { CheckCircle2, AlertCircle, Timer } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";

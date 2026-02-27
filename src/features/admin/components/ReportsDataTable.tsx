@@ -84,7 +84,6 @@ export function ReportsDataTable({
 
   const [selectedReport, setSelectedReport] = useState<AdminReportDetail | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
-  const [loadingDetail, setLoadingDetail] = useState(false);
 
   const searchInputRef = useRef<HTMLInputElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -115,13 +114,12 @@ export function ReportsDataTable({
   }
 
   async function handleViewDetail(reportId: string) {
-    setLoadingDetail(true);
     try {
       const detail = await getReportDetail(reportId);
       setSelectedReport(detail);
       setSheetOpen(true);
     } finally {
-      setLoadingDetail(false);
+      // loading state removed (value was never consumed)
     }
   }
 

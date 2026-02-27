@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   markAllNotificationsReadAction,
 } from "@/features/notification/actions/notification-actions";

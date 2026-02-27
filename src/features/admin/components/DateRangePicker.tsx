@@ -25,7 +25,7 @@ function getPresetDates(preset: Preset): { startDate: string; endDate: string } 
   const now = new Date();
   const endDate = now.toISOString().split("T")[0] ?? "";
 
-  let start = new Date(now);
+  const start = new Date(now);
   switch (preset) {
     case "7d":
       start.setDate(start.getDate() - 7);

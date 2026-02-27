@@ -21,7 +21,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
 import { ServiceActionsDropdown } from "./ServiceActionsDropdown";
@@ -135,11 +134,6 @@ export function ServicesDataTable({
     const params = new URLSearchParams(window.location.search);
     params.set("page", String(page));
     router.push((`/admin/services?${params.toString()}`) as never);
-  }
-
-  function formatPrice(price: number | null, status: string): string {
-    if (status === "SUR_DEVIS" || price === null) return "Sur devis";
-    return `${price.toLocaleString("fr-TN")} TND`;
   }
 
   return (

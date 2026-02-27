@@ -86,12 +86,6 @@ function getPositionLabel(position: string): string {
   }
 }
 
-function toInputDate(date: Date | null): string {
-  if (!date) return "";
-  const d = new Date(date);
-  return d.toISOString().slice(0, 16); // "YYYY-MM-DDTHH:MM"
-}
-
 // ============================================================
 // BANNER FORM DIALOG
 // ============================================================

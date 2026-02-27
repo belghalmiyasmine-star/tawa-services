@@ -49,8 +49,6 @@ export async function createBookingAction(
     const {
       serviceId,
       scheduledAt: scheduledAtStr,
-      address,
-      city,
       clientNote,
       paymentMethod,
     } = parsed.data;

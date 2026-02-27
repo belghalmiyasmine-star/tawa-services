@@ -89,13 +89,6 @@ export function DashboardStatsCards({ stats }: Props) {
     maximumFractionDigits: 0,
   }).format(stats.totalRevenue);
 
-  const formattedCurrentRevenue = new Intl.NumberFormat("fr-TN", {
-    style: "currency",
-    currency: "TND",
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(stats.currentMonthRevenue);
-
   return (
     <div className="space-y-4">
       {/* Main KPI Cards — 2 cols mobile, 4 cols desktop */}

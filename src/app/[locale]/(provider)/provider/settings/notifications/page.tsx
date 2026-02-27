@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getServerSession } from "next-auth";
 import { getLocale, getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/routing";
 
 import { authOptions } from "@/lib/auth";
 import { redirect } from "@/i18n/routing";
@@ -30,12 +31,12 @@ export default async function ProviderNotificationPreferencesPage() {
   return (
     <div className="container mx-auto max-w-3xl px-4 py-8">
       {/* Back link */}
-      <a
+      <Link
         href="/provider/dashboard"
         className="mb-6 inline-flex items-center text-sm text-muted-foreground hover:text-foreground"
       >
         &larr; Retour au tableau de bord
-      </a>
+      </Link>
 
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-foreground">
