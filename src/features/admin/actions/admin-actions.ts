@@ -336,6 +336,33 @@ export async function suspendServiceAction(
 }
 
 /**
+ * Unsuspend a service. Sets status=ACTIVE for a SUSPENDED service.
+ */
+export async function unsuspendServiceAction(
+  data: { serviceId: string },
+): Promise<ActionResult<void>> {
+  const authResult = await requireAdmin();
+  if (!authResult.success) return authResult;
+
+  try {
+    const service = await prisma.service.findUnique({
+      where: { id: data.serviceId, isDeleted: false },
+      select: { id: true, status: true },
+    });
+    if (!service) return { success: false, error: "Service introuvable" };
+
+    await prisma.service.update({
+      where: { id: data.serviceId },
+      data: { status: "ACTIVE" },
+    });
+    return { success: true, data: undefined };
+  } catch (error) {
+    console.error("[unsuspendServiceAction] Error:", error);
+    return { success: false, error: "Une erreur est survenue" };
+  }
+}
+
+/**
  * Toggle the isFeatured flag on a service.
  */
 export async function toggleFeaturedAction(

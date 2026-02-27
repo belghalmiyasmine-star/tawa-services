@@ -27,7 +27,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 
-import { approveServiceAction, suspendServiceAction, toggleFeaturedAction } from "../actions/admin-actions";
+import { approveServiceAction, suspendServiceAction, toggleFeaturedAction, unsuspendServiceAction } from "../actions/admin-actions";
 
 interface ServiceActionsDropdownProps {
   service: {
@@ -73,6 +73,21 @@ export function ServiceActionsDropdown({ service }: ServiceActionsDropdownProps)
         toast({ title: t("suspended_success") });
         setSuspendOpen(false);
         setSuspendReason("");
+        router.refresh();
+      } else {
+        toast({ title: result.error, variant: "destructive" });
+      }
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleUnsuspend() {
+    setLoading(true);
+    try {
+      const result = await unsuspendServiceAction({ serviceId: service.id });
+      if (result.success) {
+        toast({ title: t("unsuspended_success") });
         router.refresh();
       } else {
         toast({ title: result.error, variant: "destructive" });
@@ -142,6 +157,16 @@ export function ServiceActionsDropdown({ service }: ServiceActionsDropdownProps)
             >
               <XCircle className="h-4 w-4" />
               {t("suspend")}
+            </DropdownMenuItem>
+          )}
+
+          {service.status === "SUSPENDED" && (
+            <DropdownMenuItem
+              onClick={handleUnsuspend}
+              className="flex cursor-pointer items-center gap-2 text-green-600 focus:text-green-600"
+            >
+              <CheckCircle className="h-4 w-4" />
+              {t("unsuspend")}
             </DropdownMenuItem>
           )}
 

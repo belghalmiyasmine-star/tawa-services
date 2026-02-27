@@ -272,7 +272,12 @@ export async function getAdminServicesAction(
     }
 
     if (categoryId) {
-      where.categoryId = categoryId;
+      where.category = {
+        OR: [
+          { id: categoryId },
+          { parentId: categoryId },
+        ],
+      };
     }
 
     const [services, total] = await Promise.all([

@@ -559,7 +559,8 @@
     "adminPanelTitle": "Panneau d'administration",
     "sidebarCollapse": "Reduire",
     "sidebarExpand": "Ouvrir",
-    "sidebarNav": "Navigation administration"
+    "sidebarNav": "Navigation administration",
+    "viewPublicSite": "Voir le site"
   },
   "placeholder": {
     "adminDescription": "Panneau d'administration — Phase 10",
@@ -571,7 +572,8 @@
     "reportsDescription": "Moderation et gestion des signalements",
     "analyticsDescription": "Statistiques et metriques de la plateforme",
     "contentDescription": "Gestion du contenu de la plateforme",
-    "notificationsDescription": "Gestion des notifications systeme"
+    "notificationsDescription": "Gestion des notifications systeme",
+    "messagesDescription": "Messagerie de la plateforme"
   },
   "search": {
     "title": "Recherche",
@@ -981,7 +983,9 @@
       "confirmSuspend": "Confirmer la suspension",
       "suspendReason": "Motif de suspension",
       "approved_success": "Service approuve avec succes",
-      "suspended_success": "Service suspendu avec succes"
+      "suspended_success": "Service suspendu avec succes",
+      "unsuspend": "Reactiver",
+      "unsuspended_success": "Service reactiv\u00e9"
     },
     "categories": {
       "title": "Gestion des categories",
@@ -1158,5 +1162,29 @@
       "to": "a",
       "total": "total"
     }
+  },
+  "clientDashboard": {
+    "title": "Tableau de bord",
+    "welcome": "Bienvenue, {name}",
+    "welcomeDefault": "Bienvenue sur Tawa",
+    "upcomingBookings": "Reservations a venir",
+    "noUpcomingBookings": "Aucune reservation a venir",
+    "noUpcomingBookingsDesc": "Explorez nos services pour trouver un prestataire",
+    "pendingReviews": "Avis en attente",
+    "noPendingReviews": "Aucun avis en attente",
+    "recentActivity": "Activite recente",
+    "noRecentActivity": "Aucune activite recente",
+    "favoriteProviders": "Prestataires favoris",
+    "noFavorites": "Aucun prestataire favori",
+    "noFavoritesDesc": "Ajoutez des prestataires a vos favoris",
+    "viewAll": "Voir tout",
+    "viewBookings": "Voir mes reservations",
+    "browseServices": "Parcourir les services",
+    "leaveReview": "Laisser un avis",
+    "scheduledFor": "Prevu le",
+    "with": "avec",
+    "totalBookings": "Reservations totales",
+    "totalSpent": "Total depense",
+    "reviewsGiven": "Avis donnes"
   }
 }
