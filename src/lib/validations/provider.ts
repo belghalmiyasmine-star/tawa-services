@@ -107,7 +107,7 @@ export type BlockedDateFormData = z.infer<typeof blockedDateSchema>;
  */
 export const zoneSchema = z.object({
   delegationIds: z
-    .array(z.string().cuid2("Identifiant de delegation invalide"))
+    .array(z.string().cuid("Identifiant de delegation invalide"))
     .min(1, "Selectionnez au moins une zone d'intervention"),
 });
 
