@@ -61,14 +61,14 @@
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
 
-    --card: 222.2 84% 4.9%;
+    --card: 222.2 47% 8%;
     --card-foreground: 210 40% 98%;
 
-    --popover: 222.2 84% 4.9%;
+    --popover: 222.2 47% 8%;
     --popover-foreground: 210 40% 98%;
 
     --primary: 217 91% 60%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
 
     --secondary: 38 92% 50%;
     --secondary-foreground: 210 40% 98%;
@@ -85,6 +85,12 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 217 91% 60%;
+
+    /* Success / warning in dark */
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 210 40% 98%;
 
     /* Chart colors dark */
     --chart-1: 220 70% 50%;
@@ -104,5 +110,11 @@
     font-feature-settings:
       "rlig" 1,
       "calt" 1;
+  }
+
+  /* ── Dark mode: ensure bg-white elements use card token ── */
+  .dark .bg-white {
+    background-color: hsl(var(--card));
+    color: hsl(var(--card-foreground));
   }
 }
