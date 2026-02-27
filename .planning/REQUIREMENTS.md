@@ -19,10 +19,10 @@ Requirements for milestone v1.1 — Polish, Bug Fixes & PFE Readiness. Continues
 - [x] **BUGF-08**: Admin analytics graphs render with real data (recharts charts not empty)
 - [x] **BUGF-09**: Admin can unsuspend previously suspended services (toggle back to active)
 - [x] **BUGF-10**: Admin category filter works correctly on services management page
-- [ ] **BUGF-11**: Dark mode has proper contrast across all pages — no white text on white cards
-- [ ] **BUGF-12**: Auto-moderation regex catches phone numbers and emails in reviews and messages
-- [ ] **BUGF-13**: Email verification link includes locale prefix (/fr/) — no 404 on click
-- [ ] **BUGF-14**: Provider profile zone selector allows selecting intervention zones (city/delegation)
+- [x] **BUGF-11**: Dark mode has proper contrast across all pages — no white text on white cards
+- [x] **BUGF-12**: Auto-moderation regex catches phone numbers and emails in reviews and messages
+- [x] **BUGF-13**: Email verification link includes locale prefix (/fr/) — no 404 on click
+- [x] **BUGF-14**: Provider profile zone selector allows selecting intervention zones (city/delegation)
 
 ### UX Improvements
 
@@ -116,10 +116,10 @@ Deferred to future release. Tracked but not in current roadmap.
 | BUGF-08 | Phase 12 | Complete |
 | BUGF-09 | Phase 12 | Complete |
 | BUGF-10 | Phase 12 | Complete |
-| BUGF-11 | Phase 12 | Pending |
-| BUGF-12 | Phase 12 | Pending |
-| BUGF-13 | Phase 12 | Pending |
-| BUGF-14 | Phase 12 | Pending |
+| BUGF-11 | Phase 12 | Complete |
+| BUGF-12 | Phase 12 | Complete |
+| BUGF-13 | Phase 12 | Complete |
+| BUGF-14 | Phase 12 | Complete |
 | UX-01 | Phase 13 | Pending |
 | UX-02 | Phase 13 | Pending |
 | UX-03 | Phase 13 | Pending |

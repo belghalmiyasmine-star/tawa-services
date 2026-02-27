@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-27)
 
 **Core value:** Clients can find, book, and pay a trusted local service provider in their city — and providers can get discovered and manage their business in one place.
-**Current focus:** Milestone v1.1 — Polish, Bug Fixes & PFE Readiness. Phase 12 executing (3/5 plans complete).
+**Current focus:** Milestone v1.1 — Polish, Bug Fixes & PFE Readiness. Phase 12 complete (5/5 plans done).
 
 ## Current Position
 
 Phase: 12 of 15 (Bug Fixes)
-Plan: 3 of 5 complete (12-01, 12-02, 12-03 done)
-Status: Executing
-Last activity: 2026-02-27 — Plan 12-01 executed (French accent fixes, autocomplete icons, navbar dashboard link)
+Plan: 5 of 5 complete (12-01, 12-02, 12-03, 12-04, 12-05 done)
+Status: Phase 12 Complete — Ready for Phase 13
+Last activity: 2026-02-27 — Plan 12-05 executed (email verification URL fix, zone selector cuid validation fix)
 
-Progress: [███░░░░░░░░░░░░░░░░] 9% (v1.1 milestone — 5/31 requirements complete)
+Progress: [████░░░░░░░░░░░░░░░] 23% (v1.1 milestone — 7/31 requirements complete)
 
 ## Performance Metrics
 
@@ -29,10 +29,11 @@ Progress: [███░░░░░░░░░░░░░░░░] 9% (v1.1 m
 |-------|-------|--------|
 | 1-10 | 56/56 | Complete |
 | 11 | 0/7 | Rolled into v1.1 |
-| 12 | 3/5 | In progress |
+| 12 | 5/5 | Complete |
 
 *Updated after each plan completion*
 | Phase 12-bug-fixes P03 | 18 | 2 tasks | 4 files |
+| Phase 12-bug-fixes P05 | 15 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -53,6 +54,8 @@ Recent decisions affecting current work:
 - [Phase 12-bug-fixes]: Category filter uses Prisma OR relation filter for parent+child categories (BUGF-10)
 - [12-01 Decision]: Used icons object from lucide-react for dynamic icon rendering — avoids static import of all icons
 - [12-01 Decision]: getLucideIcon() converts kebab-case DB string to PascalCase lucide component name pattern
+- [12-05 Decision]: APP_URL must strip trailing slash via .replace(/\/+$/, "") — NEXTAUTH_URL may have trailing slash causing double-slash in email verification URLs
+- [12-05 Decision]: Prisma @default(cuid()) generates cuid v1 IDs (c-prefix) — must use z.string().cuid() not .cuid2() to match
 
 ### Pending Todos
 
@@ -65,5 +68,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-27
-Stopped at: Completed 12-01-PLAN.md (French accents, autocomplete icons, navbar fix)
+Stopped at: Completed 12-05-PLAN.md (email verification URL fix, zone selector cuid fix) — Phase 12 complete
 Resume file: None
