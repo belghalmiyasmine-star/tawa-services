@@ -336,8 +336,8 @@ Plans:
 **Plans**: 5 plans
 
 Plans:
-- [ ] 12-01-PLAN.md — French accents in i18n, autocomplete icons, footer links, navbar dashboard link
-- [ ] 12-02-PLAN.md — Favorites toggle, client dashboard stats, provider withdrawal math
+- [x] 12-01-PLAN.md — French accents in i18n, autocomplete icons, footer links, navbar dashboard link
+- [x] 12-02-PLAN.md — Favorites toggle, client dashboard stats, provider withdrawal math
 - [ ] 12-03-PLAN.md — Admin analytics charts, unsuspend button, category filter
 - [ ] 12-04-PLAN.md — Dark mode contrast, auto-moderation regex
 - [ ] 12-05-PLAN.md — Email verification locale prefix, zone selector state
@@ -415,7 +415,7 @@ Plans:
 | 9. Messagerie & Notifications | v1.0 | 4/5 | Complete | 2026-02-26 |
 | 10. Panneau d'Administration | v1.0 | 8/8 | Complete | 2026-02-26 |
 | 11. Demo Data, Polish & PFE Readiness | v1.0 | 0/7 | Rolled into v1.1 | - |
-| 12. Bug Fixes | v1.1 | 0/5 | Planned | - |
+| 12. Bug Fixes | 2/5 | In Progress|  | - |
 | 13. UX Polish & Missing Pages | v1.1 | 0/TBD | Not started | - |
 | 14. Integration Wiring | v1.1 | 0/TBD | Not started | - |
 | 15. PFE Readiness | v1.1 | 0/TBD | Not started | - |

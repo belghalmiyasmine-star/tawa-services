@@ -13,12 +13,12 @@ Requirements for milestone v1.1 — Polish, Bug Fixes & PFE Readiness. Continues
 - [ ] **BUGF-02**: Search autocomplete shows proper icons instead of icon names rendered as text
 - [ ] **BUGF-03**: Footer links (FAQ, CGU, Contact, Comment ça marche) navigate to correct pages
 - [ ] **BUGF-04**: Client navbar dashboard link points to correct destination
-- [ ] **BUGF-05**: Favorites feature works correctly (save/unsave providers or services)
-- [ ] **BUGF-06**: Client dashboard displays real statistics (bookings count, spending, reviews given)
-- [ ] **BUGF-07**: Provider withdrawal calculation uses correct amounts (available balance minus commission)
-- [ ] **BUGF-08**: Admin analytics graphs render with real data (recharts charts not empty)
-- [ ] **BUGF-09**: Admin can unsuspend previously suspended services (toggle back to active)
-- [ ] **BUGF-10**: Admin category filter works correctly on services management page
+- [x] **BUGF-05**: Favorites feature works correctly (save/unsave providers or services)
+- [x] **BUGF-06**: Client dashboard displays real statistics (bookings count, spending, reviews given)
+- [x] **BUGF-07**: Provider withdrawal calculation uses correct amounts (available balance minus commission)
+- [x] **BUGF-08**: Admin analytics graphs render with real data (recharts charts not empty)
+- [x] **BUGF-09**: Admin can unsuspend previously suspended services (toggle back to active)
+- [x] **BUGF-10**: Admin category filter works correctly on services management page
 - [ ] **BUGF-11**: Dark mode has proper contrast across all pages — no white text on white cards
 - [ ] **BUGF-12**: Auto-moderation regex catches phone numbers and emails in reviews and messages
 - [ ] **BUGF-13**: Email verification link includes locale prefix (/fr/) — no 404 on click
@@ -110,12 +110,12 @@ Deferred to future release. Tracked but not in current roadmap.
 | BUGF-02 | Phase 12 | Pending |
 | BUGF-03 | Phase 12 | Pending |
 | BUGF-04 | Phase 12 | Pending |
-| BUGF-05 | Phase 12 | Pending |
-| BUGF-06 | Phase 12 | Pending |
-| BUGF-07 | Phase 12 | Pending |
-| BUGF-08 | Phase 12 | Pending |
-| BUGF-09 | Phase 12 | Pending |
-| BUGF-10 | Phase 12 | Pending |
+| BUGF-05 | Phase 12 | Complete |
+| BUGF-06 | Phase 12 | Complete |
+| BUGF-07 | Phase 12 | Complete |
+| BUGF-08 | Phase 12 | Complete |
+| BUGF-09 | Phase 12 | Complete |
+| BUGF-10 | Phase 12 | Complete |
 | BUGF-11 | Phase 12 | Pending |
 | BUGF-12 | Phase 12 | Pending |
 | BUGF-13 | Phase 12 | Pending |
