@@ -1,115 +1,63 @@
 # Requirements: Tawa Services
 
-**Defined:** 2026-02-21
+**Defined:** 2026-02-27
 **Core Value:** Clients can find, book, and pay a trusted local service provider in their city — and providers can get discovered and manage their business in one place.
 
-## v1 Requirements
+## v1.1 Requirements
 
-Requirements for initial release. Each maps to roadmap phases.
+Requirements for milestone v1.1 — Polish, Bug Fixes & PFE Readiness. Continues from v1.0 (60 requirements complete).
 
-### Authentication
+### Bug Fixes
 
-- [x] **AUTH-01**: User can create account with email and password (role selection: CLIENT or PROVIDER)
-- [x] **AUTH-02**: User receives email verification link after signup
-- [x] **AUTH-03**: User can reset password via email link
-- [x] **AUTH-04**: User session persists across browser refresh (NextAuth.js sessions)
-- [x] **AUTH-05**: User can log in via Google or Facebook (NextAuth.js social providers)
-- [x] **AUTH-06**: Role-based access control (CLIENT, PROVIDER, ADMIN) with route protection
-- [x] **AUTH-07**: User must verify phone number via SMS (+216 format or 8 digits)
-- [x] **AUTH-08**: Registration validates Tunisian phone format, unique email/phone, password 8+ chars
+- [ ] **BUGF-01**: French accents display correctly in all i18n translations (é, è, ê, ç, à, etc.)
+- [ ] **BUGF-02**: Search autocomplete shows proper icons instead of icon names rendered as text
+- [ ] **BUGF-03**: Footer links (FAQ, CGU, Contact, Comment ça marche) navigate to correct pages
+- [ ] **BUGF-04**: Client navbar dashboard link points to correct destination
+- [ ] **BUGF-05**: Favorites feature works correctly (save/unsave providers or services)
+- [ ] **BUGF-06**: Client dashboard displays real statistics (bookings count, spending, reviews given)
+- [ ] **BUGF-07**: Provider withdrawal calculation uses correct amounts (available balance minus commission)
+- [ ] **BUGF-08**: Admin analytics graphs render with real data (recharts charts not empty)
+- [ ] **BUGF-09**: Admin can unsuspend previously suspended services (toggle back to active)
+- [ ] **BUGF-10**: Admin category filter works correctly on services management page
+- [ ] **BUGF-11**: Dark mode has proper contrast across all pages — no white text on white cards
+- [ ] **BUGF-12**: Auto-moderation regex catches phone numbers and emails in reviews and messages
+- [ ] **BUGF-13**: Email verification link includes locale prefix (/fr/) — no 404 on click
+- [ ] **BUGF-14**: Provider profile zone selector allows selecting intervention zones (city/delegation)
 
-### KYC Verification
+### UX Improvements
 
-- [x] **KYC-01**: Provider can upload CIN/passport photo for identity verification
-- [x] **KYC-02**: Provider can upload selfie for identity match
-- [x] **KYC-03**: Provider can upload proof of address document
-- [x] **KYC-04**: Admin reviews and approves/rejects KYC within 48h, trust badges awarded on approval
-- [x] **KYC-05**: Provider cannot list services until KYC is approved
-- [x] **KYC-06**: Trust badges displayed on profile: "Identite Verifiee", "Reponse Rapide", "Top Prestataire"
+- [ ] **UX-01**: Homepage displays client reviews carousel (recent verified reviews with ratings)
+- [ ] **UX-02**: Homepage displays top-rated providers section (highest-rated verified providers)
+- [ ] **UX-03**: Client dashboard polished with stats cards (total bookings, total spent, reviews given, active bookings)
 
-### Provider Profile
+### Missing Pages
 
-- [x] **PROF-01**: Provider can create profile with display name, bio, photo, contact info, cities covered
-- [x] **PROF-02**: Provider can list services with title (80 chars max), description (150-1000 chars), pricing (fixed or sur devis), category, duration
-- [x] **PROF-03**: Provider can upload work photos (max 5 per service), professional certifications, diplomas
-- [x] **PROF-04**: Provider can set availability calendar (weekly schedule + blocked dates)
-- [x] **PROF-05**: Provider can specify languages spoken, years of experience, hourly and fixed rates
-- [x] **PROF-06**: Provider can define intervention zone (city/delegation list)
-- [x] **PROF-07**: Provider profile displays statistics (completed missions, average rating, total reviews, response time)
-- [x] **PROF-08**: Service listing includes inclusions/exclusions lists and conditions
+- [ ] **PAGE-01**: FAQ page with categorized questions and answers (accessible from footer)
+- [ ] **PAGE-02**: Contact page with contact information or form (accessible from footer)
+- [ ] **PAGE-03**: CGU (Terms & Conditions / Conditions Generales d'Utilisation) page
+- [ ] **PAGE-04**: Privacy Policy (Politique de Confidentialite) page
+- [ ] **PAGE-05**: How it works (Comment ca marche) page explaining the platform flow
 
-### Search & Discovery
+### PFE Readiness
 
-- [x] **SRCH-01**: Client can browse services by category (Plomberie, Menage, Cours, Electricite, etc.)
-- [x] **SRCH-02**: Client can filter providers by city/delegation
-- [x] **SRCH-03**: Real-time autocomplete search suggestions as user types
-- [x] **SRCH-04**: Client can sort results by rating, price, availability; filter by verified status, price range
-- [x] **SRCH-05**: Client can view provider profiles with portfolio, certifications, badges, and reviews
+- [ ] **PFE-01**: Seed script with realistic Tunisian demo data (10+ providers across categories/cities, 20+ services, 30+ bookings at various statuses, 50+ reviews, transaction history in TND)
+- [ ] **PFE-02**: Mobile responsiveness audit and fixes across all pages (375px mobile, 1280px desktop)
+- [ ] **PFE-03**: Language switcher UI component (Globe dropdown) in navbar — ready for AR/EN translations
+- [ ] **PFE-04**: Performance optimization (Suspense boundaries, lazy loading images, Next.js config tuning)
+- [ ] **PFE-05**: Accessibility & SEO audit (meta tags, robots.txt, sitemap.xml, aria labels, alt text)
+- [ ] **PFE-06**: E2E demo flow verification on seeded data (search → profile → booking → payment → review)
+- [ ] **PFE-07**: Technical documentation (DEPLOYMENT.md with setup guide, schema overview, demo accounts)
 
-### Booking
+### Integration Wiring
 
-- [x] **BOOK-01**: Client can directly book fixed-price services by selecting a time slot
-- [x] **BOOK-02**: Client can send quote request for "sur devis" services (describe job, provider responds with price)
-- [x] **BOOK-03**: Provider can accept or reject direct bookings and quote requests
-- [x] **BOOK-04**: Provider has 48h to respond to quote requests before auto-expiry
-- [x] **BOOK-05**: Booking status flow: PENDING → ACCEPTED → IN_PROGRESS → COMPLETED (with REJECTED and CANCELLED alternatives)
-- [x] **BOOK-06**: Provider dashboard shows bookings by status: pending, accepted, in-progress, completed, cancelled
-- [x] **BOOK-07**: Cancellation policy enforced: >48h full refund, 24-48h partial refund, <24h no refund
-- [x] **BOOK-08**: 3-screen maximum booking flow (select service → confirm details → payment)
+- [ ] **INTG-01**: Payment flow navigation wiring (booking flow → checkout page, sidebar earnings link, confirmation redirects)
+- [ ] **INTG-02**: Notification dispatch wired into all transactional actions (booking, payment, review, KYC) + Contacter button opens messaging
 
-### Payment
+## v1.0 Requirements (Completed)
 
-- [x] **PAY-01**: Simulated checkout UI showing Tunisian payment methods (card, D17, Flouci, cash)
-- [x] **PAY-02**: Escrow model: client pays → platform holds → service completed → provider paid minus 12% commission
-- [x] **PAY-03**: Provider earnings dashboard showing earnings, pending payments, commission breakdown
-- [x] **PAY-04**: Auto-generated invoices/receipts for completed transactions
-- [x] **PAY-05**: Monthly earnings statements for providers
-- [x] **PAY-06**: Provider withdrawal requests (minimum 50 TND)
-- [x] **PAY-07**: Tax summaries and 5-year document retention
-- [x] **PAY-08**: Payment service abstraction layer (pluggable for future Konnect integration)
+All 60 v1.0 requirements shipped. See MILESTONES.md for full list.
 
-### Reviews & Ratings
-
-- [x] **REVW-01**: Client can rate provider 1-5 stars with text review after service completion
-- [x] **REVW-02**: Provider can rate client (bidirectional rating system)
-- [x] **REVW-03**: Criteria-based ratings: quality, punctuality, communication, cleanliness
-- [x] **REVW-04**: Photo upload with reviews (max 3 photos)
-- [x] **REVW-05**: 10-day submission window after service completion
-- [x] **REVW-06**: Simultaneous publication (both parties review before either is visible)
-- [x] **REVW-07**: Auto-moderation for defamatory/spam content
-- [x] **REVW-08**: Rating aggregation displayed on profiles, used for search sorting
-
-### Messaging
-
-- [x] **MSG-01**: In-app messaging between client and provider for booking coordination
-- [x] **MSG-02**: Auto-moderation blocking contact info sharing (phone, email) to keep transactions on-platform
-- [x] **MSG-03**: Read receipts and unread count badge in navbar
-- [x] **MSG-04**: Conversation history with 12-month retention
-
-### Notifications
-
-- [x] **NOTF-01**: In-app notifications for booking requests, acceptance/rejection, new messages, new reviews, payments received, profile approval
-- [x] **NOTF-02**: Email notifications for transactional events (bookings, password reset, verification)
-- [x] **NOTF-03**: Notification preferences (enable/disable by type)
-- [x] **NOTF-04**: Quiet hours setting for notification delivery
-
-### Admin
-
-- [x] **ADMN-01**: Admin can view, approve, ban users and validate KYC submissions
-- [x] **ADMN-02**: Admin can approve/suspend services, manage service categories, feature listings
-- [x] **ADMN-03**: Admin can handle reports/signalements with priority levels (critical <2h, important <24h, minor <48h)
-- [x] **ADMN-04**: Analytics dashboard with KPIs: active users, transaction count, revenue, conversion rate, satisfaction rate, category/geographic breakdowns
-- [x] **ADMN-05**: Data export as CSV/PDF
-- [x] **ADMN-06**: Content management: homepage content, banners, FAQ, CGU (Terms & Conditions), legal pages
-- [x] **ADMN-07**: System notifications and newsletters to users
-- [x] **ADMN-08**: Provider earnings and commission oversight
-
-### UI/UX & Infrastructure
-
-- [x] **UI-01**: Mobile-first responsive design (80% mobile, 20% desktop)
-- [x] **UI-02**: Bottom navigation bar for mobile, card-based scrolling
-- [x] **UI-03**: i18n infrastructure with next-intl (French primary, translation keys for all strings, language switcher ready)
-- [x] **UI-04**: Seeded demo data for PFE presentation
+Categories: AUTH (8), KYC (6), PROF (8), SRCH (5), BOOK (8), PAY (8), REVW (8), MSG (4), NOTF (4), ADMN (8), UI (4)
 
 ## v2 Requirements
 
@@ -139,7 +87,7 @@ Deferred to future release. Tracked but not in current roadmap.
 
 - **ADV-01**: Optional 2FA for accounts
 - **ADV-02**: Provider promotional offers and discounts
-- **ADV-03**: Client favorites/saved providers list
+- **ADV-03**: Client favorites/saved providers list (enhanced version beyond basic BUGF-05 fix)
 
 ## Out of Scope
 
@@ -151,6 +99,8 @@ Deferred to future release. Tracked but not in current roadmap.
 | Multi-country support | Tunisia-only for v1 |
 | Subscription/membership tiers | Simple commission model sufficient |
 | Escrow with real bank integration | Simulated for PFE, Konnect deferred to v2 |
+| Arabic/English translations | Infrastructure built (PFE-03 switcher), translation files deferred |
+| New feature development | v1.1 is polish/fix only — no new capabilities |
 
 ## Traceability
 
@@ -158,83 +108,13 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| UI-01 | Phase 1 + Phase 11 | Complete |
-| UI-02 | Phase 1 + Phase 11 | Complete |
-| UI-03 | Phase 1 + Phase 11 | Complete |
-| UI-04 | Phase 11 | Complete |
-| AUTH-01 | Phase 2 | Complete |
-| AUTH-02 | Phase 2 | Complete |
-| AUTH-03 | Phase 2 | Complete |
-| AUTH-04 | Phase 2 | Complete |
-| AUTH-05 | Phase 2 | Complete |
-| AUTH-06 | Phase 2 | Complete |
-| AUTH-07 | Phase 2 | Complete |
-| AUTH-08 | Phase 2 | Complete |
-| KYC-01 | Phase 3 | Complete |
-| KYC-02 | Phase 3 | Complete |
-| KYC-03 | Phase 3 | Complete |
-| KYC-04 | Phase 3 | Complete |
-| KYC-05 | Phase 3 | Complete |
-| KYC-06 | Phase 3 | Complete |
-| PROF-01 | Phase 4 | Complete |
-| PROF-02 | Phase 4 | Complete |
-| PROF-03 | Phase 4 | Complete |
-| PROF-04 | Phase 4 | Complete |
-| PROF-05 | Phase 4 | Complete |
-| PROF-06 | Phase 4 | Complete |
-| PROF-07 | Phase 4 | Complete |
-| PROF-08 | Phase 4 | Complete |
-| SRCH-01 | Phase 5 | Complete |
-| SRCH-02 | Phase 5 | Complete |
-| SRCH-03 | Phase 5 | Complete |
-| SRCH-04 | Phase 5 | Complete |
-| SRCH-05 | Phase 5 | Complete |
-| BOOK-01 | Phase 6 | Complete |
-| BOOK-02 | Phase 6 | Complete |
-| BOOK-03 | Phase 6 | Complete |
-| BOOK-04 | Phase 6 | Complete |
-| BOOK-05 | Phase 6 | Complete |
-| BOOK-06 | Phase 6 | Complete |
-| BOOK-07 | Phase 6 | Complete |
-| BOOK-08 | Phase 6 | Complete |
-| PAY-01 | Phase 7 | Complete |
-| PAY-02 | Phase 7 | Complete |
-| PAY-03 | Phase 7 | Complete |
-| PAY-04 | Phase 7 | Complete |
-| PAY-05 | Phase 7 | Complete |
-| PAY-06 | Phase 7 | Complete |
-| PAY-07 | Phase 7 | Complete |
-| PAY-08 | Phase 7 | Complete |
-| REVW-01 | Phase 8 | Complete |
-| REVW-02 | Phase 8 | Complete |
-| REVW-03 | Phase 8 | Complete |
-| REVW-04 | Phase 8 | Complete |
-| REVW-05 | Phase 8 | Complete |
-| REVW-06 | Phase 8 | Complete |
-| REVW-07 | Phase 8 | Complete |
-| REVW-08 | Phase 8 | Complete |
-| MSG-01 | Phase 9 | Complete |
-| MSG-02 | Phase 9 | Complete |
-| MSG-03 | Phase 9 | Complete |
-| MSG-04 | Phase 9 | Complete |
-| NOTF-01 | Phase 9 | Complete |
-| NOTF-02 | Phase 9 | Complete |
-| NOTF-03 | Phase 9 | Complete |
-| NOTF-04 | Phase 9 | Complete |
-| ADMN-01 | Phase 10 | Complete |
-| ADMN-02 | Phase 10 | Complete |
-| ADMN-03 | Phase 10 | Complete |
-| ADMN-04 | Phase 10 | Complete |
-| ADMN-05 | Phase 10 | Complete |
-| ADMN-06 | Phase 10 | Complete |
-| ADMN-07 | Phase 10 | Complete |
-| ADMN-08 | Phase 10 | Complete |
+| — | — | Populated by roadmapper |
 
 **Coverage:**
-- v1 requirements: 60 total
-- Mapped to phases: 60
-- Unmapped: 0 — Coverage complete
+- v1.1 requirements: 31 total
+- Mapped to phases: 0 (pending roadmap)
+- Unmapped: 31
 
 ---
-*Requirements defined: 2026-02-21*
-*Last updated: 2026-02-21 — Traceability populated after roadmap creation (11 phases)*
+*Requirements defined: 2026-02-27*
+*Last updated: 2026-02-27 after milestone v1.1 requirements approved*
