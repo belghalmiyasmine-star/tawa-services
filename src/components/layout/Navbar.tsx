@@ -228,7 +228,7 @@ export function Navbar() {
               <DropdownMenuContent align="end" className="w-48">
                 <DropdownMenuItem asChild>
                   <Link
-                    href={session.user.role === "PROVIDER" ? "/provider/dashboard" : "/"}
+                    href={session.user.role === "PROVIDER" ? "/provider/dashboard" : "/dashboard"}
                     className="flex items-center gap-2"
                   >
                     <User className="h-4 w-4" />

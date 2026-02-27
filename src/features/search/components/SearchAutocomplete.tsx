@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, useEffect, useCallback } from "react";
-import { Search } from "lucide-react";
+import { Search, icons } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -45,6 +45,19 @@ type AutocompleteResults = {
 interface SearchAutocompleteProps {
   className?: string;
   placeholder?: string;
+}
+
+// ——————————————————————————————————————————————————
+// Helper: convert kebab-case icon name to lucide component
+// ——————————————————————————————————————————————————
+function getLucideIcon(name: string | null) {
+  if (!name) return null;
+  const pascalCase = name
+    .split("-")
+    .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
+    .join("");
+  const IconComponent = icons[pascalCase as keyof typeof icons];
+  return IconComponent ? <IconComponent className="h-4 w-4" /> : null;
 }
 
 // ——————————————————————————————————————————————————
@@ -251,7 +264,7 @@ export function SearchAutocomplete({ className, placeholder }: SearchAutocomplet
                             : "hover:bg-gray-50 dark:hover:bg-gray-700/50"
                         )}
                       >
-                        {cat.icon && <span className="text-base">{cat.icon}</span>}
+                        {cat.icon ? getLucideIcon(cat.icon) : null}
                         <span className="font-medium">{cat.name}</span>
                       </button>
                     );

@@ -2,9 +2,9 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import type { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -44,6 +44,12 @@ export function ReviewForm({
   const t = useTranslations("review");
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [debugErrors, setDebugErrors] = useState<string[]>([]);
+
+  // DEBUG: Confirm client-side JS is mounted (rules out hydration failure)
+  useEffect(() => {
+    console.log("[ReviewForm] Component mounted. bookingId:", bookingId);
+  }, [bookingId]);
 
   const {
     handleSubmit,
@@ -101,9 +107,12 @@ export function ReviewForm({
   ];
 
   const onSubmit = async (data: ReviewFormValues) => {
+    console.log("[ReviewForm] onSubmit called with data:", JSON.stringify(data, null, 2));
     setIsSubmitting(true);
     try {
+      console.log("[ReviewForm] Calling submitReviewAction...");
       const result = await submitReviewAction(data);
+      console.log("[ReviewForm] submitReviewAction result:", JSON.stringify(result, null, 2));
 
       if (!result.success) {
         toast({
@@ -136,8 +145,30 @@ export function ReviewForm({
     }
   };
 
+  const onValidationError = (validationErrors: Record<string, unknown>) => {
+    const errorFields = Object.keys(validationErrors);
+    console.error("[ReviewForm] Validation FAILED — onSubmit was NOT called.");
+    console.error("[ReviewForm] Error fields:", errorFields);
+    console.error("[ReviewForm] Full errors:", JSON.stringify(validationErrors, null, 2));
+    console.log("[ReviewForm] Current form values:", JSON.stringify({
+      bookingId,
+      stars,
+      qualityRating,
+      punctualityRating,
+      communicationRating,
+      cleanlinessRating,
+      text,
+      photoUrls,
+    }, null, 2));
+    // Show errors visibly in the UI
+    setDebugErrors(errorFields.map(f => {
+      const err = validationErrors[f] as { message?: string } | undefined;
+      return `${f}: ${err?.message ?? "invalide"}`;
+    }));
+  };
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form onSubmit={handleSubmit(onSubmit, onValidationError)} className="space-y-6">
       {/* Overall rating */}
       <div className="space-y-2">
         <label className="text-sm font-medium text-foreground">
@@ -219,11 +250,27 @@ export function ReviewForm({
         maxPhotos={3}
       />
 
+      {/* DEBUG: Visible validation errors */}
+      {debugErrors.length > 0 && (
+        <div className="rounded-md border border-red-300 bg-red-50 p-3 text-sm text-red-700 dark:border-red-800 dark:bg-red-900/30 dark:text-red-300">
+          <p className="font-medium">Validation echouee — champs en erreur :</p>
+          <ul className="mt-1 list-inside list-disc">
+            {debugErrors.map((err) => (
+              <li key={err}>{err}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       {/* Submit button */}
       <Button
         type="submit"
         disabled={isSubmitting}
         className="w-full"
+        onClick={() => {
+          console.log("[ReviewForm] Submit button clicked. isSubmitting:", isSubmitting);
+          console.log("[ReviewForm] Current watched values:", { stars, qualityRating, punctualityRating, communicationRating, cleanlinessRating, textLength: text?.length, photoUrls: photoUrls?.length });
+        }}
       >
         {isSubmitting ? "Envoi en cours..." : t("submitReview")}
       </Button>
