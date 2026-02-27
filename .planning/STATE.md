@@ -33,6 +33,7 @@ Progress: [████░░░░░░░░░░░░░░░] 23% (v1.1 
 
 *Updated after each plan completion*
 | Phase 12-bug-fixes P03 | 18 | 2 tasks | 4 files |
+| Phase 12-bug-fixes P04 | 18 | 2 tasks | 3 files |
 | Phase 12-bug-fixes P05 | 15 | 2 tasks | 2 files |
 
 ## Accumulated Context
@@ -54,6 +55,8 @@ Recent decisions affecting current work:
 - [Phase 12-bug-fixes]: Category filter uses Prisma OR relation filter for parent+child categories (BUGF-10)
 - [12-01 Decision]: Used icons object from lucide-react for dynamic icon rendering — avoids static import of all icons
 - [12-01 Decision]: getLucideIcon() converts kebab-case DB string to PascalCase lucide component name pattern
+- [12-04 Decision]: Used single .dark .bg-white CSS override in globals.css rather than per-component dark: classes — single fix covers all 17 bg-white files
+- [12-04 Decision]: Duplicated new regex patterns in both review/lib/moderation.ts and messaging/lib/message-moderation.ts — modules intentionally diverge per design
 - [12-05 Decision]: APP_URL must strip trailing slash via .replace(/\/+$/, "") — NEXTAUTH_URL may have trailing slash causing double-slash in email verification URLs
 - [12-05 Decision]: Prisma @default(cuid()) generates cuid v1 IDs (c-prefix) — must use z.string().cuid() not .cuid2() to match
 
