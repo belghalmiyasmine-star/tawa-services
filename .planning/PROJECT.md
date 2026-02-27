@@ -12,21 +12,26 @@ Clients can find, book, and pay a trusted local service provider in their city �
 
 ### Validated
 
-(None yet — ship to validate)
+v1.0 requirements shipped and confirmed (60 requirements across AUTH, KYC, PROF, SRCH, BOOK, PAY, REVW, MSG, NOTF, ADMN, UI):
+- Client can search, book, and pay for services (direct + quote flow)
+- Provider can create verified profiles, list services, manage bookings, track earnings
+- Admin panel with full control (users, KYC, services, reports, analytics, content, export)
+- Bidirectional reviews with moderation, in-app messaging, transactional notifications
+- i18n infrastructure, RBAC, mobile-first layouts
 
 ### Active
 
-- [ ] Client can search and filter providers by service category and city
-- [ ] Client can book services (direct booking for fixed-price, quote request for "sur devis")
-- [ ] Provider can create a verified profile and list services with pricing
-- [ ] Provider can manage bookings (accept/reject/complete)
-- [ ] Simulated payment flow with Konnect-ready payment service layer
-- [ ] Review and rating system for completed services
-- [ ] Admin full control panel (users, services, reports, analytics)
-- [ ] Mandatory KYC verification for providers (CIN/passport upload, admin approval)
-- [ ] i18n infrastructure with next-intl (French primary, ready for Arabic/English)
-- [ ] City/delegation-level location filtering
-- [ ] Admin analytics dashboard with KPIs and data export (CSV/PDF)
+- [ ] Seed data with realistic Tunisian demo data (providers, services, bookings, reviews, transactions)
+- [ ] Mobile responsiveness polish across all pages (375px and 1280px)
+- [ ] Language switcher UI in navbar (Globe dropdown)
+- [ ] Performance optimization (Suspense, lazy loading, Next.js tuning)
+- [ ] Accessibility & SEO audit (meta tags, robots.txt, sitemap, aria, alt text)
+- [ ] E2E demo flow verification on seeded data
+- [ ] Technical documentation for PFE (DEPLOYMENT.md, setup guide, demo accounts)
+- [ ] Bug fixes: i18n French accents, autocomplete icons, footer links, navbar, favorites, dashboards, admin
+- [ ] UX: homepage reviews carousel, top providers section, client dashboard stats
+- [ ] Missing pages: FAQ, Contact, CGU, Privacy Policy, How it works
+- [ ] Integration wiring: payment nav links, notification dispatch to all actions
 
 ### Out of Scope
 
@@ -59,13 +64,25 @@ Clients can find, book, and pay a trusted local service provider in their city �
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Next.js 15 App Router + TypeScript | Modern full-stack framework, SSR/SSG support, strong ecosystem | — Pending |
-| PostgreSQL + Prisma over MongoDB | Relational data (users, bookings, reviews) fits SQL better, Prisma provides type-safe queries | — Pending |
-| Dual booking flow (direct + quote) | Matches Tunisian market reality — some services are fixed-price, others are "sur devis" | — Pending |
-| Simulated payment with service abstraction | Ships faster for PFE while keeping clean path to Konnect integration | — Pending |
-| City-level location (not GPS radius) | Simpler for MVP, GPS/radius deferred to post-PFE enhancement | — Pending |
-| next-intl for i18n from day 1 | Zero-cost to add later if infrastructure is built from the start | — Pending |
-| Mandatory KYC for providers | Trust is critical for a service marketplace — verified providers only | — Pending |
+| Next.js 15 App Router + TypeScript | Modern full-stack framework, SSR/SSG support, strong ecosystem | ✓ Good |
+| PostgreSQL + Prisma over MongoDB | Relational data (users, bookings, reviews) fits SQL better, Prisma provides type-safe queries | ✓ Good |
+| Dual booking flow (direct + quote) | Matches Tunisian market reality — some services are fixed-price, others are "sur devis" | ✓ Good |
+| Simulated payment with service abstraction | Ships faster for PFE while keeping clean path to Konnect integration | ✓ Good |
+| City-level location (not GPS radius) | Simpler for MVP, GPS/radius deferred to post-PFE enhancement | ✓ Good |
+| next-intl for i18n from day 1 | Zero-cost to add later if infrastructure is built from the start | ✓ Good |
+| Mandatory KYC for providers | Trust is critical for a service marketplace — verified providers only | ✓ Good |
+| v1.1 rolls v1.0 gaps forward | Phase 11 + integration plans + bug fixes in one polish milestone | — Pending |
+
+## Current Milestone: v1.1 Polish & PFE Ready
+
+**Goal:** Fix all known bugs, complete missing pages and integration wiring, polish UX (homepage, dashboards), seed realistic demo data, and ensure the platform is fully demo-ready for PFE soutenance.
+
+**Target features:**
+- Complete v1.0 remaining work (seed data, mobile polish, language switcher, performance, accessibility, E2E, docs)
+- Fix 11 known bugs (i18n accents, autocomplete icons, footer links, navbar, favorites, dashboards, admin issues)
+- UX improvements (homepage reviews carousel, top providers, client dashboard stats)
+- Create missing public pages (FAQ, Contact, CGU, Privacy Policy, How it works)
+- Wire remaining integrations (payment nav, notification dispatch)
 
 ---
-*Last updated: 2026-02-21 after initialization*
+*Last updated: 2026-02-27 after milestone v1.1 started*
