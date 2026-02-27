@@ -2,6 +2,7 @@ import { Heart, Star } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Link } from "@/i18n/routing";
+import { FavoriteButton } from "@/features/favorite/components/FavoriteButton";
 
 // ============================================================
 // TYPES
@@ -34,6 +35,8 @@ interface PublicServiceCardProps {
       }>;
     };
   };
+  /** Whether the current authenticated user has favorited this service. Undefined for guests. */
+  isFavorited?: boolean;
 }
 
 // ============================================================
@@ -65,7 +68,7 @@ function formatDuration(minutes: number | null): string | null {
  * Links to /services/[id] — service detail page built in Phase 5.
  * Server component — no "use client".
  */
-export function PublicServiceCard({ service }: PublicServiceCardProps) {
+export function PublicServiceCard({ service, isFavorited }: PublicServiceCardProps) {
   const city =
     service.provider.delegations.length > 0
       ? service.provider.delegations[0]?.delegation.gouvernorat.name
@@ -98,12 +101,18 @@ export function PublicServiceCard({ service }: PublicServiceCardProps) {
             <span className="text-4xl text-teal-300">🛠</span>
           </div>
         )}
-        {/* Heart icon — visual placeholder for Phase 6 favorites feature */}
-        <div
-          aria-label="Ajouter aux favoris"
-          className="absolute right-2 top-2 rounded-full bg-white/80 p-1.5 shadow-sm backdrop-blur-sm dark:bg-gray-800/80"
-        >
-          <Heart className="h-4 w-4 text-gray-400" />
+        {/* Heart icon — interactive favorite toggle for authenticated users */}
+        <div className="absolute right-2 top-2">
+          {isFavorited !== undefined ? (
+            <FavoriteButton serviceId={service.id} initialFavorited={isFavorited} />
+          ) : (
+            <div
+              aria-label="Ajouter aux favoris"
+              className="rounded-full bg-white/80 p-1.5 shadow-sm backdrop-blur-sm dark:bg-gray-800/80"
+            >
+              <Heart className="h-4 w-4 text-gray-400" />
+            </div>
+          )}
         </div>
       </div>
 
