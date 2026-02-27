@@ -104,17 +104,45 @@ Deferred to future release. Tracked but not in current roadmap.
 
 ## Traceability
 
-Which phases cover which requirements. Updated during roadmap creation.
-
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| — | — | Populated by roadmapper |
+| BUGF-01 | Phase 12 | Pending |
+| BUGF-02 | Phase 12 | Pending |
+| BUGF-03 | Phase 12 | Pending |
+| BUGF-04 | Phase 12 | Pending |
+| BUGF-05 | Phase 12 | Pending |
+| BUGF-06 | Phase 12 | Pending |
+| BUGF-07 | Phase 12 | Pending |
+| BUGF-08 | Phase 12 | Pending |
+| BUGF-09 | Phase 12 | Pending |
+| BUGF-10 | Phase 12 | Pending |
+| BUGF-11 | Phase 12 | Pending |
+| BUGF-12 | Phase 12 | Pending |
+| BUGF-13 | Phase 12 | Pending |
+| BUGF-14 | Phase 12 | Pending |
+| UX-01 | Phase 13 | Pending |
+| UX-02 | Phase 13 | Pending |
+| UX-03 | Phase 13 | Pending |
+| PAGE-01 | Phase 13 | Pending |
+| PAGE-02 | Phase 13 | Pending |
+| PAGE-03 | Phase 13 | Pending |
+| PAGE-04 | Phase 13 | Pending |
+| PAGE-05 | Phase 13 | Pending |
+| INTG-01 | Phase 14 | Pending |
+| INTG-02 | Phase 14 | Pending |
+| PFE-01 | Phase 15 | Pending |
+| PFE-02 | Phase 15 | Pending |
+| PFE-03 | Phase 15 | Pending |
+| PFE-04 | Phase 15 | Pending |
+| PFE-05 | Phase 15 | Pending |
+| PFE-06 | Phase 15 | Pending |
+| PFE-07 | Phase 15 | Pending |
 
 **Coverage:**
 - v1.1 requirements: 31 total
-- Mapped to phases: 0 (pending roadmap)
-- Unmapped: 31
+- Mapped to phases: 31
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-02-27*
-*Last updated: 2026-02-27 after milestone v1.1 requirements approved*
+*Last updated: 2026-02-27 after v1.1 roadmap created (Phases 12-15)*

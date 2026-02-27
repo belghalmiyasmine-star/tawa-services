@@ -1,30 +1,14 @@
 # Roadmap: Tawa Services
 
-## Overview
+## Milestones
 
-Tawa Services est une plateforme marketplace de services locaux tunisienne construite en 11 sprints Agile/Scrum. Le projet part d'une fondation technique solide (Next.js 15, PostgreSQL, Prisma, next-intl) pour livrer progressivement : l'authentification et la gestion des roles, la verification KYC des prestataires, les profils et services, la recherche et decouverte, le systeme de reservation dual-flow (direct + sur devis), les paiements simules avec architecture Konnect-ready, les avis bidirectionnels, la messagerie en-app avec moderation, les notifications, le panneau d'administration complet, et enfin les donnees de demo et le polish PFE. Chaque phase livre une capacite verifiable et independante qui debloue la suivante.
+- ✅ **v1.0 MVP** - Phases 1-11 (shipped 2026-02-27)
+- 🚧 **v1.1 Polish & PFE Ready** - Phases 12-15 (in progress)
 
 ## Phases
 
-**Phase Numbering:**
-- Integer phases (1..11): Sprints planifies
-- Decimal phases: Insertions urgentes (marque INSERTED)
-
-- [x] **Phase 1: Foundation & Infrastructure** - Scaffolding Next.js 15, schema Prisma, i18n next-intl, CI, layout global (completed 2026-02-22)
-- [x] **Phase 2: Authentification** - Inscription, connexion, sessions, OAuth, RBAC, validation Tunisienne (completed 2026-02-22)
-- [x] **Phase 3: Verification KYC** - Upload documents, workflow admin approval, trust badges prestataires (completed 2026-02-23)
-- [x] **Phase 4: Profil Prestataire & Services** - Profil, listing services, disponibilites, zone d'intervention, statistiques (completed 2026-02-23)
-- [x] **Phase 5: Recherche & Decouverte** - Parcourir par categorie, filtres ville/delegation, autocomplete, tri (completed 2026-02-24)
-- [x] **Phase 6: Systeme de Reservation** - Booking direct + sur devis, statuts, tableau de bord prestataire, annulation (completed 2026-02-24)
-- [x] **Phase 7: Paiement Simule** - Checkout Tunisien, escrow model, earnings dashboard, factures, abstraction layer (completed 2026-02-25)
-- [x] **Phase 8: Avis & Evaluations** - Ratings bidirectionnels, criteres, photos, moderation, agregation (completed 2026-02-25)
-- [ ] **Phase 9: Messagerie & Notifications** - Messagerie in-app, moderation contacts, notifications transactionnelles
-- [x] **Phase 10: Panneau d'Administration** - User management, KYC review, reports, analytics KPIs, content management (completed 2026-02-26)
-- [ ] **Phase 11: Demo Data, Polish & PFE Readiness** - Seed data, responsivite mobile, tests E2E, rapport-ready
-
-## Phase Details
-
----
+<details>
+<summary>✅ v1.0 MVP (Phases 1-11) - SHIPPED 2026-02-27</summary>
 
 ### Phase 1: Foundation & Infrastructure
 
@@ -45,88 +29,12 @@ Tawa Services est une plateforme marketplace de services locaux tunisienne const
 
 Plans:
 - [x] 01-01-PLAN.md — Initialisation Next.js 15 App Router + TypeScript strict + ESLint + Prettier + env vars typees
-- [ ] 01-02-PLAN.md — PostgreSQL + Prisma ORM: schema complet v1 (20+ modeles, CUID2, soft delete, localisation normalisee)
-- [ ] 01-03-PLAN.md — next-intl: middleware routage par locale, dictionnaire fr.json, pattern t('key') global
-- [ ] 01-04-PLAN.md — shadcn/ui + Tailwind: tokens design (bleu primaire, orange accent, rounded), composants de base, dark mode
-- [ ] 01-05-PLAN.md — 3 layouts distincts: Navbar desktop, BottomNav mobile, Footer, AdminSidebar collapsible (checkpoint visuel)
-- [ ] 01-06-PLAN.md — Types globaux TypeScript, schemas Zod de base (phone tunisien, auth), constantes metier, pages placeholder
-- [ ] 01-07-PLAN.md — Pipeline CI GitHub Actions: lint + typecheck + build + prisma validate sur chaque push/PR
-
-```mermaid
-classDiagram
-  class User {
-    +String id
-    +String email
-    +String passwordHash
-    +Role role
-    +String phone
-    +Boolean emailVerified
-    +DateTime createdAt
-  }
-  class Provider {
-    +String id
-    +String userId
-    +String displayName
-    +String bio
-    +KYCStatus kycStatus
-    +Float rating
-    +Int completedMissions
-  }
-  class Service {
-    +String id
-    +String providerId
-    +String title
-    +String description
-    +PricingType pricingType
-    +Float price
-    +String categoryId
-    +ServiceStatus status
-  }
-  class Booking {
-    +String id
-    +String clientId
-    +String serviceId
-    +BookingStatus status
-    +DateTime scheduledAt
-    +Float totalAmount
-  }
-  class Payment {
-    +String id
-    +String bookingId
-    +PaymentMethod method
-    +PaymentStatus status
-    +Float amount
-    +Float commission
-  }
-  class Review {
-    +String id
-    +String bookingId
-    +Int stars
-    +String text
-    +Boolean published
-  }
-  class Message {
-    +String id
-    +String conversationId
-    +String senderId
-    +String content
-    +Boolean isRead
-  }
-  class Notification {
-    +String id
-    +String userId
-    +NotifType type
-    +Boolean read
-  }
-
-  User "1" --> "0..1" Provider
-  Provider "1" --> "*" Service
-  Service "1" --> "*" Booking
-  Booking "1" --> "0..1" Payment
-  Booking "1" --> "*" Review
-  User "1" --> "*" Message
-  User "1" --> "*" Notification
-```
+- [x] 01-02-PLAN.md — PostgreSQL + Prisma ORM: schema complet v1 (20+ modeles, CUID2, soft delete, localisation normalisee)
+- [x] 01-03-PLAN.md — next-intl: middleware routage par locale, dictionnaire fr.json, pattern t('key') global
+- [x] 01-04-PLAN.md — shadcn/ui + Tailwind: tokens design (bleu primaire, orange accent, rounded), composants de base, dark mode
+- [x] 01-05-PLAN.md — 3 layouts distincts: Navbar desktop, BottomNav mobile, Footer, AdminSidebar collapsible (checkpoint visuel)
+- [x] 01-06-PLAN.md — Types globaux TypeScript, schemas Zod de base (phone tunisien, auth), constantes metier, pages placeholder
+- [x] 01-07-PLAN.md — Pipeline CI GitHub Actions: lint + typecheck + build + prisma validate sur chaque push/PR
 
 ---
 
@@ -150,32 +58,11 @@ classDiagram
 Plans:
 - [x] 02-01-PLAN.md — NextAuth.js config: JWT strategy, CredentialsProvider + Google + Facebook, Prisma adapter, session callbacks, SessionProvider
 - [x] 02-02-PLAN.md — Registration wizard: 3-step form (role, personal info, password/CGU), register server action, bcrypt hashing
-- [ ] 02-03-PLAN.md — Login page: email/password form, OAuth buttons, progressive lockout (CAPTCHA + 15min lock), OAuth role selection
+- [x] 02-03-PLAN.md — Login page: email/password form, OAuth buttons, progressive lockout (CAPTCHA + 15min lock), OAuth role selection
 - [x] 02-04-PLAN.md — Email verification (Resend magic link) + password reset flow (1h token expiry)
-- [ ] 02-05-PLAN.md — SMS OTP phone verification: ISmsService abstraction, simulated in dev, inline wizard step 4
-- [ ] 02-06-PLAN.md — RBAC middleware: next-intl + auth combined, RoleGuard component, 403 page, route group protection
-- [ ] 02-07-PLAN.md — Optional 2FA (TOTP + SMS), suspicious login detection, security settings page, final verification
-
-```mermaid
-sequenceDiagram
-  actor Client
-  participant UI as Next.js UI
-  participant API as API Routes
-  participant DB as PostgreSQL
-  participant Email as Email Service
-
-  Client->>UI: Remplit formulaire inscription
-  UI->>UI: Validation Zod (email, phone +216, password)
-  UI->>API: POST /api/auth/register
-  API->>DB: Verifier unicite email/phone
-  DB-->>API: OK
-  API->>DB: Creer User (role CLIENT/PROVIDER)
-  API->>Email: Envoyer email verification
-  Email-->>Client: Email avec lien token
-  Client->>API: GET /api/auth/verify?token=...
-  API->>DB: Marquer emailVerified = true
-  API-->>Client: Redirect vers dashboard
-```
+- [x] 02-05-PLAN.md — SMS OTP phone verification: ISmsService abstraction, simulated in dev, inline wizard step 4
+- [x] 02-06-PLAN.md — RBAC middleware: next-intl + auth combined, RoleGuard component, 403 page, route group protection
+- [x] 02-07-PLAN.md — Optional 2FA (TOTP + SMS), suspicious login detection, security settings page, final verification
 
 ---
 
@@ -198,32 +85,10 @@ sequenceDiagram
 
 Plans:
 - [x] 03-01-PLAN.md — KYC upload API route, submission server action, Zod schemas, i18n translations
-- [ ] 03-02-PLAN.md — Provider KYC 4-step wizard (CIN recto/verso, selfie, justificatif) + status page
+- [x] 03-02-PLAN.md — Provider KYC 4-step wizard (CIN recto/verso, selfie, justificatif) + status page
 - [x] 03-03-PLAN.md — Admin KYC review interface (list, document viewer, approve/reject with reasons)
-- [ ] 03-04-PLAN.md — Trust badges component + badge computation logic (identity, quick response, top provider)
-- [ ] 03-05-PLAN.md — KYC guard banner on provider dashboard, admin KYC pending count, end-to-end verification
-
-```mermaid
-sequenceDiagram
-  actor Prestataire
-  actor Admin
-  participant UI as Interface
-  participant API as API Routes
-  participant DB as PostgreSQL
-  participant Storage as File Storage
-
-  Prestataire->>UI: Upload CIN + selfie + justificatif
-  UI->>Storage: Enregistrer fichiers
-  UI->>API: POST /api/kyc/submit
-  API->>DB: Creer KYCSubmission (status: PENDING)
-  API-->>Prestataire: "Dossier soumis, en attente"
-
-  Admin->>UI: Voir liste KYC en attente
-  Admin->>UI: Examiner documents
-  Admin->>API: POST /api/kyc/{id}/approve
-  API->>DB: kycStatus = APPROVED, badges awarded
-  API-->>Prestataire: Notification "KYC approuve"
-```
+- [x] 03-04-PLAN.md — Trust badges component + badge computation logic (identity, quick response, top provider)
+- [x] 03-05-PLAN.md — KYC guard banner on provider dashboard, admin KYC pending count, end-to-end verification
 
 ---
 
@@ -245,60 +110,11 @@ sequenceDiagram
 **Plans**: 5 plans
 
 Plans:
-- [ ] 04-01-PLAN.md — Backend profil prestataire: validations Zod, server actions CRUD, upload photo, i18n
-- [ ] 04-02-PLAN.md — Backend services: CRUD server actions avec KYC guard, upload photos/certifications
-- [ ] 04-03-PLAN.md — UI edition profil: formulaire, zones d'intervention, disponibilites, photo upload
-- [ ] 04-04-PLAN.md — UI services: formulaire creation/edition, photos de travaux, My Services page
-- [ ] 04-05-PLAN.md — Page profil public: header, statistiques, onglets Services/Avis/A propos, certifications
-
-```mermaid
-classDiagram
-  class ProviderProfile {
-    +String displayName
-    +String bio
-    +String photoUrl
-    +String[] cities
-    +String[] languages
-    +Int yearsExperience
-    +Float hourlyRate
-    +String[] delegations
-  }
-  class Service {
-    +String title (max 80)
-    +String description (150-1000)
-    +PricingType pricingType
-    +Float fixedPrice
-    +String categoryId
-    +Int durationMinutes
-    +String[] photoUrls (max 5)
-    +String[] inclusions
-    +String[] exclusions
-    +String conditions
-    +ServiceStatus status
-  }
-  class Availability {
-    +String providerId
-    +Int dayOfWeek (0-6)
-    +String startTime
-    +String endTime
-    +Boolean isActive
-  }
-  class BlockedDate {
-    +String providerId
-    +DateTime date
-    +String reason
-  }
-  class Certification {
-    +String providerId
-    +String title
-    +String fileUrl
-  }
-
-  ProviderProfile "1" --> "*" Service
-  ProviderProfile "1" --> "*" Availability
-  ProviderProfile "1" --> "*" BlockedDate
-  ProviderProfile "1" --> "*" Certification
-```
+- [x] 04-01-PLAN.md — Backend profil prestataire: validations Zod, server actions CRUD, upload photo, i18n
+- [x] 04-02-PLAN.md — Backend services: CRUD server actions avec KYC guard, upload photos/certifications
+- [x] 04-03-PLAN.md — UI edition profil: formulaire, zones d'intervention, disponibilites, photo upload
+- [x] 04-04-PLAN.md — UI services: formulaire creation/edition, photos de travaux, My Services page
+- [x] 04-05-PLAN.md — Page profil public: header, statistiques, onglets Services/Avis/A propos, certifications
 
 ---
 
@@ -320,11 +136,11 @@ classDiagram
 **Plans**: 5 plans
 
 Plans:
-- [x] 05-01-PLAN.md — Search API backend: validation schemas, categories API with counts, service search API with filters/sort/pagination, i18n keys (completed 2026-02-24)
-- [x] 05-02-PLAN.md — Service detail page: image gallery, provider mini-card, inclusions/exclusions, action buttons, similar services, PublicServiceCard linking (completed 2026-02-24)
-- [x] 05-03-PLAN.md — Category browsing + search results page: category grid, sidebar filters (Sheet mobile), sort dropdown, pagination, results grid (completed 2026-02-24)
-- [x] 05-04-PLAN.md — Autocomplete search: API endpoint, debounce 300ms component, Navbar/BottomNav integration (completed 2026-02-24)
-- [ ] 05-05-PLAN.md — Integration: homepage DB-driven categories, Navbar dynamic categories, end-to-end flow verification checkpoint
+- [x] 05-01-PLAN.md — Search API backend: validation schemas, categories API with counts, service search API with filters/sort/pagination, i18n keys
+- [x] 05-02-PLAN.md — Service detail page: image gallery, provider mini-card, inclusions/exclusions, action buttons, similar services, PublicServiceCard linking
+- [x] 05-03-PLAN.md — Category browsing + search results page: category grid, sidebar filters (Sheet mobile), sort dropdown, pagination, results grid
+- [x] 05-04-PLAN.md — Autocomplete search: API endpoint, debounce 300ms component, Navbar/BottomNav integration
+- [x] 05-05-PLAN.md — Integration: homepage DB-driven categories, Navbar dynamic categories, end-to-end flow verification checkpoint
 
 ---
 
@@ -346,41 +162,13 @@ Plans:
 **Plans**: 7 plans
 
 Plans:
-- [x] 06-01-PLAN.md — Backend booking: Prisma schema additions, Zod schemas, booking/quote CRUD actions, query actions, i18n keys (completed 2026-02-24)
-- [x] 06-02-PLAN.md — Cancellation policy + quote expiration: refund tier calculation, cancel actions, cron endpoint (completed 2026-02-24)
-- [x] 06-03-PLAN.md — Direct booking wizard: availability calendar, time slot picker, 3-step wizard, payment selector (completed 2026-02-24)
-- [x] 06-04-PLAN.md — Quote request flow: quote form, response card, accept/decline flow (completed 2026-02-24)
-- [x] 06-05-PLAN.md — Provider booking dashboard: tabbed list, action buttons, quote response, booking detail (completed 2026-02-24)
-- [x] 06-06-PLAN.md — Client bookings pages: Mes reservations tabs, booking detail, status timeline, cancel dialog (completed 2026-02-24)
-- [x] 06-07-PLAN.md — Navigation integration + end-to-end verification checkpoint (completed 2026-02-24)
-
-```mermaid
-sequenceDiagram
-  actor Client
-  actor Prestataire
-  participant UI as Interface
-  participant API as API Routes
-  participant DB as PostgreSQL
-
-  Note over Client,DB: Flux Reservation Directe
-  Client->>UI: Selectionner service + creneau (Ecran 1)
-  Client->>UI: Confirmer details (Ecran 2)
-  Client->>UI: Paiement (Ecran 3)
-  UI->>API: POST /api/bookings (status: PENDING)
-  API->>DB: Creer Booking
-  API-->>Prestataire: Notification nouvelle reservation
-
-  Prestataire->>API: POST /api/bookings/{id}/accept
-  API->>DB: status = ACCEPTED
-  API-->>Client: Notification acceptation
-
-  Note over Client,DB: Flux Sur Devis
-  Client->>API: POST /api/quotes (description besoin)
-  API->>DB: Creer Quote (status: PENDING)
-  Prestataire->>API: POST /api/quotes/{id}/respond (prix propose)
-  Client->>API: POST /api/quotes/{id}/accept
-  API->>DB: Creer Booking depuis Quote
-```
+- [x] 06-01-PLAN.md — Backend booking: Prisma schema additions, Zod schemas, booking/quote CRUD actions, query actions, i18n keys
+- [x] 06-02-PLAN.md — Cancellation policy + quote expiration: refund tier calculation, cancel actions, cron endpoint
+- [x] 06-03-PLAN.md — Direct booking wizard: availability calendar, time slot picker, 3-step wizard, payment selector
+- [x] 06-04-PLAN.md — Quote request flow: quote form, response card, accept/decline flow
+- [x] 06-05-PLAN.md — Provider booking dashboard: tabbed list, action buttons, quote response, booking detail
+- [x] 06-06-PLAN.md — Client bookings pages: Mes reservations tabs, booking detail, status timeline, cancel dialog
+- [x] 06-07-PLAN.md — Navigation integration + end-to-end verification checkpoint
 
 ---
 
@@ -406,30 +194,7 @@ Plans:
 - [x] 07-02-PLAN.md — Checkout page (4 payment methods, card form, fee breakdown) + confirmation page with reference number
 - [x] 07-03-PLAN.md — Provider earnings dashboard (balance cards, monthly breakdown, transaction history, withdrawal requests)
 - [x] 07-04-PLAN.md — Invoice generation (printable HTML template) + monthly statements + tax retention notice
-- [ ] 07-05-PLAN.md — Navigation wiring (booking flow -> checkout, sidebar earnings) + end-to-end verification checkpoint
-
-```mermaid
-sequenceDiagram
-  actor Client
-  actor Prestataire
-  participant UI as Interface
-  participant PayService as PaymentService (abstraction)
-  participant DB as PostgreSQL
-
-  Client->>UI: Choisir methode (card/D17/Flouci/cash)
-  UI->>PayService: processPayment(bookingId, method, amount)
-  Note right of PayService: SimulatedPaymentService
-  PayService->>DB: Payment.status = HELD
-  PayService-->>Client: "Paiement retenu en escrow"
-
-  Note over Prestataire,DB: Apres service termine
-  Prestataire->>UI: Marquer service COMPLETED
-  UI->>PayService: releasePayment(bookingId)
-  PayService->>DB: commission = amount * 0.12
-  PayService->>DB: providerEarning = amount - commission
-  PayService->>DB: Payment.status = RELEASED
-  PayService-->>Prestataire: Notification paiement recu
-```
+- [x] 07-05-PLAN.md — Navigation wiring (booking flow -> checkout, sidebar earnings) + end-to-end verification checkpoint
 
 ---
 
@@ -451,13 +216,13 @@ sequenceDiagram
 **Plans**: 7 plans
 
 Plans:
-- [x] 08-01-PLAN.md — Backend: Zod schemas, review CRUD actions, auto-moderation utility, photo upload API, i18n keys (completed 2026-02-25)
-- [x] 08-02-PLAN.md — Client review form: StarRating, CriteriaRatingGroup, ReviewPhotoUploader, ReviewForm, client review page (completed 2026-02-25)
-- [x] 08-03-PLAN.md — Provider review form: provider review page, booking detail integration (bidirectional) (completed 2026-02-25)
-- [x] 08-04-PLAN.md — Simultaneous publication logic, 10-day window enforcement, cron expiration job (completed 2026-02-25)
-- [x] 08-05-PLAN.md — Review display: ReviewCard, ReviewsList, RatingBreakdown, CriteriaRadarChart components (completed 2026-02-25)
-- [x] 08-06-PLAN.md — Provider profile Avis tab integration, admin review moderation page, rating aggregation (completed 2026-02-25)
-- [x] 08-07-PLAN.md — Navigation wiring, booking list review indicators, end-to-end verification (completed 2026-02-25)
+- [x] 08-01-PLAN.md — Backend: Zod schemas, review CRUD actions, auto-moderation utility, photo upload API, i18n keys
+- [x] 08-02-PLAN.md — Client review form: StarRating, CriteriaRatingGroup, ReviewPhotoUploader, ReviewForm, client review page
+- [x] 08-03-PLAN.md — Provider review form: provider review page, booking detail integration (bidirectional)
+- [x] 08-04-PLAN.md — Simultaneous publication logic, 10-day window enforcement, cron expiration job
+- [x] 08-05-PLAN.md — Review display: ReviewCard, ReviewsList, RatingBreakdown, CriteriaRadarChart components
+- [x] 08-06-PLAN.md — Provider profile Avis tab integration, admin review moderation page, rating aggregation
+- [x] 08-07-PLAN.md — Navigation wiring, booking list review indicators, end-to-end verification
 
 ---
 
@@ -514,34 +279,6 @@ Plans:
 - [x] 10-07-PLAN.md — Content management (FAQ editor with categories, legal page editor, banner manager with scheduling)
 - [x] 10-08-PLAN.md — Commission oversight (12% tracking, provider payouts) + system notifications + sidebar update + breadcrumbs
 
-```mermaid
-graph TD
-  A[Admin Dashboard] --> B[User Management]
-  A --> C[KYC Review]
-  A --> D[Service Management]
-  A --> E[Reports & Signalements]
-  A --> F[Analytics]
-  A --> G[Content Management]
-  A --> H[System Notifications]
-
-  B --> B1[Approve/Ban Users]
-  B --> B2[View Profiles]
-
-  C --> C1[Review Documents]
-  C --> C2[Approve/Reject KYC]
-
-  D --> D1[Approve/Suspend Services]
-  D --> D2[Manage Categories]
-  D --> D3[Feature Listings]
-
-  E --> E1[Critical < 2h SLA]
-  E --> E2[Important < 24h SLA]
-  E --> E3[Minor < 48h SLA]
-
-  F --> F1[KPI Dashboard recharts]
-  F --> F2[CSV/PDF Export]
-```
-
 ---
 
 ### Phase 11: Demo Data, Polish & PFE Readiness
@@ -550,46 +287,128 @@ graph TD
 
 **Depends on**: Phase 10
 
-**Requirements**: UI-01, UI-02, UI-03, UI-04 (completion des elements UI/UX et seed data)
+**Requirements**: UI-01, UI-02, UI-03, UI-04
 
-**Note**: UI-01, UI-02, UI-03 sont partiellement couverts en Phase 1 (infrastructure). Phase 11 complete la mise en oeuvre complete et le polish final. UI-04 (seed data) est entierement livree ici.
+**Note**: Gaps from this phase are rolled into v1.1 (Phases 12-15).
 
 **Success Criteria** (what must be TRUE):
   1. La base de donnees contient des donnees de demo realistes : au moins 10 prestataires verifies dans differentes categories et villes tunisiennes, 20+ services, 30+ reservations a divers statuts, 50+ avis, historique de transactions en TND
-  2. Toutes les pages cles (accueil, recherche, profil, booking, dashboard client, dashboard prestataire, admin) sont entierement utilisables sur mobile (375px) et desktop (1280px) sans elements casses
+  2. Toutes les pages cles sont entierement utilisables sur mobile (375px) et desktop (1280px) sans elements casses
   3. Le flow de demo complet (recherche → profil → reservation → paiement → avis) s'execute sans erreur sur les donnees seedees
   4. Les scores Lighthouse (performance, accessibilite, SEO) atteignent au minimum 75/100 sur les pages publiques
   5. Le switcher de langue est visible dans la navbar et le mecanisme i18n fonctionne — pret pour ajout traductions AR/EN
 
-**Plans**: 7 plans
+**Plans**: 7 plans (rolled into v1.1)
 
 Plans:
-- [ ] 11-01-PLAN.md — Script de seed avec donnees tunisiennes realistes (10+ prestataires, 20+ services, 30+ reservations, 50+ avis, transactions TND)
-- [ ] 11-02-PLAN.md — Polish responsivite mobile — audit et corrections pages publiques + authentifiees sur 375px et 1280px
-- [ ] 11-03-PLAN.md — Language switcher UI — composant Globe dropdown dans navbar, i18n pret pour AR/EN
-- [ ] 11-04-PLAN.md — Optimisation performances — Suspense boundaries, lazy loading images, Next.js config tuning
-- [ ] 11-05-PLAN.md — Audit accessibilite et SEO — meta tags, robots.txt, sitemap.xml, aria labels, alt text
-- [ ] 11-06-PLAN.md — Verification E2E demo flow sur donnees seedees + checkpoint humain
-- [ ] 11-07-PLAN.md — Documentation technique PFE — DEPLOYMENT.md avec guide setup, schema DB, comptes demo
+- [ ] 11-01-PLAN.md — Script de seed avec donnees tunisiennes realistes
+- [ ] 11-02-PLAN.md — Polish responsivite mobile
+- [ ] 11-03-PLAN.md — Language switcher UI
+- [ ] 11-04-PLAN.md — Optimisation performances
+- [ ] 11-05-PLAN.md — Audit accessibilite et SEO
+- [ ] 11-06-PLAN.md — Verification E2E demo flow
+- [ ] 11-07-PLAN.md — Documentation technique PFE
+
+</details>
+
+---
+
+### 🚧 v1.1 Polish & PFE Ready (In Progress)
+
+**Milestone Goal:** Fix all known bugs, complete missing public pages, wire remaining integrations, polish UX, seed realistic demo data, and deliver a fully demo-ready platform for PFE soutenance.
+
+#### Phase 12: Bug Fixes
+
+**Goal**: Every known bug in the platform is resolved — i18n encoding, autocomplete icons, navigation links, favorites, dashboard stats, admin panel issues, dark mode contrast, auto-moderation, email locale links, and zone selection all work correctly.
+
+**Depends on**: Phase 11 (v1.0 codebase)
+
+**Requirements**: BUGF-01, BUGF-02, BUGF-03, BUGF-04, BUGF-05, BUGF-06, BUGF-07, BUGF-08, BUGF-09, BUGF-10, BUGF-11, BUGF-12, BUGF-13, BUGF-14
+
+**Success Criteria** (what must be TRUE):
+  1. French accented characters (e, e, e, c, a, etc.) display correctly on all pages — no garbled or missing characters in any UI text
+  2. The search autocomplete shows icon components beside each suggestion, not raw icon name strings
+  3. Footer links (FAQ, CGU, Contact, Comment ca marche) navigate to their respective pages without 404
+  4. The client navbar dashboard link, favorites save/unsave, and email verification link (with `/fr/` locale prefix) all function correctly
+  5. Admin analytics recharts render with real data, the unsuspend toggle on services works, and the category filter on services management page filters correctly
+  6. Dark mode has sufficient contrast across all pages — no white text on white card backgrounds
+
+**Plans**: TBD
+
+---
+
+#### Phase 13: UX Polish & Missing Pages
+
+**Goal**: The homepage conveys platform trust with a reviews carousel and featured top providers, the client dashboard presents meaningful stats at a glance, and all public pages expected by a real marketplace (FAQ, CGU, Contact, Privacy Policy, How it works) exist and are accessible from the footer.
+
+**Depends on**: Phase 12
+
+**Requirements**: UX-01, UX-02, UX-03, PAGE-01, PAGE-02, PAGE-03, PAGE-04, PAGE-05
+
+**Success Criteria** (what must be TRUE):
+  1. The homepage displays a scrollable carousel of recent verified client reviews with star ratings
+  2. The homepage displays a "Top Prestataires" section showing the highest-rated verified providers with their category, rating, and city
+  3. The client dashboard shows stats cards: total bookings, total amount spent (in TND), reviews given, and currently active bookings
+  4. All five public pages (FAQ, Contact, CGU, Privacy Policy, How it works) are accessible via footer links and display structured, readable content
+
+**Plans**: TBD
+
+---
+
+#### Phase 14: Integration Wiring
+
+**Goal**: The payment flow connects end-to-end through the UI (booking wizard leads to checkout, earnings sidebar link goes to earnings page, confirmation redirects land correctly), and notifications fire for every transactional action — booking, payment, review submission, and KYC status changes — with the Contacter button opening the messaging interface.
+
+**Depends on**: Phase 12
+
+**Requirements**: INTG-01, INTG-02
+
+**Success Criteria** (what must be TRUE):
+  1. Completing a booking wizard navigates the client to the checkout page, the provider sidebar earnings link goes to the earnings dashboard, and payment confirmation redirects land on the correct confirmation screen
+  2. Notifications are dispatched and appear in the bell dropdown for: new booking, booking accepted/rejected, payment received, review submitted, and KYC approved/rejected
+  3. Clicking the "Contacter" button on a provider profile or service page opens the messaging interface with that provider pre-selected
+
+**Plans**: TBD
+
+---
+
+#### Phase 15: PFE Readiness
+
+**Goal**: The platform is fully demo-ready for the PFE soutenance — realistic Tunisian seed data is loaded, every page is usable at 375px and 1280px, the language switcher is in the navbar, performance and accessibility meet acceptable thresholds, the complete demo flow works end-to-end on seeded data, and a deployment guide exists for the jury.
+
+**Depends on**: Phases 13 and 14
+
+**Requirements**: PFE-01, PFE-02, PFE-03, PFE-04, PFE-05, PFE-06, PFE-07
+
+**Success Criteria** (what must be TRUE):
+  1. The database contains realistic Tunisian demo data: 10+ verified providers across categories and cities, 20+ services, 30+ bookings at various statuses, 50+ reviews, and transaction history in TND
+  2. All key pages (home, search, profile, booking, client dashboard, provider dashboard, admin) are fully functional at 375px mobile and 1280px desktop without broken layouts
+  3. The language switcher Globe dropdown is visible in the navbar and clicking it shows available locales — ready for Arabic/English translation files
+  4. The complete demo flow (search → provider profile → booking → checkout → review) executes without errors on seeded data
+  5. DEPLOYMENT.md exists with a setup guide, demo account credentials, and schema overview sufficient for the PFE jury to run the project locally
+
+**Plans**: TBD
 
 ---
 
 ## Progress
 
-**Execution Order:** 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 → 10 → 11
+**Execution Order:** 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 → 10 → 11 → 12 → 13 → 14 → 15
 
-| Phase | Plans Complete | Status | Completed |
-|-------|----------------|--------|-----------|
-| 1. Foundation & Infrastructure | 7/7 | Complete    | 2026-02-22 |
-| 2. Authentification | 7/7 | Complete   | 2026-02-22 |
-| 3. Verification KYC | 5/5 | Complete   | 2026-02-23 |
-| 4. Profil Prestataire & Services | 5/5 | Complete   | 2026-02-23 |
-| 5. Recherche & Decouverte | 5/5 | Complete   | 2026-02-24 |
-| 6. Systeme de Reservation | 7/7 | Complete    | 2026-02-24 |
-| 7. Paiement Simule | 4/5 | In progress | 2026-02-24 |
-| 8. Avis & Evaluations | 7/7 | Complete | 2026-02-25 |
-| 9. Messagerie & Notifications | 3/5 | In Progress|  |
-| 10. Panneau d'Administration | 7/8 | Complete    | 2026-02-26 |
-| 11. Demo Data, Polish & PFE Readiness | 0/7 | Not started | - |
-
-**Total plans estimated:** ~74 plans across 11 sprints
+| Phase | Milestone | Plans Complete | Status | Completed |
+|-------|-----------|----------------|--------|-----------|
+| 1. Foundation & Infrastructure | v1.0 | 7/7 | Complete | 2026-02-22 |
+| 2. Authentification | v1.0 | 7/7 | Complete | 2026-02-22 |
+| 3. Verification KYC | v1.0 | 5/5 | Complete | 2026-02-23 |
+| 4. Profil Prestataire & Services | v1.0 | 5/5 | Complete | 2026-02-23 |
+| 5. Recherche & Decouverte | v1.0 | 5/5 | Complete | 2026-02-24 |
+| 6. Systeme de Reservation | v1.0 | 7/7 | Complete | 2026-02-24 |
+| 7. Paiement Simule | v1.0 | 5/5 | Complete | 2026-02-25 |
+| 8. Avis & Evaluations | v1.0 | 7/7 | Complete | 2026-02-25 |
+| 9. Messagerie & Notifications | v1.0 | 4/5 | Complete | 2026-02-26 |
+| 10. Panneau d'Administration | v1.0 | 8/8 | Complete | 2026-02-26 |
+| 11. Demo Data, Polish & PFE Readiness | v1.0 | 0/7 | Rolled into v1.1 | - |
+| 12. Bug Fixes | v1.1 | 0/TBD | Not started | - |
+| 13. UX Polish & Missing Pages | v1.1 | 0/TBD | Not started | - |
+| 14. Integration Wiring | v1.1 | 0/TBD | Not started | - |
+| 15. PFE Readiness | v1.1 | 0/TBD | Not started | - |
