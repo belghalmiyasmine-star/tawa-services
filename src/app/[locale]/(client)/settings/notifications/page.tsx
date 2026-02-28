@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import { getLocale, getTranslations } from "next-intl/server";
 
 import { authOptions } from "@/lib/auth";
-import { redirect } from "@/i18n/routing";
+import { redirect, Link } from "@/i18n/routing";
 import { NotificationPreferencesForm } from "@/features/notification/components/NotificationPreferencesForm";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -25,13 +25,18 @@ export default async function ClientNotificationPreferencesPage() {
 
   return (
     <div className="container mx-auto max-w-3xl px-4 py-8">
-      {/* Back link */}
-      <a
-        href="/settings/security"
-        className="mb-6 inline-flex items-center text-sm text-muted-foreground hover:text-foreground"
-      >
-        &larr; Retour aux parametres
-      </a>
+      {/* Settings navigation */}
+      <nav className="mb-8 flex gap-4 border-b pb-4">
+        <Link
+          href="/settings/security"
+          className="pb-2 text-sm text-muted-foreground hover:text-foreground"
+        >
+          Securite
+        </Link>
+        <span className="border-b-2 border-primary pb-2 text-sm font-medium text-foreground">
+          {t("preferences.title")}
+        </span>
+      </nav>
 
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-foreground">

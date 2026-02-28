@@ -34,7 +34,7 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/categories" className="transition-colors hover:text-foreground">
+                <Link href="/services" className="transition-colors hover:text-foreground">
                   {t("serviceCategories")}
                 </Link>
               </li>
@@ -46,7 +46,7 @@ export function Footer() {
             <h3 className="mb-4 text-sm font-semibold">{t("forProviders")}</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
-                <Link href="/become-provider" className="transition-colors hover:text-foreground">
+                <Link href="/auth/register" className="transition-colors hover:text-foreground">
                   {t("becomeProvider")}
                 </Link>
               </li>
@@ -81,7 +81,7 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/support" className="transition-colors hover:text-foreground">
+                <Link href="/faq" className="transition-colors hover:text-foreground">
                   {t("support")}
                 </Link>
               </li>
@@ -93,12 +93,12 @@ export function Footer() {
             <h3 className="mb-4 text-sm font-semibold">{t("legal")}</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
-                <Link href="/terms" className="transition-colors hover:text-foreground">
+                <Link href="/legal/cgu" className="transition-colors hover:text-foreground">
                   {t("terms")}
                 </Link>
               </li>
               <li>
-                <Link href="/privacy" className="transition-colors hover:text-foreground">
+                <Link href="/legal/privacy" className="transition-colors hover:text-foreground">
                   {t("privacy")}
                 </Link>
               </li>

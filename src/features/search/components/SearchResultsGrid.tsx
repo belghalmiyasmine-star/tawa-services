@@ -1,7 +1,10 @@
 import { SearchX } from "lucide-react";
 import { getTranslations } from "next-intl/server";
+import { getServerSession } from "next-auth";
 
 import { PublicServiceCard } from "@/features/provider/components/PublicServiceCard";
+import { authOptions } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 
 // ============================================================
 // TYPES
@@ -52,6 +55,20 @@ interface SearchResultsGridProps {
 export async function SearchResultsGrid({ services, total }: SearchResultsGridProps) {
   const t = await getTranslations("search");
 
+  // Look up user favorites for heart icons
+  let favoritedServiceIds = new Set<string>();
+  const session = await getServerSession(authOptions);
+  if (session?.user?.id && services.length > 0) {
+    const favorites = await prisma.favorite.findMany({
+      where: {
+        userId: session.user.id,
+        serviceId: { in: services.map((s) => s.id) },
+      },
+      select: { serviceId: true },
+    });
+    favoritedServiceIds = new Set(favorites.map((f) => f.serviceId));
+  }
+
   if (services.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-gray-200 py-16 text-center dark:border-gray-700">
@@ -76,7 +93,11 @@ export async function SearchResultsGrid({ services, total }: SearchResultsGridPr
       {/* Service cards grid */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {services.map((service) => (
-          <PublicServiceCard key={service.id} service={service} />
+          <PublicServiceCard
+            key={service.id}
+            service={service}
+            isFavorited={session?.user?.id ? favoritedServiceIds.has(service.id) : undefined}
+          />
         ))}
       </div>
     </div>

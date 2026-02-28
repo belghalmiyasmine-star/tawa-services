@@ -112,6 +112,15 @@ None - no external service configuration required.
 - Provider zone selection now persists correctly: checkboxes toggle visually and save actually writes to database
 - Phase 12 has 5 plans — this is plan 05, final plan. Phase 12 bug fixes should now be complete pending overall verification.
 
+## Self-Check: PASSED
+
+- `src/lib/email.ts` — FOUND (trailing slash fix applied)
+- `src/lib/validations/provider.ts` — FOUND (cuid2 → cuid fix applied)
+- `.planning/phases/12-bug-fixes/12-05-SUMMARY.md` — FOUND (this file)
+- Commit `8eb3f83` — FOUND (Task 1: email URL fix)
+- Commit `e43c8f6` — FOUND (Task 2: zone schema fix)
+- Commit `e31699d` — FOUND (docs: plan metadata)
+
 ---
 *Phase: 12-bug-fixes*
 *Completed: 2026-02-27*

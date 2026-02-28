@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ThemeToggle } from "@/components/shared/ThemeToggle";
-import { LocaleSwitcher } from "@/components/shared/LocaleSwitcher";
+import { LanguageSwitcher } from "@/components/shared/LanguageSwitcher";
 import { NotificationBell } from "@/features/notification/components/NotificationBell";
 import { SearchAutocomplete } from "@/features/search/components/SearchAutocomplete";
 import { Link } from "@/i18n/routing";
@@ -173,7 +173,7 @@ export function Navbar() {
 
         {/* Right Actions */}
         <div className="flex items-center gap-2">
-          <LocaleSwitcher />
+          <LanguageSwitcher />
           <ThemeToggle />
           {/* Messages icon with unread badge — for authenticated users */}
           {status === "authenticated" && session?.user ? (

@@ -72,7 +72,7 @@ export default async function AdminDashboardPage() {
     <div className="space-y-8">
       {/* Page Header */}
       <div>
-        <h1 className="text-3xl font-bold">{t("title")}</h1>
+        <h1 className="text-2xl font-bold md:text-3xl">{t("title")}</h1>
         <p className="mt-1 text-muted-foreground">
           {new Intl.DateTimeFormat("fr-FR", {
             weekday: "long",
@@ -92,10 +92,21 @@ export default async function AdminDashboardPage() {
         </div>
       )}
 
-      {/* Charts Placeholder */}
+      {/* Charts */}
       <section>
         <h2 className="mb-4 text-lg font-semibold">{tNav("analytics")}</h2>
-        <DashboardCharts />
+        {stats ? (
+          <DashboardCharts
+            monthlyRevenue={stats.monthlyRevenue}
+            bookingsByStatus={stats.bookingsByStatus}
+            userGrowth={stats.userGrowth}
+            revenueByCategory={stats.revenueByCategory}
+          />
+        ) : (
+          <div className="rounded-lg border bg-destructive/10 p-4 text-sm text-destructive">
+            Impossible de charger les graphiques.
+          </div>
+        )}
       </section>
 
       {/* Quick Links + Recent Reports — side by side on desktop */}
@@ -109,7 +120,7 @@ export default async function AdminDashboardPage() {
               return (
                 <Link key={link.href} href={link.href}>
                   <Card className="h-full transition-colors hover:bg-accent/50">
-                    <CardContent className="flex flex-col items-center justify-center gap-3 p-6 text-center">
+                    <CardContent className="flex flex-col items-center justify-center gap-2 p-4 text-center md:gap-3 md:p-6">
                       <div className={`rounded-full p-3 ${link.bg}`}>
                         <Icon className={`h-6 w-6 ${link.color}`} />
                       </div>

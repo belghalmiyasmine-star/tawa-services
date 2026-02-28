@@ -19,6 +19,8 @@ import {
   LogOut,
   Briefcase,
   Banknote,
+  MessageSquare,
+  ExternalLink,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -34,6 +36,7 @@ const NAV_ITEMS = [
   { href: "/admin/reports", icon: Flag, labelKey: "reports" },
   { href: "/admin/analytics", icon: BarChart3, labelKey: "analytics" },
   { href: "/admin/commission", icon: Banknote, labelKey: "commission" },
+  { href: "/admin/messages", icon: MessageSquare, labelKey: "messages" },
   { href: "/admin/content", icon: FileText, labelKey: "content" },
   { href: "/admin/notifications", icon: Bell, labelKey: "notifications" },
 ];
@@ -49,7 +52,7 @@ export function AdminSidebar() {
   return (
     <aside
       className={cn(
-        "relative flex h-screen flex-col border-r bg-background transition-all duration-300",
+        "relative hidden h-screen flex-col border-r bg-background transition-all duration-300 md:flex",
         collapsed ? "w-16" : "w-64"
       )}
     >
@@ -99,6 +102,23 @@ export function AdminSidebar() {
       </nav>
 
       <Separator />
+
+      {/* View public site */}
+      <div className="p-3 pb-0">
+        <a
+          href="/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={cn(
+            "flex w-full items-center rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground",
+            collapsed && "justify-center px-2"
+          )}
+          title={collapsed ? tLayout("viewPublicSite") : undefined}
+        >
+          <ExternalLink className={cn("h-4 w-4 flex-shrink-0", !collapsed && "mr-3")} />
+          {!collapsed && <span>{tLayout("viewPublicSite")}</span>}
+        </a>
+      </div>
 
       {/* Logout */}
       <div className="p-3 pb-0">

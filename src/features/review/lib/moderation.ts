@@ -30,8 +30,11 @@ const EMAIL_REGEX = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
 const PHONE_TN_REGEX =
   /(\+?216[\s./()-]?\d{2}[\s./()-]?\d{3}[\s./()-]?\d{3}|\b\d{2}[\s./()-]?\d{3}[\s./()-]?\d{3}\b)/g;
 
-/** Spaced-out digits anti-evasion: 8 individual digits separated by spaces/dots/dashes */
-const SPACED_DIGITS_REGEX = /\b\d[\s.,-]\d[\s.,-]\d[\s.,-]\d[\s.,-]\d[\s.,-]\d[\s.,-]\d[\s.,-]\d\b/g;
+/** Spaced-out digits anti-evasion: 7-8 individual digits separated by spaces/dots/dashes */
+const SPACED_DIGITS_REGEX = /\b\d[\s.,-]\d[\s.,-]\d[\s.,-]\d[\s.,-]\d[\s.,-]\d[\s.,-]\d(?:[\s.,-]\d)?\b/g;
+
+/** Consecutive digit sequences: 7-8 digits in a row (catches raw phone numbers) */
+const DIGIT_SEQUENCE_REGEX = /\b\d{7,8}\b/g;
 
 /** Obfuscated email evasion: "user at gmail dot com" / "user chez gmail point com" */
 const EMAIL_OBFUSCATED_REGEX = /\b\w+\s*(at|chez)\s*\w+\s*(dot|point)\s*\w+\b/gi;
@@ -40,10 +43,10 @@ const EMAIL_OBFUSCATED_REGEX = /\b\w+\s*(at|chez)\s*\w+\s*(dot|point)\s*\w+\b/gi
 const PHONE_GENERIC_REGEX = /\b0?\d[\s.-]?\d{2}[\s.-]?\d{3}[\s.-]?\d{3}\b/g;
 
 /** Messaging app mentions */
-const MESSAGING_APPS_REGEX = /\b(whatsapp|telegram|viber|signal)\b/gi;
+const MESSAGING_APPS_REGEX = /\b(whatsapp|whats\s*app|telegram|viber|signal)\b/gi;
 
-/** Social media platform patterns */
-const SOCIAL_MEDIA_REGEX = /\b(facebook\.com|fb\.com|instagram\.com|ig:)\b/gi;
+/** Social media platform patterns (bare names + URLs) */
+const SOCIAL_MEDIA_REGEX = /\b(facebook|fb|instagram|insta|snapchat)(\.com)?\b/gi;
 
 // ────────────────────────────────────────────────
 // DETECTION FUNCTIONS
@@ -63,6 +66,7 @@ export function detectContactInfo(text: string): ContactDetectionResult {
   const messagingMatches = text.match(MESSAGING_APPS_REGEX) ?? [];
   const socialMatches = text.match(SOCIAL_MEDIA_REGEX) ?? [];
   const spacedDigitsMatches = text.match(SPACED_DIGITS_REGEX) ?? [];
+  const digitSequenceMatches = text.match(DIGIT_SEQUENCE_REGEX) ?? [];
   const emailObfuscatedMatches = text.match(EMAIL_OBFUSCATED_REGEX) ?? [];
 
   matches.push(
@@ -72,6 +76,7 @@ export function detectContactInfo(text: string): ContactDetectionResult {
     ...messagingMatches,
     ...socialMatches,
     ...spacedDigitsMatches,
+    ...digitSequenceMatches,
     ...emailObfuscatedMatches,
   );
 

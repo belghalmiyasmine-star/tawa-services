@@ -1,7 +1,7 @@
 "use client";
 
 import { signIn } from "next-auth/react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -28,6 +28,7 @@ type Role = "CLIENT" | "PROVIDER";
 
 export function RegisterWizard() {
   const t = useTranslations("auth");
+  const locale = useLocale();
   const router = useRouter();
   const { toast } = useToast();
 
@@ -95,7 +96,7 @@ export function RegisterWizard() {
   const onSubmit = async (data: RegisterFormData) => {
     setIsSubmitting(true);
     try {
-      const result = await registerAction(data);
+      const result = await registerAction(data, locale);
 
       if (!result.success) {
         toast({

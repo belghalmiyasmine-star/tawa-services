@@ -71,7 +71,11 @@
     "step2Description": "Choisissez un créneau et confirmez votre réservation en 3 étapes",
     "step3Title": "Payez & Evaluez",
     "step3Description": "Payez en sécurité et laissez votre avis après le service",
-    "becomeProvider": "Devenir prestataire"
+    "becomeProvider": "Devenir prestataire",
+    "clientReviews": "Avis de nos clients",
+    "clientReviewsSubtitle": "Ce que disent nos utilisateurs satisfaits",
+    "topProviders": "Nos meilleurs prestataires",
+    "topProvidersSubtitle": "Des professionnels de confiance, vérifiés et bien notés"
   },
   "auth": {
     "login": "Se connecter",
@@ -277,6 +281,7 @@
     "portfolioDeleted": "Photo supprimée",
     "portfolioUploaded": "Photo ajoutée avec succès",
     "portfolioUploadError": "Erreur lors de l'upload de la photo",
+    "contact": "Contacter",
     "tabServices": "Services",
     "tabReviews": "Avis",
     "tabAbout": "A propos",
@@ -1184,6 +1189,7 @@
     "with": "avec",
     "totalBookings": "Réservations totales",
     "totalSpent": "Total dépensé",
-    "reviewsGiven": "Avis donnés"
+    "reviewsGiven": "Avis donnés",
+    "favoritesCount": "Favoris"
   }
 }

@@ -1,8 +1,9 @@
-import { Heart, Star } from "lucide-react";
+import { Star } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Link } from "@/i18n/routing";
 import { FavoriteButton } from "@/features/favorite/components/FavoriteButton";
+import { GuestHeartButton } from "@/features/favorite/components/GuestHeartButton";
 
 // ============================================================
 // TYPES
@@ -106,12 +107,7 @@ export function PublicServiceCard({ service, isFavorited }: PublicServiceCardPro
           {isFavorited !== undefined ? (
             <FavoriteButton serviceId={service.id} initialFavorited={isFavorited} />
           ) : (
-            <div
-              aria-label="Ajouter aux favoris"
-              className="rounded-full bg-white/80 p-1.5 shadow-sm backdrop-blur-sm dark:bg-gray-800/80"
-            >
-              <Heart className="h-4 w-4 text-gray-400" />
-            </div>
+            <GuestHeartButton />
           )}
         </div>
       </div>

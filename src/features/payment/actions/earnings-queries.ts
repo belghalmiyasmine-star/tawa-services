@@ -78,7 +78,7 @@ export async function getProviderEarningsAction(): Promise<
     const providerId = provider.id;
 
     // Aggregate in parallel
-    const [releasedAggregate, pendingAggregate, availablePayments] =
+    const [releasedAggregate, pendingAggregate, withdrawnAggregate] =
       await Promise.all([
         // totalEarned + totalCommission from all RELEASED payments
         prisma.payment.aggregate({
@@ -103,26 +103,33 @@ export async function getProviderEarningsAction(): Promise<
             amount: true,
           },
         }),
-        // available: RELEASED payments with no withdrawal request
-        prisma.payment.aggregate({
+        // total withdrawn: sum of all non-rejected withdrawal request amounts
+        prisma.withdrawalRequest.aggregate({
           where: {
-            booking: { providerId },
-            status: "RELEASED",
+            providerId,
             isDeleted: false,
-            withdrawalRequest: null,
+            status: { not: "REJECTED" },
           },
           _sum: {
-            providerEarning: true,
+            amount: true,
           },
         }),
       ]);
 
+    const totalEarned = releasedAggregate._sum.providerEarning ?? 0;
+    const totalWithdrawn = withdrawnAggregate._sum.amount ?? 0;
+    const available = totalEarned - totalWithdrawn;
+
+    console.log(
+      `[getProviderEarningsAction] Provider ${providerId}: totalEarned=${totalEarned.toFixed(2)}, totalWithdrawn=${totalWithdrawn.toFixed(2)}, available=${available.toFixed(2)}, pending=${(pendingAggregate._sum.amount ?? 0).toFixed(2)}`,
+    );
+
     return {
       success: true,
       data: {
-        available: availablePayments._sum.providerEarning ?? 0,
+        available,
         pending: pendingAggregate._sum.amount ?? 0,
-        totalEarned: releasedAggregate._sum.providerEarning ?? 0,
+        totalEarned,
         totalCommission: releasedAggregate._sum.commission ?? 0,
       },
     };

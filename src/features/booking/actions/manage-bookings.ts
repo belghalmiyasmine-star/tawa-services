@@ -9,7 +9,6 @@ import {
   createBookingSchema,
   rejectBookingSchema,
 } from "@/lib/validations/booking";
-import { paymentService } from "@/features/payment/services/simulated-payment.service";
 import { sendNotification } from "@/features/notification/lib/send-notification";
 
 // ============================================================
@@ -444,9 +443,8 @@ export async function startBookingAction(
  * - Verifies booking belongs to provider
  * - Verifies status is IN_PROGRESS
  * - Transitions status to COMPLETED, sets completedAt
- * - Releases payment via paymentService with 12% commission logic:
- *   - If payment.status === "HELD" (normal checkout flow): releases HELD -> RELEASED
- *   - If payment.status === "PENDING" (CASH method, no checkout): releases PENDING -> RELEASED directly
+ * - Releases payment atomically with 12% commission logic:
+ *   - If payment.status === "HELD" or "PENDING": releases -> RELEASED with commission
  * - Increments provider.completedMissions counter
  */
 export async function completeBookingAction(
@@ -495,8 +493,16 @@ export async function completeBookingAction(
     }
 
     const now = new Date();
+    const servicePrice = booking.payment?.amount ?? booking.totalAmount;
+    const commission = servicePrice * 0.12;
+    const providerEarning = servicePrice - commission;
 
-    // Mark booking as completed and increment provider missions counter
+    console.log(
+      `[completeBookingAction] Service price: ${servicePrice}, Commission 12%: ${commission.toFixed(2)}, Provider receives: ${providerEarning.toFixed(2)}`,
+    );
+
+    // Complete booking AND release payment in a SINGLE transaction
+    // to prevent inconsistent state (completed booking with unreleased payment)
     await prisma.$transaction(async (tx) => {
       await tx.booking.update({
         where: { id: bookingId },
@@ -512,31 +518,51 @@ export async function completeBookingAction(
           completedMissions: { increment: 1 },
         },
       });
+
+      // Release payment inside the same transaction
+      if (booking.payment) {
+        const paymentStatus = booking.payment.status;
+
+        if (paymentStatus === "HELD" || paymentStatus === "PENDING") {
+          await tx.payment.update({
+            where: { id: booking.payment.id },
+            data: {
+              status: "RELEASED",
+              releasedAt: now,
+              commission,
+              providerEarning,
+            },
+          });
+        }
+        // If already RELEASED or other status, no action needed
+      }
     });
 
-    // Release payment via payment service (outside transaction for isolation)
-    if (booking.payment) {
-      const paymentStatus = booking.payment.status;
-
-      if (paymentStatus === "HELD") {
-        // Normal escrow flow: client paid via checkout, payment is HELD — release it
-        await paymentService.releasePayment({ bookingId });
-      } else if (paymentStatus === "PENDING") {
-        // CASH method: no checkout step was done — release directly with commission
-        const commission = booking.payment.amount * 0.12;
-        const providerEarning = booking.payment.amount - commission;
-        await prisma.payment.update({
-          where: { id: booking.payment.id },
-          data: {
-            status: "RELEASED",
-            releasedAt: now,
-            commission,
-            providerEarning,
-          },
-        });
-      }
-      // If already RELEASED or other status, no action needed
-    }
+    // Log the new balance after completion
+    const [releasedAgg, withdrawnAgg] = await Promise.all([
+      prisma.payment.aggregate({
+        where: {
+          booking: { providerId: provider.id },
+          status: "RELEASED",
+          isDeleted: false,
+        },
+        _sum: { providerEarning: true },
+      }),
+      prisma.withdrawalRequest.aggregate({
+        where: {
+          providerId: provider.id,
+          isDeleted: false,
+          status: { not: "REJECTED" },
+        },
+        _sum: { amount: true },
+      }),
+    ]);
+    const newBalance =
+      (releasedAgg._sum.providerEarning ?? 0) -
+      (withdrawnAgg._sum.amount ?? 0);
+    console.log(
+      `[completeBookingAction] New balance: ${newBalance.toFixed(2)} TND (total earned: ${(releasedAgg._sum.providerEarning ?? 0).toFixed(2)}, total withdrawn: ${(withdrawnAgg._sum.amount ?? 0).toFixed(2)})`,
+    );
 
     // Fire-and-forget: notify client that booking was completed
     void sendNotification({

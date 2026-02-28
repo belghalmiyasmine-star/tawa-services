@@ -143,6 +143,19 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
     orderBy: { viewCount: "desc" },
   });
 
+  // Look up user favorites for heart icons on similar services
+  let favoritedServiceIds = new Set<string>();
+  if (session?.user?.id && similarServices.length > 0) {
+    const favorites = await prisma.favorite.findMany({
+      where: {
+        userId: session.user.id,
+        serviceId: { in: similarServices.map((s) => s.id) },
+      },
+      select: { serviceId: true },
+    });
+    favoritedServiceIds = new Set(favorites.map((f) => f.serviceId));
+  }
+
   const categoryLabel = service.category.parent
     ? service.category.name
     : service.category.name;
@@ -246,7 +259,7 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
 
         {/* Right column — sticky provider card + action buttons */}
         <div className="flex flex-col gap-4 lg:col-span-1">
-          <div className="sticky top-20 flex flex-col gap-4">
+          <div className="flex flex-col gap-4 lg:sticky lg:top-20">
             {/* Provider mini-card */}
             <ProviderMiniCard
               provider={{
@@ -282,6 +295,7 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
               <PublicServiceCard
                 key={similarService.id}
                 service={similarService}
+                isFavorited={session?.user?.id ? favoritedServiceIds.has(similarService.id) : undefined}
               />
             ))}
           </div>

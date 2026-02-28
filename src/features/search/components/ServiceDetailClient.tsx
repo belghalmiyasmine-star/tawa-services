@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/routing";
-import { useToast } from "@/hooks/use-toast";
+import { ContactProviderButton } from "@/features/messaging/components/ContactProviderButton";
 
 // ============================================================
 // TYPES
@@ -24,23 +24,15 @@ interface ServiceDetailClientProps {
  * ServiceDetailClient — Client wrapper for interactive action buttons on service detail page.
  *
  * - FIXED services: "Reserver" links to /services/[id]/book (3-step booking wizard)
- * - SUR_DEVIS services: "Demander un devis" navigates to /services/[id]/quote (Plan 04)
- * - "Contacter" is always a coming-soon toast (Phase 9 messaging)
+ * - SUR_DEVIS services: "Demander un devis" navigates to /services/[id]/quote
+ * - "Contacter" opens existing conversation or prompts to book first
  */
 export function ServiceDetailClient({
   serviceId,
   pricingType,
-  providerId: _providerId,
+  providerId,
 }: ServiceDetailClientProps) {
   const t = useTranslations("search");
-  const { toast } = useToast();
-
-  function handleComingSoon() {
-    toast({
-      title: t("comingSoonToast"),
-      description: "Cette fonctionnalite sera disponible dans une prochaine mise a jour.",
-    });
-  }
 
   return (
     <div className="flex flex-col gap-2">
@@ -60,13 +52,11 @@ export function ServiceDetailClient({
       )}
 
       {/* Secondary: Contact */}
-      <Button
-        variant="outline"
+      <ContactProviderButton
+        providerId={providerId}
+        label={t("buttonContact")}
         className="w-full"
-        onClick={handleComingSoon}
-      >
-        {t("buttonContact")}
-      </Button>
+      />
     </div>
   );
 }

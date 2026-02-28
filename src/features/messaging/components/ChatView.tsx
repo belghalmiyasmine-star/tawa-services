@@ -208,11 +208,13 @@ export const ChatView = forwardRef<ChatViewHandle, ChatViewProps>(
 
         // Find genuinely new messages (IDs not in our current state)
         setMessages((prev) => {
-          const existingIds = new Set(prev.map((m) => m.id));
+          // Separate real and optimistic messages
+          const realPrev = prev.filter((m) => !m.id.startsWith("optimistic-"));
+          const existingIds = new Set(realPrev.map((m) => m.id));
           const newMessages = fetched.filter((m) => !existingIds.has(m.id));
 
           // Also update read status for existing messages
-          const updatedPrev = prev.map((m) => {
+          const updatedPrev = realPrev.map((m) => {
             const refreshed = fetched.find((f) => f.id === m.id);
             return refreshed ?? m;
           });

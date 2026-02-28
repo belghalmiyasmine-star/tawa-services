@@ -8,6 +8,7 @@
 // getConversationMessagesAction: Paginated message history for a conversation.
 // getUnreadCountAction: Total unread messages across all conversations.
 // getOrCreateConversationAction: Upsert a conversation for a booking.
+// findConversationWithProviderAction: Find existing conversation with a provider.
 // ============================================================
 
 import { getServerSession } from "next-auth";
@@ -471,4 +472,42 @@ export async function getOrCreateConversationAction(
   });
 
   return { success: true, data: { conversationId: conversation.id } };
+}
+
+// ────────────────────────────────────────────────
+// FIND CONVERSATION WITH PROVIDER
+// ────────────────────────────────────────────────
+
+/**
+ * Finds the most recent conversation the current user has with a given provider.
+ * Returns the conversationId if found, or null if no conversation exists.
+ */
+export async function findConversationWithProviderAction(
+  providerId: string,
+): Promise<ActionResult<{ conversationId: string | null }>> {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) {
+    return { success: false, error: "unauthorized" };
+  }
+
+  const userId = session.user.id;
+
+  // Find the most recent booking between this user and the provider that has a conversation
+  const booking = await prisma.booking.findFirst({
+    where: {
+      clientId: userId,
+      providerId,
+      isDeleted: false,
+      conversation: { isNot: null },
+    },
+    orderBy: { createdAt: "desc" },
+    select: {
+      conversation: { select: { id: true } },
+    },
+  });
+
+  return {
+    success: true,
+    data: { conversationId: booking?.conversation?.id ?? null },
+  };
 }

@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import { getLocale, getTranslations } from "next-intl/server";
 
 import { authOptions } from "@/lib/auth";
-import { redirect } from "@/i18n/routing";
+import { redirect, Link } from "@/i18n/routing";
 import { prisma } from "@/lib/prisma";
 import { SecuritySettings } from "@/features/auth/components/SecuritySettings";
 
@@ -51,12 +51,29 @@ export default async function SecurityPage() {
     return redirect({ href: "/auth/login", locale });
   }
 
+  const t = await getTranslations("notification");
+
   return (
-    <SecuritySettings
-      twoFactorEnabled={user.twoFactorEnabled}
-      twoFactorMethod={user.twoFactorMethod}
-      userPhone={user.phone}
-      recentLogins={recentLogins}
-    />
+    <div className="container mx-auto max-w-3xl px-4 py-8">
+      {/* Settings navigation */}
+      <nav className="mb-8 flex gap-4 border-b pb-4">
+        <span className="border-b-2 border-primary pb-2 text-sm font-medium text-foreground">
+          Securite
+        </span>
+        <Link
+          href="/settings/notifications"
+          className="pb-2 text-sm text-muted-foreground hover:text-foreground"
+        >
+          {t("preferences.title")}
+        </Link>
+      </nav>
+
+      <SecuritySettings
+        twoFactorEnabled={user.twoFactorEnabled}
+        twoFactorMethod={user.twoFactorMethod}
+        userPhone={user.phone}
+        recentLogins={recentLogins}
+      />
+    </div>
   );
 }

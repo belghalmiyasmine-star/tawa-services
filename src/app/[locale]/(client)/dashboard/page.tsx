@@ -12,6 +12,8 @@ import {
   Heart,
   ArrowRight,
   Search,
+  ShieldCheck,
+  MapPin,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -51,6 +53,7 @@ export default async function ClientDashboardPage() {
     totalBookingsCount,
     totalSpentAggregate,
     reviewsGivenCount,
+    favoriteEntries,
   ] = await Promise.all([
       // Upcoming bookings (ACCEPTED or PENDING)
       prisma.booking.findMany({
@@ -109,9 +112,49 @@ export default async function ClientDashboardPage() {
       prisma.review.count({
         where: { authorId: userId, isDeleted: false },
       }),
+      // Favorite services → providers
+      prisma.favorite.findMany({
+        where: { userId },
+        include: {
+          service: {
+            select: {
+              provider: {
+                select: {
+                  id: true,
+                  displayName: true,
+                  photoUrl: true,
+                  rating: true,
+                  ratingCount: true,
+                  kycStatus: true,
+                  delegations: {
+                    include: {
+                      delegation: {
+                        include: { gouvernorat: { select: { name: true } } },
+                      },
+                    },
+                    take: 1,
+                  },
+                },
+              },
+            },
+          },
+        },
+        orderBy: { createdAt: "desc" },
+      }),
     ]);
 
   const totalSpent = totalSpentAggregate._sum.amount ?? 0;
+
+  // Deduplicate providers from favorites (user may favorite multiple services from same provider)
+  const seenProviderIds = new Set<string>();
+  const favoriteProviders = favoriteEntries
+    .map((fav) => fav.service.provider)
+    .filter((provider) => {
+      if (seenProviderIds.has(provider.id)) return false;
+      seenProviderIds.add(provider.id);
+      return true;
+    })
+    .slice(0, 6);
 
   const userName = session.user.name?.split(" ")[0];
 
@@ -123,21 +166,25 @@ export default async function ClientDashboardPage() {
       </h1>
 
       {/* Stats bar */}
-      <div className="mt-6 grid grid-cols-3 gap-4">
-        <div className="rounded-xl border bg-card p-4 shadow-sm">
-          <p className="text-sm text-muted-foreground">{t("totalBookings")}</p>
-          <p className="text-2xl font-bold">{totalBookingsCount}</p>
+      <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
+        <div className="rounded-xl border bg-card p-3 shadow-sm md:p-4">
+          <p className="text-xs text-muted-foreground md:text-sm">{t("totalBookings")}</p>
+          <p className="text-xl font-bold md:text-2xl">{totalBookingsCount}</p>
         </div>
-        <div className="rounded-xl border bg-card p-4 shadow-sm">
-          <p className="text-sm text-muted-foreground">{t("totalSpent")}</p>
-          <p className="text-2xl font-bold">
-            {totalSpent.toFixed(2)}{" "}
-            <span className="text-sm font-normal text-muted-foreground">TND</span>
+        <div className="rounded-xl border bg-card p-3 shadow-sm md:p-4">
+          <p className="text-xs text-muted-foreground md:text-sm">{t("totalSpent")}</p>
+          <p className="text-xl font-bold md:text-2xl">
+            {totalSpent.toFixed(0)}{" "}
+            <span className="text-xs font-normal text-muted-foreground md:text-sm">TND</span>
           </p>
         </div>
-        <div className="rounded-xl border bg-card p-4 shadow-sm">
-          <p className="text-sm text-muted-foreground">{t("reviewsGiven")}</p>
-          <p className="text-2xl font-bold">{reviewsGivenCount}</p>
+        <div className="rounded-xl border bg-card p-3 shadow-sm md:p-4">
+          <p className="text-xs text-muted-foreground md:text-sm">{t("reviewsGiven")}</p>
+          <p className="text-xl font-bold md:text-2xl">{reviewsGivenCount}</p>
+        </div>
+        <div className="rounded-xl border bg-card p-3 shadow-sm md:p-4">
+          <p className="text-xs text-muted-foreground md:text-sm">{t("favoritesCount")}</p>
+          <p className="text-xl font-bold md:text-2xl">{favoriteProviders.length}</p>
         </div>
       </div>
 
@@ -279,20 +326,90 @@ export default async function ClientDashboardPage() {
           )}
         </section>
 
-        {/* Favorite Providers (placeholder — Favorite model coming soon) */}
+        {/* Favorite Providers */}
         <section className="rounded-xl border bg-card p-6 shadow-sm">
-          <div className="flex items-center gap-2">
-            <Heart className="h-5 w-5 text-red-500" />
-            <h2 className="text-lg font-semibold">{t("favoriteProviders")}</h2>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Heart className="h-5 w-5 text-red-500" />
+              <h2 className="text-lg font-semibold">{t("favoriteProviders")}</h2>
+            </div>
+            {favoriteProviders.length > 0 && (
+              <Link href="/services" className="text-sm text-primary hover:underline">
+                {t("viewAll")} <ArrowRight className="ml-1 inline h-3 w-3" />
+              </Link>
+            )}
           </div>
 
-          <div className="mt-6 text-center">
-            <p className="text-sm text-muted-foreground">{t("noFavorites")}</p>
-            <p className="mt-1 text-xs text-muted-foreground">{t("noFavoritesDesc")}</p>
-            <Button asChild size="sm" variant="outline" className="mt-4">
-              <Link href="/services">{t("browseServices")}</Link>
-            </Button>
-          </div>
+          {favoriteProviders.length === 0 ? (
+            <div className="mt-6 text-center">
+              <p className="text-sm text-muted-foreground">{t("noFavorites")}</p>
+              <p className="mt-1 text-xs text-muted-foreground">{t("noFavoritesDesc")}</p>
+              <Button asChild size="sm" variant="outline" className="mt-4">
+                <Link href="/services">{t("browseServices")}</Link>
+              </Button>
+            </div>
+          ) : (
+            <div className="mt-4 space-y-3">
+              {favoriteProviders.map((provider) => {
+                const city =
+                  provider.delegations.length > 0
+                    ? provider.delegations[0]?.delegation.gouvernorat.name
+                    : null;
+                const isVerified = provider.kycStatus === "APPROVED";
+
+                return (
+                  <Link
+                    key={provider.id}
+                    href={`/providers/${provider.id}` as never}
+                    className="flex items-center gap-3 rounded-lg border p-3 transition-colors hover:bg-muted/50"
+                  >
+                    {/* Avatar */}
+                    {provider.photoUrl ? (
+                      <img
+                        src={provider.photoUrl}
+                        alt={provider.displayName}
+                        className="h-10 w-10 rounded-full object-cover"
+                      />
+                    ) : (
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
+                        <span className="text-sm font-semibold text-primary">
+                          {provider.displayName.charAt(0).toUpperCase()}
+                        </span>
+                      </div>
+                    )}
+
+                    {/* Info */}
+                    <div className="flex-1 truncate">
+                      <div className="flex items-center gap-1.5">
+                        <p className="truncate text-sm font-medium">{provider.displayName}</p>
+                        {isVerified && (
+                          <ShieldCheck className="h-3.5 w-3.5 shrink-0 text-blue-500" />
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <span className="flex items-center gap-0.5">
+                          <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                          {provider.rating.toFixed(1)}
+                          <span className="text-muted-foreground/60">
+                            ({provider.ratingCount})
+                          </span>
+                        </span>
+                        {city && (
+                          <span className="flex items-center gap-0.5">
+                            <MapPin className="h-3 w-3" />
+                            {city}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Favorite heart */}
+                    <Heart className="h-4 w-4 shrink-0 fill-red-500 text-red-500" />
+                  </Link>
+                );
+              })}
+            </div>
+          )}
         </section>
       </div>
     </div>

@@ -1,16 +1,19 @@
 import { notFound } from "next/navigation";
 
 import { getTranslations } from "next-intl/server";
+import { getServerSession } from "next-auth";
 import type { Metadata } from "next";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { prisma } from "@/lib/prisma";
+import { authOptions } from "@/lib/auth";
 import { PublicProfileAbout } from "@/features/provider/components/PublicProfileAbout";
 import { PublicProfileHeader } from "@/features/provider/components/PublicProfileHeader";
 import { PublicProfileStats } from "@/features/provider/components/PublicProfileStats";
 import { PublicServiceCard } from "@/features/provider/components/PublicServiceCard";
 import { ReviewsList } from "@/features/review/components/ReviewsList";
 import { getProviderReviewsAction } from "@/features/review/actions/review-queries";
+import { ContactProviderButton } from "@/features/messaging/components/ContactProviderButton";
 
 // ============================================================
 // TYPES
@@ -128,6 +131,20 @@ export default async function PublicProviderProfilePage({
     notFound();
   }
 
+  // Look up user favorites for heart icons
+  let favoritedServiceIds = new Set<string>();
+  const session = await getServerSession(authOptions);
+  if (session?.user?.id && provider.services.length > 0) {
+    const favorites = await prisma.favorite.findMany({
+      where: {
+        userId: session.user.id,
+        serviceId: { in: provider.services.map((s) => s.id) },
+      },
+      select: { serviceId: true },
+    });
+    favoritedServiceIds = new Set(favorites.map((f) => f.serviceId));
+  }
+
   return (
     <div className="container mx-auto max-w-5xl px-4 py-6">
       {/* Hero header */}
@@ -144,6 +161,14 @@ export default async function PublicProviderProfilePage({
           }}
           badges={provider.trustBadges}
         />
+        {session?.user?.id && session.user.role === "CLIENT" && (
+          <div className="border-t border-gray-100 px-6 pb-4 pt-3 dark:border-gray-700">
+            <ContactProviderButton
+              providerId={provider.id}
+              label={t("contact")}
+            />
+          </div>
+        )}
       </div>
 
       {/* Stats section */}
@@ -176,6 +201,7 @@ export default async function PublicProviderProfilePage({
                   <PublicServiceCard
                     key={service.id}
                     service={service}
+                    isFavorited={session?.user?.id ? favoritedServiceIds.has(service.id) : undefined}
                   />
                 ))}
               </div>

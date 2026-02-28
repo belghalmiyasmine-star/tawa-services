@@ -50,7 +50,12 @@ export const reviewSubmitSchema = z.object({
     .max(500, { message: "L'avis ne peut pas dépasser 500 caractères" }),
 
   // Optional photo URLs (max 3, enforced by schema before DB insert)
-  photoUrls: z.array(z.string().url({ message: "URL de photo invalide" })).max(3, {
+  photoUrls: z.array(
+    z.string().refine(
+      (val) => val.startsWith("/uploads/") || val.startsWith("http://") || val.startsWith("https://"),
+      { message: "URL de photo invalide" },
+    ),
+  ).max(3, {
     message: "Maximum 3 photos autorisées",
   }).default([]),
 });

@@ -9,8 +9,10 @@ import {
   Star,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useSession } from "next-auth/react";
 
 import type { NotificationItem as NotificationItemType } from "@/features/notification/actions/notification-queries";
+import { markNotificationReadAction } from "@/features/notification/actions/notification-actions";
 
 // ============================================================
 // HELPERS
@@ -90,12 +92,17 @@ function getTypeConfig(type: NotifType): {
 
 /**
  * Build the navigation URL from notification data fields.
+ * Uses role-aware prefixes: providers get /provider/... paths.
  */
 function getNotificationUrl(
   type: NotifType,
   data: Record<string, string> | null,
+  isProvider: boolean,
 ): string | null {
   if (!data) return null;
+
+  const bookingBase = isProvider ? "/provider/bookings" : "/bookings";
+  const messagesBase = isProvider ? "/provider/messages" : "/messages";
 
   switch (type) {
     case "BOOKING_REQUEST":
@@ -103,16 +110,16 @@ function getNotificationUrl(
     case "BOOKING_REJECTED":
     case "BOOKING_COMPLETED":
     case "BOOKING_CANCELLED":
-      return data["bookingId"] ? `/bookings/${data["bookingId"]}` : null;
+      return data["bookingId"] ? `${bookingBase}/${data["bookingId"]}` : null;
     case "PAYMENT_RECEIVED":
-      return data["bookingId"] ? `/bookings/${data["bookingId"]}` : null;
+      return data["bookingId"] ? `${bookingBase}/${data["bookingId"]}` : null;
     case "REVIEW_RECEIVED":
-      return data["bookingId"] ? `/bookings/${data["bookingId"]}` : null;
+      return data["bookingId"] ? `${bookingBase}/${data["bookingId"]}` : null;
     case "NEW_MESSAGE":
-      return data["bookingId"] ? `/bookings/${data["bookingId"]}` : null;
+      return data["conversationId"] ? `${messagesBase}/${data["conversationId"]}` : null;
     case "QUOTE_RECEIVED":
     case "QUOTE_RESPONDED":
-      return data["bookingId"] ? `/bookings/${data["bookingId"]}` : null;
+      return data["bookingId"] ? `${bookingBase}/${data["bookingId"]}` : null;
     case "KYC_APPROVED":
     case "KYC_REJECTED":
       return "/provider/kyc";
@@ -141,14 +148,19 @@ export function NotificationItem({
   compact = false,
 }: NotificationItemProps) {
   const tNotif = useTranslations("notification");
+  const { data: session } = useSession();
+  const isProvider = session?.user?.role === "PROVIDER";
   const { Icon, bgClass, iconClass } = getTypeConfig(notification.type);
-  const url = getNotificationUrl(notification.type, notification.data);
+  const url = getNotificationUrl(notification.type, notification.data, isProvider);
 
   const relativeTime = timeAgo(new Date(notification.createdAt), tNotif);
 
   const handleClick = () => {
-    if (!notification.read && onMarkRead) {
-      onMarkRead(notification.id);
+    if (!notification.read) {
+      void markNotificationReadAction(notification.id);
+      if (onMarkRead) {
+        onMarkRead(notification.id);
+      }
     }
     if (url) {
       window.location.href = url;

@@ -4,6 +4,7 @@ import { getLocale } from "next-intl/server";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "@/i18n/routing";
 import { Navbar } from "@/components/layout/Navbar";
+import { MobileHeader } from "@/components/layout/MobileHeader";
 import { Footer } from "@/components/layout/Footer";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { ProviderSidebar } from "@/components/layout/ProviderSidebar";
@@ -34,8 +35,9 @@ export default async function ProviderLayout({ children }: { children: React.Rea
       <ProviderSidebar />
       <div className="flex flex-1 flex-col">
         <Navbar />
+        <MobileHeader />
         <EmailVerificationBanner />
-        <main className="flex-1 pb-16 md:pb-0">{children}</main>
+        <main className="flex-1 pb-20 md:pb-0">{children}</main>
         <Footer />
         <BottomNav role="PROVIDER" />
       </div>

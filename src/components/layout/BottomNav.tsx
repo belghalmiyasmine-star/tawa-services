@@ -27,7 +27,7 @@ const CLIENT_ITEMS: NavItem[] = [
   { href: "/services", icon: Search, labelKey: "search" },
   { href: "/bookings", icon: CalendarCheck, labelKey: "bookings" },
   { href: "/messages", icon: MessageSquare, labelKey: "messages" },
-  { href: "/profile", icon: User, labelKey: "profile" },
+  { href: "/dashboard", icon: User, labelKey: "profile" },
 ];
 
 // Navigation provider
@@ -36,7 +36,7 @@ const PROVIDER_ITEMS: NavItem[] = [
   { href: "/provider/services", icon: Briefcase, labelKey: "services" },
   { href: "/provider/bookings", icon: CalendarCheck, labelKey: "bookings" },
   { href: "/provider/messages", icon: MessageSquare, labelKey: "messages" },
-  { href: "/profile", icon: User, labelKey: "profile" },
+  { href: "/provider/profile/edit", icon: User, labelKey: "profile" },
 ];
 
 interface BottomNavProps {

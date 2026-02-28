@@ -60,20 +60,29 @@ export async function requestWithdrawalAction(
 
     const providerId = provider.id;
 
-    // Calculate available balance: RELEASED payments with no withdrawal request
-    const availableAggregate = await prisma.payment.aggregate({
-      where: {
-        booking: { providerId },
-        status: "RELEASED",
-        isDeleted: false,
-        withdrawalRequest: null,
-      },
-      _sum: {
-        providerEarning: true,
-      },
-    });
+    // Calculate available balance: total RELEASED earnings minus all non-rejected withdrawals
+    const [releasedAggregate, withdrawnAggregate] = await Promise.all([
+      prisma.payment.aggregate({
+        where: {
+          booking: { providerId },
+          status: "RELEASED",
+          isDeleted: false,
+        },
+        _sum: { providerEarning: true },
+      }),
+      prisma.withdrawalRequest.aggregate({
+        where: {
+          providerId,
+          isDeleted: false,
+          status: { not: "REJECTED" },
+        },
+        _sum: { amount: true },
+      }),
+    ]);
 
-    const available = availableAggregate._sum.providerEarning ?? 0;
+    const totalEarned = releasedAggregate._sum.providerEarning ?? 0;
+    const totalWithdrawn = withdrawnAggregate._sum.amount ?? 0;
+    const available = totalEarned - totalWithdrawn;
 
     if (available < amount) {
       return { success: false, error: "Solde insuffisant" };

@@ -3,6 +3,7 @@
 import bcryptjs from "bcryptjs";
 
 import { prisma } from "@/lib/prisma";
+import { sendVerificationEmail } from "@/lib/email";
 import { registerSchema } from "@/lib/validations/auth";
 import type { ActionResult } from "@/types/api";
 
@@ -13,6 +14,7 @@ import type { ActionResult } from "@/types/api";
  */
 export async function registerAction(
   data: unknown,
+  locale: string = "fr",
 ): Promise<ActionResult<{ userId: string }>> {
   // 1. Parse and validate input
   const parsed = registerSchema.safeParse(data);
@@ -66,6 +68,22 @@ export async function registerAction(
           displayName: `${firstName} ${lastName}`,
         },
       });
+    }
+
+    // 7. Send email verification link
+    try {
+      const token = crypto.randomUUID();
+      await prisma.emailVerification.create({
+        data: {
+          userId: user.id,
+          token,
+          expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
+        },
+      });
+      await sendVerificationEmail(email, token, locale);
+    } catch (emailError) {
+      // Non-blocking: user can still resend from the banner
+      console.error("[registerAction] Email verification send failed:", emailError);
     }
 
     return { success: true, data: { userId: user.id } };
