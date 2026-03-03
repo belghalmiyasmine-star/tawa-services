@@ -145,13 +145,24 @@ export class SimulatedPaymentService implements IPaymentService {
 }
 
 // ============================================================
-// SINGLETON EXPORT
+// FACTORY EXPORT
 // ============================================================
 
+import { KonnectPaymentService } from "./konnect-payment.service";
+
 /**
- * Singleton payment service instance.
- * To swap to a real gateway, replace SimulatedPaymentService with
- * your implementation of IPaymentService:
- *   export const paymentService: IPaymentService = new KonnectPaymentService()
+ * Payment service factory.
+ * Uses KonnectPaymentService when KONNECT_API_KEY is set,
+ * otherwise falls back to SimulatedPaymentService.
  */
-export const paymentService: IPaymentService = new SimulatedPaymentService();
+function createPaymentService(): IPaymentService {
+  if (process.env.KONNECT_API_KEY) {
+    console.log("[Payment] Using Konnect payment service");
+    return new KonnectPaymentService();
+  }
+
+  console.log("[Payment] Using simulated payment service (no KONNECT_API_KEY set)");
+  return new SimulatedPaymentService();
+}
+
+export const paymentService: IPaymentService = createPaymentService();

@@ -14,9 +14,20 @@ import {
 export const cuidSchema = z.string().cuid2();
 
 // Phone tunisien (format +216 XX XXX XXX ou 8 chiffres)
-export const tunisianPhoneSchema = z.string().regex(PHONE_REGEX_TUNISIA, {
-  message: "Numero de telephone invalide (format: +216 XX XXX XXX ou 8 chiffres)",
-});
+// Normalizes to E.164 format (+216XXXXXXXX) for Twilio compatibility
+export const tunisianPhoneSchema = z
+  .string()
+  .regex(PHONE_REGEX_TUNISIA, {
+    message: "Numero de telephone invalide (format: +216 XX XXX XXX ou 8 chiffres)",
+  })
+  .transform((val) => {
+    // Strip all spaces
+    const cleaned = val.replace(/\s/g, "");
+    // If already has +216 prefix, return cleaned
+    if (cleaned.startsWith("+216")) return cleaned;
+    // Otherwise, prepend +216
+    return `+216${cleaned}`;
+  });
 
 // Password
 export const passwordSchema = z.string().min(PASSWORD_MIN_LENGTH, {

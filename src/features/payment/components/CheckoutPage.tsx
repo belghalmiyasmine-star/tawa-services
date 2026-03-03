@@ -81,7 +81,13 @@ export function CheckoutPage({
         return;
       }
 
-      // Navigate to confirmation page with reference number
+      // If gateway returned a payment URL, redirect to external payment page
+      if (result.data.payUrl) {
+        window.location.href = result.data.payUrl;
+        return;
+      }
+
+      // Otherwise (cash or simulated), navigate to confirmation page
       router.push(
         `/bookings/${bookingId}/confirmation?ref=${result.data.referenceNumber}` as never,
       );

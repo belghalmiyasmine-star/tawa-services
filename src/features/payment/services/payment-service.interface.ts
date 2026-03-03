@@ -8,6 +8,12 @@ export interface ProcessPaymentInput {
   bookingId: string;
   method: PaymentMethod;
   amount: number;
+  /** Service title — used as payment description for gateways */
+  serviceTitle?: string;
+  /** Client info for gateway checkout forms */
+  clientFirstName?: string;
+  clientLastName?: string;
+  clientEmail?: string;
 }
 
 export interface ReleasePaymentInput {
@@ -27,6 +33,8 @@ export interface PaymentResult {
   success: boolean;
   referenceNumber: string;
   error?: string;
+  /** External payment URL for redirect-based gateways (e.g. Konnect) */
+  payUrl?: string;
 }
 
 // ============================================================

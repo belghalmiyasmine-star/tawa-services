@@ -41,7 +41,7 @@ export interface PaymentInfo {
  */
 export async function processPaymentAction(
   data: unknown,
-): Promise<ActionResult<{ referenceNumber: string }>> {
+): Promise<ActionResult<{ referenceNumber: string; payUrl?: string }>> {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) {
@@ -61,12 +61,16 @@ export async function processPaymentAction(
 
     const { bookingId, paymentMethod } = parsed.data;
 
-    // Verify booking belongs to this client
+    // Verify booking belongs to this client, include service and client info
     const booking = await prisma.booking.findFirst({
       where: {
         id: bookingId,
         clientId: userId,
         isDeleted: false,
+      },
+      include: {
+        service: { select: { title: true } },
+        client: { select: { name: true, email: true } },
       },
     });
 
@@ -82,17 +86,32 @@ export async function processPaymentAction(
       };
     }
 
+    // Split client name into first/last for payment gateway
+    const nameParts = (booking.client.name ?? "").split(" ");
+    const clientFirstName = nameParts[0] || "";
+    const clientLastName = nameParts.slice(1).join(" ") || "";
+
     const result = await paymentService.processPayment({
       bookingId,
       method: paymentMethod,
       amount: booking.totalAmount,
+      serviceTitle: booking.service.title,
+      clientFirstName,
+      clientLastName,
+      clientEmail: booking.client.email ?? undefined,
     });
 
     if (!result.success) {
       return { success: false, error: result.error ?? "Erreur lors du paiement" };
     }
 
-    return { success: true, data: { referenceNumber: result.referenceNumber } };
+    return {
+      success: true,
+      data: {
+        referenceNumber: result.referenceNumber,
+        ...(result.payUrl ? { payUrl: result.payUrl } : {}),
+      },
+    };
   } catch (error) {
     console.error("[processPaymentAction] Error:", error);
     return { success: false, error: "Erreur lors du traitement du paiement" };
