@@ -64,7 +64,7 @@ export function BottomNav({ role = "CLIENT" }: BottomNavProps) {
 
   useEffect(() => {
     void fetchUnreadCount();
-    const interval = setInterval(() => void fetchUnreadCount(), 10000);
+    const interval = setInterval(() => void fetchUnreadCount(), 15000);
     return () => clearInterval(interval);
   }, [fetchUnreadCount]);
 

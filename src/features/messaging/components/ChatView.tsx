@@ -235,7 +235,7 @@ export const ChatView = forwardRef<ChatViewHandle, ChatViewProps>(
 
           return [...updatedPrev, ...newMessages];
         });
-      }, 5000);
+      }, 15000);
 
       return () => clearInterval(interval);
     }, [conversationId, currentUserId]);

@@ -497,10 +497,6 @@ export async function completeBookingAction(
     const commission = servicePrice * 0.12;
     const providerEarning = servicePrice - commission;
 
-    console.log(
-      `[completeBookingAction] Service price: ${servicePrice}, Commission 12%: ${commission.toFixed(2)}, Provider receives: ${providerEarning.toFixed(2)}`,
-    );
-
     // Complete booking AND release payment in a SINGLE transaction
     // to prevent inconsistent state (completed booking with unreleased payment)
     await prisma.$transaction(async (tx) => {
@@ -537,32 +533,6 @@ export async function completeBookingAction(
         // If already RELEASED or other status, no action needed
       }
     });
-
-    // Log the new balance after completion
-    const [releasedAgg, withdrawnAgg] = await Promise.all([
-      prisma.payment.aggregate({
-        where: {
-          booking: { providerId: provider.id },
-          status: "RELEASED",
-          isDeleted: false,
-        },
-        _sum: { providerEarning: true },
-      }),
-      prisma.withdrawalRequest.aggregate({
-        where: {
-          providerId: provider.id,
-          isDeleted: false,
-          status: { not: "REJECTED" },
-        },
-        _sum: { amount: true },
-      }),
-    ]);
-    const newBalance =
-      (releasedAgg._sum.providerEarning ?? 0) -
-      (withdrawnAgg._sum.amount ?? 0);
-    console.log(
-      `[completeBookingAction] New balance: ${newBalance.toFixed(2)} TND (total earned: ${(releasedAgg._sum.providerEarning ?? 0).toFixed(2)}, total withdrawn: ${(withdrawnAgg._sum.amount ?? 0).toFixed(2)})`,
-    );
 
     // Fire-and-forget: notify client that booking was completed
     void sendNotification({

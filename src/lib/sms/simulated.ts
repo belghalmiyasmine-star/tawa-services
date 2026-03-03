@@ -5,8 +5,7 @@ import type { ISmsService } from "./types";
  * Logs the OTP code to the console instead of sending a real SMS.
  */
 export class SimulatedSmsService implements ISmsService {
-  async sendOtp(phone: string, code: string): Promise<boolean> {
-    console.log(`[SMS OTP] Code ${code} sent to ${phone}`);
+  async sendOtp(_phone: string, _code: string): Promise<boolean> {
     return true;
   }
 }

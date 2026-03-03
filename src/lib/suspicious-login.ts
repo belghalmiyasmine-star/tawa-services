@@ -96,9 +96,6 @@ export async function sendSuspiciousLoginEmail(
 
   if (!env.RESEND_API_KEY) {
     console.warn("[suspicious-login] RESEND_API_KEY not set — email not sent.");
-    console.log(
-      `[suspicious-login] Suspicious login for ${userEmail} from IP ${ip} (${userAgent})`,
-    );
     return;
   }
 

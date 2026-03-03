@@ -85,8 +85,6 @@ export class KonnectPaymentService implements IPaymentService {
       failUrl: `${APP_URL}/fr/bookings/${bookingId}/payment-failed`,
     };
 
-    console.log("[Konnect] Sending body:", JSON.stringify(body, null, 2));
-
     try {
       const response = await fetch(
         `${KONNECT_API_URL}/api/v2/payments/init-payment`,
@@ -125,10 +123,6 @@ export class KonnectPaymentService implements IPaymentService {
           gatewayRef: data.paymentRef,
         },
       });
-
-      console.log(
-        `[KonnectPaymentService] Payment initiated for booking ${bookingId} — ref: ${data.paymentRef}`,
-      );
 
       return {
         success: true,
@@ -219,10 +213,6 @@ export class KonnectPaymentService implements IPaymentService {
       },
     });
 
-    console.log(
-      `[KonnectPaymentService] releasePayment for booking ${bookingId} — commission: ${commission.toFixed(2)} TND, providerEarning: ${providerEarning.toFixed(2)} TND`,
-    );
-
     return { success: true, referenceNumber: payment.id };
   }
 
@@ -253,10 +243,6 @@ export class KonnectPaymentService implements IPaymentService {
         refundedAt: new Date(),
       },
     });
-
-    console.log(
-      `[KonnectPaymentService] refundPayment for booking ${bookingId} — amount: ${amount.toFixed(2)} TND`,
-    );
 
     return { success: true, referenceNumber: payment.id };
   }

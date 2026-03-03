@@ -20,8 +20,6 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    console.log("[Konnect Webhook] Received:", JSON.stringify(body));
-
     const paymentRef = body.payment_ref as string | undefined;
 
     if (!paymentRef) {
@@ -49,9 +47,6 @@ export async function POST(request: NextRequest) {
 
     // Only update if still PENDING (avoid duplicate webhook processing)
     if (payment.status !== "PENDING") {
-      console.log(
-        `[Konnect Webhook] Payment ${payment.id} already in status ${payment.status}, skipping`,
-      );
       return NextResponse.json({ status: "already_processed" });
     }
 
@@ -91,9 +86,6 @@ export async function POST(request: NextRequest) {
     const konnectStatus = paymentData.payment?.status as string | undefined;
 
     if (konnectStatus !== "completed") {
-      console.log(
-        `[Konnect Webhook] Payment ${paymentRef} status is ${konnectStatus}, not completed`,
-      );
       return NextResponse.json({ status: "not_completed" });
     }
 
@@ -106,10 +98,6 @@ export async function POST(request: NextRequest) {
         paidAt: new Date(),
       },
     });
-
-    console.log(
-      `[Konnect Webhook] Payment ${payment.id} for booking ${payment.bookingId} marked as HELD`,
-    );
 
     return NextResponse.json({ status: "ok" });
   } catch (error) {

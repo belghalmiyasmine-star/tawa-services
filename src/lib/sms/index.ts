@@ -13,6 +13,7 @@ export type { ISmsService };
 function createSmsService(): ISmsService {
   if (process.env.TWILIO_ACCOUNT_SID) {
     // Dynamic import avoids loading twilio SDK in dev environments
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { TwilioSmsService } = require("./twilio");
     const twilioService: ISmsService = new TwilioSmsService();
     const fallback = new SimulatedSmsService();
@@ -32,7 +33,6 @@ function createSmsService(): ISmsService {
     };
   }
 
-  console.log("[SMS] Using simulated SMS service (no TWILIO_ACCOUNT_SID set)");
   return new SimulatedSmsService();
 }
 

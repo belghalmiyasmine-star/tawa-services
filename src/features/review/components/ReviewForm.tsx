@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
 
@@ -45,11 +45,6 @@ export function ReviewForm({
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [debugErrors, setDebugErrors] = useState<string[]>([]);
-
-  // DEBUG: Confirm client-side JS is mounted (rules out hydration failure)
-  useEffect(() => {
-    console.log("[ReviewForm] Component mounted. bookingId:", bookingId);
-  }, [bookingId]);
 
   const {
     handleSubmit,
@@ -107,12 +102,9 @@ export function ReviewForm({
   ];
 
   const onSubmit = async (data: ReviewFormValues) => {
-    console.log("[ReviewForm] onSubmit called with data:", JSON.stringify(data, null, 2));
     setIsSubmitting(true);
     try {
-      console.log("[ReviewForm] Calling submitReviewAction...");
       const result = await submitReviewAction(data);
-      console.log("[ReviewForm] submitReviewAction result:", JSON.stringify(result, null, 2));
 
       if (!result.success) {
         toast({
@@ -147,19 +139,6 @@ export function ReviewForm({
 
   const onValidationError = (validationErrors: Record<string, unknown>) => {
     const errorFields = Object.keys(validationErrors);
-    console.error("[ReviewForm] Validation FAILED — onSubmit was NOT called.");
-    console.error("[ReviewForm] Error fields:", errorFields);
-    console.error("[ReviewForm] Full errors:", JSON.stringify(validationErrors, null, 2));
-    console.log("[ReviewForm] Current form values:", JSON.stringify({
-      bookingId,
-      stars,
-      qualityRating,
-      punctualityRating,
-      communicationRating,
-      cleanlinessRating,
-      text,
-      photoUrls,
-    }, null, 2));
     // Show errors visibly in the UI
     setDebugErrors(errorFields.map(f => {
       const err = validationErrors[f] as { message?: string } | undefined;
@@ -267,10 +246,6 @@ export function ReviewForm({
         type="submit"
         disabled={isSubmitting}
         className="w-full"
-        onClick={() => {
-          console.log("[ReviewForm] Submit button clicked. isSubmitting:", isSubmitting);
-          console.log("[ReviewForm] Current watched values:", { stars, qualityRating, punctualityRating, communicationRating, cleanlinessRating, textLength: text?.length, photoUrls: photoUrls?.length });
-        }}
       >
         {isSubmitting ? "Envoi en cours..." : t("submitReview")}
       </Button>

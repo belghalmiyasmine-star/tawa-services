@@ -188,7 +188,6 @@ async function sendEmailNotification(
     const client = getResendClient();
     if (!client) {
       console.warn("[email] RESEND_API_KEY not set. Notification email not sent.");
-      console.log(`[email] Would send "${subject}" to ${user.email}`);
       return;
     }
 

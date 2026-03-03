@@ -42,7 +42,6 @@ export async function sendVerificationEmail(
   if (!client) {
     // Dev fallback: log the URL to console
     console.warn("[email] RESEND_API_KEY not set. Email not sent.");
-    console.log(`[email] Verification URL for ${to}: ${verificationUrl}`);
     return;
   }
 
@@ -103,7 +102,6 @@ export async function sendPasswordResetEmail(
   if (!client) {
     // Dev fallback: log the URL to console
     console.warn("[email] RESEND_API_KEY not set. Email not sent.");
-    console.log(`[email] Password reset URL for ${to}: ${resetUrl}`);
     return;
   }
 

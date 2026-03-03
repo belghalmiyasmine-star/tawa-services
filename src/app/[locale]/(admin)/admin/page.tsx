@@ -7,7 +7,20 @@ import { Badge } from "@/components/ui/badge";
 import { getAdminStatsAction } from "@/features/admin/actions/admin-queries";
 import { getAdminReportsAction } from "@/features/admin/actions/admin-queries";
 import { DashboardStatsCards } from "@/features/admin/components/DashboardStatsCards";
-import { DashboardCharts } from "@/features/admin/components/DashboardCharts";
+import dynamic from "next/dynamic";
+
+const DashboardCharts = dynamic(
+  () => import("@/features/admin/components/DashboardCharts").then((m) => m.DashboardCharts),
+  {
+    loading: () => (
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} className="h-64 animate-pulse rounded-lg bg-muted" />
+        ))}
+      </div>
+    ),
+  },
+);
 
 export const metadata: Metadata = {
   title: "Tableau de bord | Admin",

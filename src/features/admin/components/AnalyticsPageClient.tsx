@@ -14,13 +14,32 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
+import dynamic from "next/dynamic";
+
 import { DateRangePicker } from "./DateRangePicker";
 import { AnalyticsKpiCards } from "./AnalyticsKpiCards";
-import { RevenueLineChart } from "./RevenueLineChart";
-import { BookingsBarChart } from "./BookingsBarChart";
-import { CategoriesPieChart } from "./CategoriesPieChart";
-import { UserGrowthAreaChart } from "./UserGrowthAreaChart";
 import { ExportButton } from "./ExportButton";
+
+const ChartSkeleton = () => (
+  <div className="h-64 animate-pulse rounded-lg bg-muted" />
+);
+
+const RevenueLineChart = dynamic(
+  () => import("./RevenueLineChart").then((m) => m.RevenueLineChart),
+  { ssr: false, loading: ChartSkeleton },
+);
+const BookingsBarChart = dynamic(
+  () => import("./BookingsBarChart").then((m) => m.BookingsBarChart),
+  { ssr: false, loading: ChartSkeleton },
+);
+const CategoriesPieChart = dynamic(
+  () => import("./CategoriesPieChart").then((m) => m.CategoriesPieChart),
+  { ssr: false, loading: ChartSkeleton },
+);
+const UserGrowthAreaChart = dynamic(
+  () => import("./UserGrowthAreaChart").then((m) => m.UserGrowthAreaChart),
+  { ssr: false, loading: ChartSkeleton },
+);
 
 import type { AnalyticsData, GeographicBreakdownItem, TopCategoryItem } from "../actions/analytics-queries";
 

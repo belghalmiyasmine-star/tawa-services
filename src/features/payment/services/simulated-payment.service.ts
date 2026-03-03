@@ -61,10 +61,6 @@ export class SimulatedPaymentService implements IPaymentService {
       },
     });
 
-    console.log(
-      `[SimulatedPaymentService] processPayment for booking ${bookingId} — reference ${ref}`,
-    );
-
     return { success: true, referenceNumber: ref };
   }
 
@@ -101,10 +97,6 @@ export class SimulatedPaymentService implements IPaymentService {
       },
     });
 
-    console.log(
-      `[SimulatedPaymentService] releasePayment for booking ${bookingId} — commission: ${commission.toFixed(2)} TND, providerEarning: ${providerEarning.toFixed(2)} TND`,
-    );
-
     return { success: true, referenceNumber: payment.id };
   }
 
@@ -136,10 +128,6 @@ export class SimulatedPaymentService implements IPaymentService {
       },
     });
 
-    console.log(
-      `[SimulatedPaymentService] refundPayment for booking ${bookingId} — amount: ${amount.toFixed(2)} TND`,
-    );
-
     return { success: true, referenceNumber: payment.id };
   }
 }
@@ -157,11 +145,9 @@ import { KonnectPaymentService } from "./konnect-payment.service";
  */
 function createPaymentService(): IPaymentService {
   if (process.env.KONNECT_API_KEY) {
-    console.log("[Payment] Using Konnect payment service");
     return new KonnectPaymentService();
   }
 
-  console.log("[Payment] Using simulated payment service (no KONNECT_API_KEY set)");
   return new SimulatedPaymentService();
 }
 

@@ -31,7 +31,6 @@ export class TwilioSmsService implements ISmsService {
         from: process.env.TWILIO_PHONE_NUMBER,
         to: phone,
       });
-      console.log(`[SMS OTP] Twilio: OTP sent to ${phone}`);
       return true;
     } catch (error) {
       console.error(`[SMS OTP] Twilio failed for ${phone}:`, error);

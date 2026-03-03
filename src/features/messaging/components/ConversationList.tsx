@@ -112,7 +112,7 @@ export function ConversationList({
 
         return hasChanges ? updated : prev;
       });
-    }, 5000);
+    }, 15000);
 
     return () => clearInterval(interval);
   }, []);

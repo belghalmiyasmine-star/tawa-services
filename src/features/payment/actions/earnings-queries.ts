@@ -120,10 +120,6 @@ export async function getProviderEarningsAction(): Promise<
     const totalWithdrawn = withdrawnAggregate._sum.amount ?? 0;
     const available = totalEarned - totalWithdrawn;
 
-    console.log(
-      `[getProviderEarningsAction] Provider ${providerId}: totalEarned=${totalEarned.toFixed(2)}, totalWithdrawn=${totalWithdrawn.toFixed(2)}, available=${available.toFixed(2)}, pending=${(pendingAggregate._sum.amount ?? 0).toFixed(2)}`,
-    );
-
     return {
       success: true,
       data: {

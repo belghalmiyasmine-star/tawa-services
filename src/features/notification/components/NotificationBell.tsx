@@ -17,7 +17,7 @@ import { NotificationDropdown } from "./NotificationDropdown";
 // CONSTANTS
 // ============================================================
 
-const POLL_INTERVAL_MS = 10_000; // 10 seconds
+const POLL_INTERVAL_MS = 15_000; // 15 seconds
 
 // ============================================================
 // COMPONENT

@@ -72,7 +72,7 @@ export function ProviderSidebar() {
 
   useEffect(() => {
     void fetchUnreadMessages();
-    const interval = setInterval(() => void fetchUnreadMessages(), 10000);
+    const interval = setInterval(() => void fetchUnreadMessages(), 15000);
     return () => clearInterval(interval);
   }, [fetchUnreadMessages]);
 
