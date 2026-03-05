@@ -19,6 +19,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import {
   banUserAction,
   unbanUserAction,
@@ -50,6 +51,9 @@ export function UserDetailActions({ user }: UserDetailActionsProps) {
   const { toast } = useToast();
 
   const [banDialogOpen, setBanDialogOpen] = useState(false);
+  const [unbanDialogOpen, setUnbanDialogOpen] = useState(false);
+  const [deactivateDialogOpen, setDeactivateDialogOpen] = useState(false);
+  const [activateDialogOpen, setActivateDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [banReason, setBanReason] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -156,7 +160,7 @@ export function UserDetailActions({ user }: UserDetailActionsProps) {
               variant="outline"
               size="sm"
               className="w-full"
-              onClick={handleUnban}
+              onClick={() => setUnbanDialogOpen(true)}
               disabled={isLoading}
             >
               {t("unbanUser")}
@@ -169,7 +173,7 @@ export function UserDetailActions({ user }: UserDetailActionsProps) {
               variant="outline"
               size="sm"
               className="w-full"
-              onClick={handleDeactivate}
+              onClick={() => setDeactivateDialogOpen(true)}
               disabled={isLoading}
             >
               {t("deactivateUser")}
@@ -179,7 +183,7 @@ export function UserDetailActions({ user }: UserDetailActionsProps) {
               variant="outline"
               size="sm"
               className="w-full"
-              onClick={handleActivate}
+              onClick={() => setActivateDialogOpen(true)}
               disabled={isLoading}
             >
               {t("activateUser")}
@@ -231,6 +235,43 @@ export function UserDetailActions({ user }: UserDetailActionsProps) {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Unban Dialog */}
+      <ConfirmDialog
+        open={unbanDialogOpen}
+        onOpenChange={setUnbanDialogOpen}
+        title={t("confirmUnban")}
+        description={t("confirmUnbanMessage")}
+        confirmLabel={t("unbanUser")}
+        cancelLabel={tCommon("cancel")}
+        onConfirm={handleUnban}
+        loading={isLoading}
+      />
+
+      {/* Deactivate Dialog */}
+      <ConfirmDialog
+        open={deactivateDialogOpen}
+        onOpenChange={setDeactivateDialogOpen}
+        title={t("confirmDeactivate")}
+        description={t("confirmDeactivateMessage")}
+        confirmLabel={t("deactivateUser")}
+        cancelLabel={tCommon("cancel")}
+        onConfirm={handleDeactivate}
+        loading={isLoading}
+        variant="warning"
+      />
+
+      {/* Activate Dialog */}
+      <ConfirmDialog
+        open={activateDialogOpen}
+        onOpenChange={setActivateDialogOpen}
+        title={t("confirmActivate")}
+        description={t("confirmActivateMessage")}
+        confirmLabel={t("activateUser")}
+        cancelLabel={tCommon("cancel")}
+        onConfirm={handleActivate}
+        loading={isLoading}
+      />
 
       {/* Delete Dialog */}
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>

@@ -3,11 +3,11 @@ import bcryptjs from "bcryptjs";
 import type { NextAuthOptions } from "next-auth";
 import type { Adapter } from "next-auth/adapters";
 import CredentialsProvider from "next-auth/providers/credentials";
-import FacebookProvider from "next-auth/providers/facebook";
 import GoogleProvider from "next-auth/providers/google";
 
 import { env } from "@/env";
 import { prisma } from "@/lib/prisma";
+import { rateLimit } from "@/lib/rate-limit";
 import { checkSuspiciousLogin, recordLogin, sendSuspiciousLoginEmail } from "@/lib/suspicious-login";
 import type { Role } from "@/types";
 
@@ -31,8 +31,14 @@ const providers: NextAuthOptions["providers"] = [
         return null;
       }
 
+      // Rate limit: 5 login attempts per minute per email
+      const rl = rateLimit(`login:${credentials.email}`, 5, 60_000);
+      if (!rl.allowed) {
+        throw new Error("Trop de tentatives. Réessayez dans 1 minute.");
+      }
+
       const user = await prisma.user.findUnique({
-        where: { email: credentials.email },
+        where: { email: credentials.email, isDeleted: false },
         select: {
           id: true,
           email: true,
@@ -143,16 +149,6 @@ if (env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET) {
   );
 }
 
-// Conditionally add Facebook provider
-if (env.FACEBOOK_CLIENT_ID && env.FACEBOOK_CLIENT_SECRET) {
-  providers.push(
-    FacebookProvider({
-      clientId: env.FACEBOOK_CLIENT_ID,
-      clientSecret: env.FACEBOOK_CLIENT_SECRET,
-    }),
-  );
-}
-
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma) as Adapter,
   session: {
@@ -229,7 +225,7 @@ export const authOptions: NextAuthOptions = {
       }
     },
 
-    async jwt({ token, user, trigger }) {
+    async jwt({ token, user, trigger, session }) {
       // On initial sign-in, user object is available — attach data to token
       if (user) {
         token.id = user.id;
@@ -253,9 +249,17 @@ export const authOptions: NextAuthOptions = {
         }
       }
 
-      // Only refresh from DB on explicit session update (e.g. after role change, email verify)
+      // Clear 2FA flag after successful 2FA verification
+      const updateData = session as { clear2fa?: boolean } | null;
+      if (trigger === "update" && updateData?.clear2fa) {
+        token.needs2fa = false;
+        token.twoFactorMethod = undefined;
+        token.phone = undefined;
+      }
+
+      // Refresh from DB on explicit session update (e.g. after role change, email verify)
       // This avoids a DB query on every single request
-      if (trigger === "update" && token.id) {
+      if (trigger === "update" && token.id && !updateData?.clear2fa) {
         try {
           const dbUser = await prisma.user.findUnique({
             where: { id: token.id as string },
@@ -272,7 +276,6 @@ export const authOptions: NextAuthOptions = {
             token.emailVerified = dbUser.emailVerified;
             token.phoneVerified = dbUser.phoneVerified;
             token.needsRoleSelection = false;
-            token.needs2fa = false;
           }
         } catch (error) {
           console.error("[jwt callback] DB refresh failed:", error);

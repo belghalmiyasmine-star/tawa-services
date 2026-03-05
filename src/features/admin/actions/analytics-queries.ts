@@ -342,6 +342,108 @@ export async function getAnalyticsDataAction(
 }
 
 // ============================================================
+// SENTIMENT STATS ACTION
+// ============================================================
+
+export type SentimentStats = {
+  totalWithSentiment: number;
+  positive: number;
+  neutral: number;
+  negative: number;
+  positivePercentage: number;
+  previousPositivePercentage: number | null; // for trend comparison
+};
+
+/**
+ * Get review sentiment breakdown for admin analytics.
+ */
+export async function getSentimentStatsAction(
+  startDate?: string,
+  endDate?: string,
+): Promise<ActionResult<SentimentStats>> {
+  const authResult = await requireAdmin();
+  if (!authResult.success) return authResult;
+
+  try {
+    const dateRange = buildDateRange(startDate, endDate);
+
+    // Current period counts
+    const [positive, neutral, negative] = await Promise.all([
+      prisma.review.count({
+        where: {
+          published: true,
+          isDeleted: false,
+          sentiment: "POSITIVE",
+          createdAt: dateRange,
+        },
+      }),
+      prisma.review.count({
+        where: {
+          published: true,
+          isDeleted: false,
+          sentiment: "NEUTRAL",
+          createdAt: dateRange,
+        },
+      }),
+      prisma.review.count({
+        where: {
+          published: true,
+          isDeleted: false,
+          sentiment: "NEGATIVE",
+          createdAt: dateRange,
+        },
+      }),
+    ]);
+
+    const totalWithSentiment = positive + neutral + negative;
+    const positivePercentage =
+      totalWithSentiment > 0
+        ? Math.round((positive / totalWithSentiment) * 100)
+        : 0;
+
+    // Previous period for trend (same duration, shifted back)
+    const rangeDurationMs = dateRange.lte.getTime() - dateRange.gte.getTime();
+    const prevGte = new Date(dateRange.gte.getTime() - rangeDurationMs);
+    const prevLte = new Date(dateRange.gte);
+
+    const prevPositive = await prisma.review.count({
+      where: {
+        published: true,
+        isDeleted: false,
+        sentiment: "POSITIVE",
+        createdAt: { gte: prevGte, lte: prevLte },
+      },
+    });
+    const prevTotal = await prisma.review.count({
+      where: {
+        published: true,
+        isDeleted: false,
+        sentiment: { not: null },
+        createdAt: { gte: prevGte, lte: prevLte },
+      },
+    });
+
+    const previousPositivePercentage =
+      prevTotal > 0 ? Math.round((prevPositive / prevTotal) * 100) : null;
+
+    return {
+      success: true,
+      data: {
+        totalWithSentiment,
+        positive,
+        neutral,
+        negative,
+        positivePercentage,
+        previousPositivePercentage,
+      },
+    };
+  } catch (error) {
+    console.error("[getSentimentStatsAction] Error:", error);
+    return { success: false, error: "Une erreur est survenue" };
+  }
+}
+
+// ============================================================
 // GEOGRAPHIC BREAKDOWN ACTION
 // ============================================================
 

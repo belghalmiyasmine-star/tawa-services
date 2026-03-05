@@ -315,6 +315,20 @@ export function ReportDetailSheet({
                   <p className="rounded-md bg-muted p-3 text-sm">
                     {report.description}
                   </p>
+                  {/* AI reason tags for auto-flagged reviews */}
+                  {report.type === "REVIEW" && report.description.startsWith("Auto-signalement IA:") && (
+                    <div className="mt-2 flex flex-wrap gap-1.5">
+                      {report.reason.split(", ").map((reason, idx) => (
+                        <Badge
+                          key={idx}
+                          variant="outline"
+                          className="border-orange-300 bg-orange-50 text-[10px] text-orange-700 dark:border-orange-700 dark:bg-orange-950/20 dark:text-orange-400"
+                        >
+                          IA: {reason}
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
 

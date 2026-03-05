@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
@@ -6,6 +7,9 @@ import { routing } from "@/i18n/routing";
 import { ThemeProvider } from "@/components/shared/ThemeProvider";
 import { SessionProvider } from "@/components/providers/SessionProvider";
 import { Toaster } from "@/components/ui/toaster";
+import ChatbotLoader from "@/components/ChatbotLoader";
+
+const inter = Inter({ subsets: ["latin"] });
 
 export async function generateMetadata({
   params,
@@ -35,24 +39,34 @@ export default async function LocaleLayout({
   const { locale } = await params;
 
   // Valider la locale
-  if (!routing.locales.includes(locale as "fr")) {
+  if (!routing.locales.includes(locale as "fr" | "ar" | "en")) {
     notFound();
   }
 
   // Charger les messages pour le client
   const messages = await getMessages();
 
+  const dir = locale === "ar" ? "rtl" : "ltr";
+
   return (
-    <ThemeProvider
-      attribute="class"
-      defaultTheme="light"
-      enableSystem={false}
-      disableTransitionOnChange
-    >
-      <NextIntlClientProvider messages={messages}>
-        <SessionProvider>{children}</SessionProvider>
-        <Toaster />
-      </NextIntlClientProvider>
-    </ThemeProvider>
+    <html lang={locale} dir={dir} suppressHydrationWarning>
+      <head>
+        <link rel="icon" href="/logo.svg" type="image/svg+xml" />
+      </head>
+      <body className={inter.className}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem={false}
+          disableTransitionOnChange
+        >
+          <NextIntlClientProvider messages={messages}>
+            <SessionProvider>{children}</SessionProvider>
+            <Toaster />
+            <ChatbotLoader />
+          </NextIntlClientProvider>
+        </ThemeProvider>
+      </body>
+    </html>
   );
 }

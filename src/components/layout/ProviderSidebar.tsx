@@ -20,6 +20,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { getProviderBookingsAction } from "@/features/booking/actions/booking-queries";
 import { getUnreadCountAction } from "@/features/messaging/actions/conversation-queries";
 
@@ -36,6 +37,7 @@ const NAV_ITEMS = [
 
 export function ProviderSidebar() {
   const [collapsed, setCollapsed] = useState(false);
+  const [logoutOpen, setLogoutOpen] = useState(false);
   const [pendingCount, setPendingCount] = useState<number>(0);
   const [unreadMessages, setUnreadMessages] = useState<number>(0);
   const pathname = usePathname();
@@ -156,7 +158,7 @@ export function ProviderSidebar() {
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => signOut({ callbackUrl: "/" })}
+          onClick={() => setLogoutOpen(true)}
           className={cn(
             "w-full text-destructive hover:bg-destructive/10 hover:text-destructive",
             collapsed && "px-2"
@@ -167,6 +169,16 @@ export function ProviderSidebar() {
           {!collapsed && <span>{tAuth("logout")}</span>}
         </Button>
       </div>
+
+      {/* Logout confirmation dialog */}
+      <ConfirmDialog
+        open={logoutOpen}
+        onOpenChange={setLogoutOpen}
+        title={tAuth("logout")}
+        description="Voulez-vous vraiment vous déconnecter ?"
+        onConfirm={() => signOut({ callbackUrl: "/" })}
+        variant="destructive"
+      />
 
       {/* Collapse Toggle */}
       <div className="p-3">

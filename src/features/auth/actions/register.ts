@@ -1,9 +1,11 @@
 "use server";
 
 import bcryptjs from "bcryptjs";
+import { headers } from "next/headers";
 
 import { prisma } from "@/lib/prisma";
 import { sendVerificationEmail } from "@/lib/email";
+import { rateLimit } from "@/lib/rate-limit";
 import { registerSchema } from "@/lib/validations/auth";
 import type { ActionResult } from "@/types/api";
 
@@ -16,6 +18,14 @@ export async function registerAction(
   data: unknown,
   locale: string = "fr",
 ): Promise<ActionResult<{ userId: string }>> {
+  // Rate limit: 5 registrations per minute per IP
+  const hdrs = await headers();
+  const ip = hdrs.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+  const rl = rateLimit(`register:${ip}`, 5, 60_000);
+  if (!rl.allowed) {
+    return { success: false, error: "Trop de tentatives. Réessayez dans 1 minute." };
+  }
+
   // 1. Parse and validate input
   const parsed = registerSchema.safeParse(data);
   if (!parsed.success) {

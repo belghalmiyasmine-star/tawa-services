@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 82 42">
+  <!-- Warm sunrise arcs above "a" letters -->
+  <path d="M16 9 Q22 3 28 9" stroke="#f59e0b" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M56 9 Q62 3 68 9" stroke="#f59e0b" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <!-- tawa wordmark -->
+  <text x="2" y="36" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="32" font-weight="800" letter-spacing="-0.5" fill="white">tawa</text>
+</svg>

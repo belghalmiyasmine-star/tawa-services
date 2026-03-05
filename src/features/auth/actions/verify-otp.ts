@@ -13,6 +13,15 @@ export async function verifyOtpAction(
   code: string,
 ): Promise<ActionResult<void>> {
   try {
+    // Check if phone is already verified
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { phoneVerified: true },
+    });
+    if (user?.phoneVerified) {
+      return { success: false, error: "Votre telephone est deja verifie" };
+    }
+
     // Find the most recent unused OTP for this user that has not expired
     const otp = await prisma.phoneOtp.findFirst({
       where: {
@@ -46,14 +55,15 @@ export async function verifyOtpAction(
     }
 
     // Code is correct — mark OTP as used and update user.phoneVerified
+    const now = new Date();
     await prisma.$transaction([
       prisma.phoneOtp.update({
         where: { id: otp.id },
-        data: { usedAt: new Date() },
+        data: { usedAt: now },
       }),
       prisma.user.update({
         where: { id: userId },
-        data: { phoneVerified: true },
+        data: { phoneVerified: true, phoneVerifiedAt: now },
       }),
     ]);
 

@@ -287,6 +287,19 @@ export function ReportsDataTable({
                           ? `${report.reason.slice(0, 60)}...`
                           : report.reason}
                       </span>
+                      {report.type === "REVIEW" && report.description?.startsWith("Auto-signalement IA:") && (
+                        <div className="mt-1 flex flex-wrap gap-1">
+                          {report.reason.split(", ").map((r, idx) => (
+                            <Badge
+                              key={idx}
+                              variant="outline"
+                              className="border-orange-300 bg-orange-50 text-[10px] text-orange-700 dark:border-orange-700 dark:bg-orange-950/20 dark:text-orange-400"
+                            >
+                              IA: {r}
+                            </Badge>
+                          ))}
+                        </div>
+                      )}
                     </TableCell>
 
                     {/* SLA */}

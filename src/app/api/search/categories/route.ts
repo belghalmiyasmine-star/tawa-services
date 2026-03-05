@@ -32,6 +32,7 @@ export async function GET() {
       orderBy: {
         sortOrder: "asc",
       },
+      take: 50,
       select: {
         id: true,
         name: true,

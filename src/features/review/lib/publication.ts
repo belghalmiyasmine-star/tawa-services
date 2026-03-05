@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { regenerateProviderSummary } from "@/lib/ai/review-summary";
 
 // ============================================================
 // PUBLICATION LOGIC — Double-blind review system
@@ -136,6 +137,8 @@ export async function publishBothReviews(bookingId: string): Promise<void> {
 
   if (booking?.providerId) {
     await updateProviderRating(booking.providerId);
+    // Regenerate AI review summary (non-blocking)
+    void regenerateProviderSummary(booking.providerId);
   }
 }
 
@@ -199,6 +202,8 @@ export async function publishSoloReviewIfExpired(
   );
   if (providerId && targetsProvider) {
     await updateProviderRating(providerId);
+    // Regenerate AI review summary (non-blocking)
+    void regenerateProviderSummary(providerId);
   }
 
   return true;

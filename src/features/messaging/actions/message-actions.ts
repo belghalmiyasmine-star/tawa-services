@@ -82,6 +82,7 @@ async function verifyConversationParticipant(
 export async function sendMessageAction(formData: {
   conversationId: string;
   content: string;
+  imageUrl?: string;
 }): Promise<ActionResult<{ messageId: string }>> {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
@@ -98,6 +99,7 @@ export async function sendMessageAction(formData: {
   }
 
   const { conversationId, content } = parseResult.data;
+  const imageUrl = formData.imageUrl;
 
   // Verify participation and get booking status + recipient
   const { authorized, bookingStatus, recipientId } = await verifyConversationParticipant(
@@ -121,6 +123,7 @@ export async function sendMessageAction(formData: {
       conversationId,
       senderId: session.user.id,
       content: moderation.sanitizedContent ?? content,
+      ...(imageUrl ? { imageUrl } : {}),
     },
     select: { id: true },
   });

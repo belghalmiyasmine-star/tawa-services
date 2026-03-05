@@ -10,7 +10,6 @@ import {
   Star,
   ChevronLeft,
 } from "lucide-react";
-import Image from "next/image";
 import type { Metadata } from "next";
 
 import { authOptions } from "@/lib/auth";
@@ -224,12 +223,11 @@ export default async function ClientBookingDetailPage({ params }: Props) {
               <CardContent className="space-y-3">
                 {/* Service photo */}
                 {booking.service.photoUrls[0] && (
-                  <div className="relative h-36 w-full overflow-hidden rounded-lg bg-muted">
-                    <Image
+                  <div className="h-36 w-full overflow-hidden rounded-lg bg-muted">
+                    <img
                       src={booking.service.photoUrls[0]}
                       alt={booking.service.title}
-                      fill
-                      className="object-cover"
+                      className="h-full w-full object-cover"
                     />
                   </div>
                 )}
@@ -265,13 +263,12 @@ export default async function ClientBookingDetailPage({ params }: Props) {
               <CardContent className="space-y-3">
                 <div className="flex items-center gap-3">
                   {/* Avatar */}
-                  <div className="relative h-12 w-12 flex-shrink-0 overflow-hidden rounded-full bg-muted">
+                  <div className="h-12 w-12 flex-shrink-0 overflow-hidden rounded-full bg-muted">
                     {booking.provider.photoUrl ? (
-                      <Image
+                      <img
                         src={booking.provider.photoUrl}
                         alt={providerName}
-                        fill
-                        className="object-cover"
+                        className="h-full w-full object-cover"
                       />
                     ) : (
                       <div className="flex h-full w-full items-center justify-center">

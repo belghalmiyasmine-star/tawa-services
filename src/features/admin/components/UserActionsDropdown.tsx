@@ -26,6 +26,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Link } from "@/i18n/routing";
 import {
   banUserAction,
@@ -60,6 +61,9 @@ export function UserActionsDropdown({ user }: UserActionsDropdownProps) {
   const { toast } = useToast();
 
   const [banDialogOpen, setBanDialogOpen] = useState(false);
+  const [unbanDialogOpen, setUnbanDialogOpen] = useState(false);
+  const [deactivateDialogOpen, setDeactivateDialogOpen] = useState(false);
+  const [activateDialogOpen, setActivateDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [banReason, setBanReason] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -175,7 +179,7 @@ export function UserActionsDropdown({ user }: UserActionsDropdownProps) {
                   {t("banUser")}
                 </DropdownMenuItem>
               ) : (
-                <DropdownMenuItem onClick={handleUnban} disabled={isLoading}>
+                <DropdownMenuItem onClick={() => setUnbanDialogOpen(true)} disabled={isLoading}>
                   {t("unbanUser")}
                 </DropdownMenuItem>
               )}
@@ -183,13 +187,13 @@ export function UserActionsDropdown({ user }: UserActionsDropdownProps) {
               {/* Activate / Deactivate */}
               {user.isActive ? (
                 <DropdownMenuItem
-                  onClick={handleDeactivate}
+                  onClick={() => setDeactivateDialogOpen(true)}
                   disabled={isLoading}
                 >
                   {t("deactivateUser")}
                 </DropdownMenuItem>
               ) : (
-                <DropdownMenuItem onClick={handleActivate} disabled={isLoading}>
+                <DropdownMenuItem onClick={() => setActivateDialogOpen(true)} disabled={isLoading}>
                   {t("activateUser")}
                 </DropdownMenuItem>
               )}
@@ -240,6 +244,43 @@ export function UserActionsDropdown({ user }: UserActionsDropdownProps) {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Unban Dialog */}
+      <ConfirmDialog
+        open={unbanDialogOpen}
+        onOpenChange={setUnbanDialogOpen}
+        title={t("confirmUnban")}
+        description={t("confirmUnbanMessage")}
+        confirmLabel={t("unbanUser")}
+        cancelLabel={tCommon("cancel")}
+        onConfirm={handleUnban}
+        loading={isLoading}
+      />
+
+      {/* Deactivate Dialog */}
+      <ConfirmDialog
+        open={deactivateDialogOpen}
+        onOpenChange={setDeactivateDialogOpen}
+        title={t("confirmDeactivate")}
+        description={t("confirmDeactivateMessage")}
+        confirmLabel={t("deactivateUser")}
+        cancelLabel={tCommon("cancel")}
+        onConfirm={handleDeactivate}
+        loading={isLoading}
+        variant="warning"
+      />
+
+      {/* Activate Dialog */}
+      <ConfirmDialog
+        open={activateDialogOpen}
+        onOpenChange={setActivateDialogOpen}
+        title={t("confirmActivate")}
+        description={t("confirmActivateMessage")}
+        confirmLabel={t("activateUser")}
+        cancelLabel={tCommon("cancel")}
+        onConfirm={handleActivate}
+        loading={isLoading}
+      />
 
       {/* Delete Dialog */}
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>

@@ -48,6 +48,7 @@ export interface MessageItem {
   senderId: string;
   senderName: string;
   content: string;
+  imageUrl: string | null;
   createdAt: Date;
   isRead: boolean;
   readAt: Date | null;
@@ -266,6 +267,7 @@ export async function getConversationMessagesAction(params: {
       id: true,
       senderId: true,
       content: true,
+      imageUrl: true,
       createdAt: true,
       isRead: true,
       readAt: true,
@@ -292,6 +294,7 @@ export async function getConversationMessagesAction(params: {
       senderId: msg.senderId,
       senderName: msg.sender.name ?? "Utilisateur",
       content: msg.content,
+      imageUrl: msg.imageUrl ?? null,
       createdAt: msg.createdAt,
       isRead: msg.isRead,
       readAt: msg.readAt,

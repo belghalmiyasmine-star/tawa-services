@@ -7,7 +7,7 @@
 // Client-side wrapper that composes ChatView + MessageInput.
 // Wires the onMessageSent callback: when a message is sent,
 // ChatView.addOptimisticMessage() is called for instant visual feedback.
-// The 5s polling confirms the message on the next tick.
+// The 15s polling confirms the message on the next tick.
 // ============================================================
 
 import { useCallback, useRef } from "react";
@@ -28,8 +28,8 @@ export function ChatPageLayout({
 }: ChatPageLayoutProps) {
   const chatViewRef = useRef<ChatViewHandle>(null);
 
-  const handleMessageSent = useCallback((content: string) => {
-    chatViewRef.current?.addOptimisticMessage(content);
+  const handleMessageSent = useCallback((content: string, imageUrl?: string) => {
+    chatViewRef.current?.addOptimisticMessage(content, imageUrl);
   }, []);
 
   return (

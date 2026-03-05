@@ -19,12 +19,12 @@ import {
   LogOut,
   Briefcase,
   Banknote,
-  MessageSquare,
   ExternalLink,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 const NAV_ITEMS = [
   { href: "/admin", icon: LayoutDashboard, labelKey: "home" },
@@ -36,13 +36,13 @@ const NAV_ITEMS = [
   { href: "/admin/reports", icon: Flag, labelKey: "reports" },
   { href: "/admin/analytics", icon: BarChart3, labelKey: "analytics" },
   { href: "/admin/commission", icon: Banknote, labelKey: "commission" },
-  { href: "/admin/messages", icon: MessageSquare, labelKey: "messages" },
   { href: "/admin/content", icon: FileText, labelKey: "content" },
   { href: "/admin/notifications", icon: Bell, labelKey: "notifications" },
 ];
 
 export function AdminSidebar() {
   const [collapsed, setCollapsed] = useState(false);
+  const [logoutOpen, setLogoutOpen] = useState(false);
   const pathname = usePathname();
   const t = useTranslations("navigation");
   // "layout" namespace pour les labels generiques de la sidebar (collapse, expand, aria-labels)
@@ -125,7 +125,7 @@ export function AdminSidebar() {
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => signOut({ callbackUrl: "/" })}
+          onClick={() => setLogoutOpen(true)}
           className={cn(
             "w-full text-destructive hover:bg-destructive/10 hover:text-destructive",
             collapsed && "px-2"
@@ -136,6 +136,16 @@ export function AdminSidebar() {
           {!collapsed && <span>{tAuth("logout")}</span>}
         </Button>
       </div>
+
+      {/* Logout confirmation dialog */}
+      <ConfirmDialog
+        open={logoutOpen}
+        onOpenChange={setLogoutOpen}
+        title={tAuth("logout")}
+        description="Voulez-vous vraiment vous déconnecter ?"
+        onConfirm={() => signOut({ callbackUrl: "/" })}
+        variant="destructive"
+      />
 
       {/* Collapse Toggle */}
       <div className="p-3">

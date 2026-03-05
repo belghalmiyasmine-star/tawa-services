@@ -61,7 +61,7 @@ export async function processPaymentAction(
 
     const { bookingId, paymentMethod } = parsed.data;
 
-    // Verify booking belongs to this client, include service and client info
+    // Verify booking belongs to this client, include service, client and provider info
     const booking = await prisma.booking.findFirst({
       where: {
         id: bookingId,
@@ -69,7 +69,12 @@ export async function processPaymentAction(
         isDeleted: false,
       },
       include: {
-        service: { select: { title: true } },
+        service: {
+          select: {
+            title: true,
+            provider: { select: { userId: true } },
+          },
+        },
         client: { select: { name: true, email: true } },
       },
     });
@@ -104,6 +109,15 @@ export async function processPaymentAction(
     if (!result.success) {
       return { success: false, error: result.error ?? "Erreur lors du paiement" };
     }
+
+    // Fire-and-forget: notify provider that payment was received and held
+    void sendNotification({
+      userId: booking.service.provider.userId,
+      type: "PAYMENT_RECEIVED",
+      title: "Paiement recu en attente",
+      body: `${booking.totalAmount.toFixed(2)} TND — ${booking.service.title}`,
+      data: { bookingId },
+    });
 
     return {
       success: true,

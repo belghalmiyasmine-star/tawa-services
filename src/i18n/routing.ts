@@ -2,10 +2,8 @@ import { defineRouting } from "next-intl/routing";
 import { createNavigation } from "next-intl/navigation";
 
 export const routing = defineRouting({
-  locales: ["fr"],
+  locales: ["fr", "ar", "en"],
   defaultLocale: "fr",
-  // AR et EN seront ajoutes en Phase 11 (v2 deferred)
-  // locales: ["fr", "ar", "en"],
 });
 
 // Navigation helpers type-safe qui gerent le prefixe locale automatiquement.

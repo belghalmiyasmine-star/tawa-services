@@ -1,4 +1,4 @@
-import { CheckCircle2, XCircle } from "lucide-react";
+import { CheckCircle2, XCircle, Info } from "lucide-react";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
@@ -61,6 +61,30 @@ export default async function VerifyEmailPage({ searchParams }: VerifyEmailPageP
           <CardContent className="space-y-4">
             <p className="text-muted-foreground">
               Vous pouvez maintenant acceder a toutes les fonctionnalites.
+            </p>
+            <Button asChild className="w-full">
+              <Link href="/">{t("backToLogin")}</Link>
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // Already verified — show info message and redirect to home
+  if (result.error === "ALREADY_VERIFIED") {
+    return (
+      <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center px-4 py-12">
+        <Card className="w-full max-w-md text-center">
+          <CardHeader>
+            <div className="flex justify-center mb-2">
+              <Info className="h-14 w-14 text-blue-500" />
+            </div>
+            <CardTitle className="text-xl">Votre email est déjà vérifié</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-muted-foreground">
+              Votre adresse email a deja ete verifiee. Vous pouvez acceder a votre compte.
             </p>
             <Button asChild className="w-full">
               <Link href="/">{t("backToLogin")}</Link>

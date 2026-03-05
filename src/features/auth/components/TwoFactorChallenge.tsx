@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useTransition } from "react";
 
+import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
@@ -26,6 +27,7 @@ export function TwoFactorChallenge({
   callbackUrl = "/",
 }: TwoFactorChallengeProps) {
   const t = useTranslations("auth");
+  const { update } = useSession();
   const [code, setCode] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
@@ -65,7 +67,8 @@ export function TwoFactorChallenge({
       const result = await verify2faLoginAction(userId, code, method);
 
       if (result.success) {
-        // 2FA verified — reload to complete the session and redirect
+        // 2FA verified — clear the needs2fa flag in the JWT, then redirect
+        await update({ clear2fa: true });
         window.location.href = callbackUrl;
       } else {
         setError(result.error ?? t("otpIncorrect"));

@@ -5,425 +5,10 @@ config({ path: path.resolve(process.cwd(), ".env.local") });
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "@prisma/client";
 import { hash } from "bcryptjs";
+import { analyzeReview } from "../src/lib/ai/review-analyzer";
 
 const adapter = new PrismaPg({ connectionString: process.env["DATABASE_URL"] });
 const prisma = new PrismaClient({ adapter });
-
-// ============================================================
-// TUNISIAN GOUVERNORATS & DELEGATIONS
-// ============================================================
-
-const GOUVERNORATS_DATA: { name: string; code: string; delegations: string[] }[] = [
-  {
-    name: "Tunis",
-    code: "TUN",
-    delegations: [
-      "Tunis Ville", "Le Bardo", "La Marsa", "Sidi Bou Said",
-      "Carthage", "La Goulette", "Le Kram", "Sidi Hassine",
-    ],
-  },
-  {
-    name: "Ariana",
-    code: "ARI",
-    delegations: [
-      "Ariana Ville", "La Soukra", "Raoued", "Sidi Thabet",
-      "Ettadhamen", "Mnihla", "Kalaat el-Andalous",
-    ],
-  },
-  {
-    name: "Ben Arous",
-    code: "BNA",
-    delegations: [
-      "Ben Arous", "Hammam Lif", "Hammam Chott", "Rades",
-      "Megrine", "Mohamedia", "Fouchana", "Ezzahra", "Mornag",
-    ],
-  },
-  {
-    name: "Manouba",
-    code: "MAN",
-    delegations: [
-      "Manouba", "Den Den", "Douar Hicher", "Oued Ellil",
-      "Tebourba", "El Battan", "Borj El Amri",
-    ],
-  },
-  {
-    name: "Nabeul",
-    code: "NAB",
-    delegations: [
-      "Nabeul", "Hammamet", "Kelibia", "Korba",
-      "Dar Chaabane", "Grombalia", "Soliman", "Menzel Temime",
-    ],
-  },
-  {
-    name: "Sousse",
-    code: "SOU",
-    delegations: [
-      "Sousse Ville", "Sousse Jawhara", "Sousse Riadh", "Hammam Sousse",
-      "Akouda", "Kalaa Kebira", "Msaken", "Enfida",
-    ],
-  },
-  {
-    name: "Sfax",
-    code: "SFA",
-    delegations: [
-      "Sfax Ville", "Sfax Ouest", "Sfax Sud", "Sakiet Ezzit",
-      "Sakiet Eddaier", "Thyna", "El Ain", "Mahres",
-    ],
-  },
-  {
-    name: "Bizerte",
-    code: "BIZ",
-    delegations: [
-      "Bizerte Nord", "Bizerte Sud", "Menzel Bourguiba",
-      "Mateur", "Ras Jebel", "Sejnane",
-    ],
-  },
-  {
-    name: "Gabes",
-    code: "GAB",
-    delegations: [
-      "Gabes Ville", "Gabes Medina", "Gabes Ouest", "Gabes Sud",
-      "El Hamma", "Mareth", "Matmata",
-    ],
-  },
-  {
-    name: "Kairouan",
-    code: "KAI",
-    delegations: [
-      "Kairouan Nord", "Kairouan Sud", "Haffouz",
-      "Sbikha", "Nasrallah", "Chebika",
-    ],
-  },
-  {
-    name: "Monastir",
-    code: "MON",
-    delegations: [
-      "Monastir", "Sahline", "Moknine", "Ksar Hellal",
-      "Jemmal", "Beni Hassen", "Teboulba",
-    ],
-  },
-  {
-    name: "Medenine",
-    code: "MED",
-    delegations: [
-      "Medenine Nord", "Medenine Sud", "Zarzis",
-      "Ben Guerdane", "Djerba Houmt Souk", "Djerba Midoun",
-    ],
-  },
-];
-
-// ============================================================
-// SERVICE CATEGORIES (parent + children)
-// ============================================================
-
-const CATEGORIES_DATA: { name: string; slug: string; icon: string; children: { name: string; slug: string }[] }[] = [
-  {
-    name: "Plomberie",
-    slug: "plomberie",
-    icon: "Wrench",
-    children: [
-      { name: "Reparation fuite", slug: "reparation-fuite" },
-      { name: "Installation sanitaire", slug: "installation-sanitaire" },
-      { name: "Debouchage", slug: "debouchage" },
-    ],
-  },
-  {
-    name: "Electricite",
-    slug: "electricite",
-    icon: "Zap",
-    children: [
-      { name: "Installation electrique", slug: "installation-electrique" },
-      { name: "Depannage electrique", slug: "depannage-electrique" },
-      { name: "Eclairage", slug: "eclairage" },
-    ],
-  },
-  {
-    name: "Menage & Nettoyage",
-    slug: "menage-nettoyage",
-    icon: "Sparkles",
-    children: [
-      { name: "Menage a domicile", slug: "menage-domicile" },
-      { name: "Nettoyage fin de chantier", slug: "nettoyage-chantier" },
-      { name: "Nettoyage vitres", slug: "nettoyage-vitres" },
-    ],
-  },
-  {
-    name: "Cours particuliers",
-    slug: "cours-particuliers",
-    icon: "GraduationCap",
-    children: [
-      { name: "Mathematiques", slug: "mathematiques" },
-      { name: "Langues", slug: "langues" },
-      { name: "Informatique", slug: "informatique" },
-      { name: "Sciences", slug: "sciences" },
-    ],
-  },
-  {
-    name: "Peinture & Renovation",
-    slug: "peinture-renovation",
-    icon: "PaintBucket",
-    children: [
-      { name: "Peinture interieure", slug: "peinture-interieure" },
-      { name: "Peinture exterieure", slug: "peinture-exterieure" },
-      { name: "Renovation generale", slug: "renovation-generale" },
-    ],
-  },
-  {
-    name: "Demenagement",
-    slug: "demenagement",
-    icon: "Truck",
-    children: [
-      { name: "Demenagement local", slug: "demenagement-local" },
-      { name: "Transport de meubles", slug: "transport-meubles" },
-    ],
-  },
-  {
-    name: "Jardinage",
-    slug: "jardinage",
-    icon: "TreePine",
-    children: [
-      { name: "Entretien jardin", slug: "entretien-jardin" },
-      { name: "Taille de haies", slug: "taille-haies" },
-      { name: "Amenagement paysager", slug: "amenagement-paysager" },
-    ],
-  },
-  {
-    name: "Climatisation",
-    slug: "climatisation",
-    icon: "Snowflake",
-    children: [
-      { name: "Installation climatisation", slug: "installation-clim" },
-      { name: "Entretien climatisation", slug: "entretien-clim" },
-      { name: "Reparation climatisation", slug: "reparation-clim" },
-    ],
-  },
-  {
-    name: "Serrurerie",
-    slug: "serrurerie",
-    icon: "KeyRound",
-    children: [
-      { name: "Ouverture de porte", slug: "ouverture-porte" },
-      { name: "Changement de serrure", slug: "changement-serrure" },
-    ],
-  },
-  {
-    name: "Informatique & Tech",
-    slug: "informatique-tech",
-    icon: "Monitor",
-    children: [
-      { name: "Reparation PC/Mac", slug: "reparation-pc" },
-      { name: "Installation reseau", slug: "installation-reseau" },
-      { name: "Assistance informatique", slug: "assistance-informatique" },
-    ],
-  },
-];
-
-// ============================================================
-// DEMO USERS — Tunisian names
-// ============================================================
-
-const PASSWORD = "Test1234!"; // All demo users share this password
-
-const ADMIN_USER = {
-  email: "admin@tawa.tn",
-  name: "Youssef Ben Ali",
-  phone: "20100100",
-};
-
-// 15 providers with Tunisian names
-const PROVIDERS_DATA = [
-  { email: "ahmed.plombier@tawa.tn", name: "Ahmed Ben Salah", displayName: "Ahmed Plomberie", phone: "22100001", bio: "Plombier professionnel avec 12 ans d'experience a Tunis. Specialise dans les reparations urgentes et les installations sanitaires.", experience: 12, languages: ["Francais", "Arabe"], categorySlug: "plomberie", kycStatus: "APPROVED" as const, isFeatured: true },
-  { email: "fatma.menage@tawa.tn", name: "Fatma Trabelsi", displayName: "Fatma Nettoyage Pro", phone: "22100002", bio: "Service de menage et nettoyage professionnel. Produits eco-responsables. Disponible 7j/7 dans le Grand Tunis.", experience: 8, languages: ["Francais", "Arabe"], categorySlug: "menage-nettoyage", kycStatus: "APPROVED" as const, isFeatured: true },
-  { email: "mehdi.elec@tawa.tn", name: "Mehdi Gharbi", displayName: "Mehdi Electricite", phone: "22100003", bio: "Electricien agree, interventions rapides. Mise aux normes, depannage, installation complete pour particuliers et professionnels.", experience: 15, languages: ["Francais", "Arabe", "Anglais"], categorySlug: "electricite", kycStatus: "APPROVED" as const, isFeatured: true },
-  { email: "amira.cours@tawa.tn", name: "Amira Hammami", displayName: "Amira Cours Particuliers", phone: "22100004", bio: "Enseignante certifiee, diplomee de l'Universite de Tunis. Cours de maths et sciences pour tous niveaux, du primaire au baccalaureat.", experience: 6, languages: ["Francais", "Arabe", "Anglais"], categorySlug: "cours-particuliers", kycStatus: "APPROVED" as const, isFeatured: false },
-  { email: "karim.peinture@tawa.tn", name: "Karim Bouazizi", displayName: "Karim Peinture & Deco", phone: "22100005", bio: "Peintre decorateur, travaux de renovation interieure et exterieure. Devis gratuit. References disponibles.", experience: 10, languages: ["Francais", "Arabe"], categorySlug: "peinture-renovation", kycStatus: "APPROVED" as const, isFeatured: false },
-  { email: "leila.menage@tawa.tn", name: "Leila Bouzid", displayName: "Leila Services Menage", phone: "22100006", bio: "Femme de menage experimentee. Nettoyage maisons, appartements et bureaux. Repassage inclus sur demande.", experience: 5, languages: ["Francais", "Arabe"], categorySlug: "menage-nettoyage", kycStatus: "APPROVED" as const, isFeatured: false },
-  { email: "nabil.demenag@tawa.tn", name: "Nabil Chebbi", displayName: "Nabil Demenagement Express", phone: "22100007", bio: "Demenagement professionnel avec camion equipe. Emballage, transport et installation. Couverture Grand Tunis et banlieue.", experience: 9, languages: ["Francais", "Arabe"], categorySlug: "demenagement", kycStatus: "APPROVED" as const, isFeatured: true },
-  { email: "sonia.jardin@tawa.tn", name: "Sonia Maalej", displayName: "Sonia Jardinage", phone: "22100008", bio: "Jardiniere paysagiste. Entretien de jardins, creation d'espaces verts, taille et amenagement. Passionnee par la nature.", experience: 7, languages: ["Francais", "Arabe"], categorySlug: "jardinage", kycStatus: "APPROVED" as const, isFeatured: false },
-  { email: "bilel.clim@tawa.tn", name: "Bilel Mansouri", displayName: "Bilel Climatisation", phone: "22100009", bio: "Technicien frigoriste agree. Installation, entretien et reparation de climatiseurs toutes marques. Intervention rapide.", experience: 11, languages: ["Francais", "Arabe"], categorySlug: "climatisation", kycStatus: "APPROVED" as const, isFeatured: false },
-  { email: "omar.serrure@tawa.tn", name: "Omar Dridi", displayName: "Omar Serrurerie 24h", phone: "22100010", bio: "Serrurier d'urgence, disponible 24h/24. Ouverture de portes, blindage, changement de serrures. Deplacement rapide.", experience: 14, languages: ["Francais", "Arabe"], categorySlug: "serrurerie", kycStatus: "APPROVED" as const, isFeatured: true },
-  { email: "ines.info@tawa.tn", name: "Ines Rezgui", displayName: "Ines Tech Solutions", phone: "22100011", bio: "Informaticienne diplome ingenieur. Reparation PC/Mac, installation reseau, assistance a domicile. Patiente et pedagogique.", experience: 4, languages: ["Francais", "Arabe", "Anglais"], categorySlug: "informatique-tech", kycStatus: "APPROVED" as const, isFeatured: false },
-  { email: "yassine.plomb@tawa.tn", name: "Yassine Chaabane", displayName: "Yassine Plomberie SOS", phone: "22100012", bio: "Plombier urgentiste. Debouchage, reparation fuites, installation chauffe-eau. Disponible soirs et weekends.", experience: 8, languages: ["Francais", "Arabe"], categorySlug: "plomberie", kycStatus: "PENDING" as const, isFeatured: false },
-  { email: "hana.cours@tawa.tn", name: "Hana Sfar", displayName: "Hana Langues & Soutien", phone: "22100013", bio: "Professeur de langues (francais, anglais, espagnol). Cours particuliers et en petit groupe. Preparation aux examens.", experience: 9, languages: ["Francais", "Arabe", "Anglais", "Espagnol"], categorySlug: "cours-particuliers", kycStatus: "PENDING" as const, isFeatured: false },
-  { email: "riadh.renov@tawa.tn", name: "Riadh Belhadj", displayName: "Riadh Renovation Totale", phone: "22100014", bio: "Entrepreneur en renovation generale. Platre, carrelage, peinture, plomberie. Equipe de 3 ouvriers qualifies.", experience: 18, languages: ["Francais", "Arabe"], categorySlug: "peinture-renovation", kycStatus: "NOT_SUBMITTED" as const, isFeatured: false },
-  { email: "mariem.jardin@tawa.tn", name: "Mariem Khelifi", displayName: "Mariem Espaces Verts", phone: "22100015", bio: "Amenagement paysager et entretien de jardins. Specialisee dans les jardins mediterraneens. Conseil en plantes locales.", experience: 6, languages: ["Francais", "Arabe"], categorySlug: "jardinage", kycStatus: "APPROVED" as const, isFeatured: false },
-];
-
-// 20 clients with Tunisian names
-const CLIENTS_DATA = [
-  { email: "salma.client@tawa.tn", name: "Salma Mejri", phone: "23200001" },
-  { email: "mohamed.client@tawa.tn", name: "Mohamed Lahmar", phone: "23200002" },
-  { email: "yasmine.client@tawa.tn", name: "Yasmine Ben Ahmed", phone: "23200003" },
-  { email: "ali.client@tawa.tn", name: "Ali Saidi", phone: "23200004" },
-  { email: "rim.client@tawa.tn", name: "Rim Chaouachi", phone: "23200005" },
-  { email: "houssem.client@tawa.tn", name: "Houssem Jebali", phone: "23200006" },
-  { email: "asma.client@tawa.tn", name: "Asma Kchaou", phone: "23200007" },
-  { email: "wael.client@tawa.tn", name: "Wael Hamdi", phone: "23200008" },
-  { email: "dorra.client@tawa.tn", name: "Dorra Belhaj", phone: "23200009" },
-  { email: "fares.client@tawa.tn", name: "Fares Tlili", phone: "23200010" },
-  { email: "meryem.client@tawa.tn", name: "Meryem Oueslati", phone: "23200011" },
-  { email: "aymen.client@tawa.tn", name: "Aymen Guesmi", phone: "23200012" },
-  { email: "nour.client@tawa.tn", name: "Nour Boujelben", phone: "23200013" },
-  { email: "hamza.client@tawa.tn", name: "Hamza Baazaoui", phone: "23200014" },
-  { email: "sirine.client@tawa.tn", name: "Sirine Haddad", phone: "23200015" },
-  { email: "amine.client@tawa.tn", name: "Amine Nasri", phone: "23200016" },
-  { email: "emna.client@tawa.tn", name: "Emna Ferchichi", phone: "23200017" },
-  { email: "khaled.client@tawa.tn", name: "Khaled Bouslama", phone: "23200018" },
-  { email: "sarah.client@tawa.tn", name: "Sarah Mabrouk", phone: "23200019" },
-  { email: "zied.client@tawa.tn", name: "Zied Ben Romdhane", phone: "23200020" },
-];
-
-// ============================================================
-// SERVICE TEMPLATES — realistic TND prices per category
-// ============================================================
-
-interface ServiceTemplate {
-  title: string;
-  description: string;
-  pricingType: "FIXED" | "SUR_DEVIS";
-  fixedPrice?: number;
-  durationMinutes?: number;
-  categorySlug: string;
-  inclusions: string[];
-  exclusions: string[];
-}
-
-const SERVICE_TEMPLATES: ServiceTemplate[] = [
-  // Plomberie
-  { title: "Reparation fuite robinet", description: "Reparation de fuite sur robinet de cuisine ou salle de bain. Diagnostic complet, remplacement des joints et verification de l'etancheite. Intervention rapide avec garantie de 6 mois sur la reparation effectuee.", pricingType: "FIXED", fixedPrice: 45, durationMinutes: 60, categorySlug: "reparation-fuite", inclusions: ["Deplacement", "Diagnostic", "Joints standards"], exclusions: ["Pieces speciales", "Robinet neuf"] },
-  { title: "Installation chauffe-eau", description: "Installation complete de chauffe-eau electrique ou a gaz. Raccordement plomberie et electrique, mise en service et verification de securite. Main d'oeuvre et deplacement inclus dans le tarif.", pricingType: "FIXED", fixedPrice: 120, durationMinutes: 180, categorySlug: "installation-sanitaire", inclusions: ["Pose", "Raccordement", "Mise en service"], exclusions: ["Chauffe-eau (fourniture client)", "Travaux de maconnerie"] },
-  { title: "Debouchage canalisation", description: "Debouchage de canalisation bouchee (evier, lavabo, douche, WC). Utilisation de furet professionnel et produits adaptes. Nettoyage complet et verification du bon ecoulement apres intervention.", pricingType: "FIXED", fixedPrice: 65, durationMinutes: 90, categorySlug: "debouchage", inclusions: ["Deplacement", "Furet professionnel", "Produits"], exclusions: ["Camera inspection", "Travaux de remplacement"] },
-  { title: "Remplacement WC complet", description: "Depose de l'ancien WC, installation du nouveau, raccordement eau et evacuation. Verification de l'etancheite et nettoyage du chantier apres intervention.", pricingType: "FIXED", fixedPrice: 150, durationMinutes: 150, categorySlug: "installation-sanitaire", inclusions: ["Depose ancien", "Installation", "Raccordement"], exclusions: ["WC neuf (fourniture client)"] },
-  { title: "Reparation fuite tuyauterie", description: "Localisation et reparation de fuite sur tuyauterie encastree ou apparente. Soudure cuivre ou remplacement de section de tuyau. Garantie 1 an sur les travaux.", pricingType: "SUR_DEVIS", categorySlug: "reparation-fuite", inclusions: ["Diagnostic", "Main d'oeuvre"], exclusions: ["Pieces de remplacement", "Ouverture de mur"] },
-
-  // Electricite
-  { title: "Depannage electrique urgent", description: "Intervention d'urgence pour panne electrique : disjoncteur qui saute, prise defaillante, court-circuit. Diagnostic complet du tableau electrique et reparation immediate.", pricingType: "FIXED", fixedPrice: 55, durationMinutes: 60, categorySlug: "depannage-electrique", inclusions: ["Deplacement", "Diagnostic", "Reparation simple"], exclusions: ["Remplacement tableau", "Pieces speciales"] },
-  { title: "Installation tableau electrique", description: "Mise en place ou remplacement d'un tableau electrique aux normes tunisiennes. Disjoncteur differentiel, repartition des circuits et mise a la terre. Certificat de conformite fourni.", pricingType: "SUR_DEVIS", categorySlug: "installation-electrique", inclusions: ["Etude", "Installation", "Certificat"], exclusions: ["Fourniture du tableau"] },
-  { title: "Pose lustre et eclairage LED", description: "Installation de lustre, appliques murales ou eclairage LED. Branchement electrique securise, reglage et essais. Service propre et soigne.", pricingType: "FIXED", fixedPrice: 35, durationMinutes: 45, categorySlug: "eclairage", inclusions: ["Pose", "Branchement", "Essais"], exclusions: ["Luminaire (fourniture client)"] },
-  { title: "Mise aux normes installation", description: "Verification complete de l'installation electrique et mise aux normes. Remplacement des elements defectueux, ajout de prises de terre et de protection differentielle.", pricingType: "SUR_DEVIS", categorySlug: "installation-electrique", inclusions: ["Audit complet", "Rapport de conformite"], exclusions: ["Travaux de remplacement"] },
-
-  // Menage & Nettoyage
-  { title: "Menage complet appartement", description: "Nettoyage integral de votre appartement : sols, cuisine, salle de bain, chambres et salon. Produits professionnels fournis. Resultat impeccable garanti.", pricingType: "FIXED", fixedPrice: 80, durationMinutes: 240, categorySlug: "menage-domicile", inclusions: ["Produits", "Materiel", "Toutes les pieces"], exclusions: ["Repassage", "Nettoyage terrasse"] },
-  { title: "Nettoyage fin de chantier", description: "Nettoyage professionnel apres travaux de construction ou renovation. Evacuation des debris, lavage des sols, nettoyage des vitres et sanitaires. Equipe de 2 personnes.", pricingType: "SUR_DEVIS", categorySlug: "nettoyage-chantier", inclusions: ["Equipe de 2", "Materiel professionnel", "Evacuation debris"], exclusions: ["Benne a gravats"] },
-  { title: "Nettoyage vitres maison", description: "Nettoyage complet de toutes les vitres et baies vitrees de votre maison ou appartement. Interieur et exterieur. Produits anti-traces pour un resultat cristallin.", pricingType: "FIXED", fixedPrice: 50, durationMinutes: 120, categorySlug: "nettoyage-vitres", inclusions: ["Interieur + exterieur", "Produits anti-traces"], exclusions: ["Vitres en hauteur (etage > 3)"] },
-  { title: "Grand menage de printemps", description: "Nettoyage en profondeur de votre maison : placards, derriere les meubles, plinthes, lustres, electromenager. Ideal pour un nouveau depart. Duree 6 a 8 heures.", pricingType: "FIXED", fixedPrice: 120, durationMinutes: 420, categorySlug: "menage-domicile", inclusions: ["Nettoyage profond", "Placards", "Electromenager"], exclusions: ["Produits specifiques marbre"] },
-
-  // Cours particuliers
-  { title: "Cours de maths niveau lycee", description: "Cours particuliers de mathematiques pour eleves de lycee (1ere, 2eme et 3eme annee). Preparation au baccalaureat, exercices corriges et methodologie de resolution de problemes.", pricingType: "FIXED", fixedPrice: 30, durationMinutes: 90, categorySlug: "mathematiques", inclusions: ["Support de cours", "Exercices corriges", "Suivi WhatsApp"], exclusions: [] },
-  { title: "Cours d'anglais tous niveaux", description: "Cours d'anglais adaptes a votre niveau : debutant, intermediaire ou avance. Conversation, grammaire, preparation TOEFL/IELTS. Enseignante bilingue certifiee Cambridge.", pricingType: "FIXED", fixedPrice: 35, durationMinutes: 60, categorySlug: "langues", inclusions: ["Cours personnalise", "Documents fournis"], exclusions: ["Frais d'inscription examens"] },
-  { title: "Initiation informatique seniors", description: "Cours d'informatique pour debutants et seniors. Utilisation de l'ordinateur, internet, email, reseaux sociaux. Patience et pedagogie garanties. A domicile.", pricingType: "FIXED", fixedPrice: 25, durationMinutes: 60, categorySlug: "informatique", inclusions: ["Cours a domicile", "Support papier"], exclusions: ["Achat materiel"] },
-  { title: "Cours de physique-chimie", description: "Cours de sciences physiques et chimie niveau college et lycee. Explication des concepts, experiences pratiques simples et preparation aux examens.", pricingType: "FIXED", fixedPrice: 30, durationMinutes: 90, categorySlug: "sciences", inclusions: ["Cours", "Exercices", "Revisions examens"], exclusions: [] },
-  { title: "Soutien scolaire primaire", description: "Aide aux devoirs et soutien scolaire pour eleves du primaire. Toutes les matieres. Methode ludique et bienveillante pour redonner confiance a votre enfant.", pricingType: "FIXED", fixedPrice: 20, durationMinutes: 60, categorySlug: "mathematiques", inclusions: ["Toutes matieres", "Aide aux devoirs"], exclusions: [] },
-
-  // Peinture & Renovation
-  { title: "Peinture piece standard", description: "Peinture complete d'une piece standard (jusqu'a 15m2). Preparation des murs, enduit, deux couches de peinture lavable. Couleur au choix du client.", pricingType: "FIXED", fixedPrice: 180, durationMinutes: 480, categorySlug: "peinture-interieure", inclusions: ["Preparation murs", "Peinture 2 couches", "Nettoyage"], exclusions: ["Peinture (fourniture client)", "Reparation fissures profondes"] },
-  { title: "Peinture facade maison", description: "Peinture exterieure de facade de maison ou immeuble. Traitement anti-humidite, enduit exterieur et peinture resistante aux intemperies. Devis sur place gratuit.", pricingType: "SUR_DEVIS", categorySlug: "peinture-exterieure", inclusions: ["Devis gratuit", "Traitement anti-humidite"], exclusions: ["Echafaudage (si > 2 etages)", "Fourniture peinture"] },
-  { title: "Renovation complete salle de bain", description: "Renovation totale de votre salle de bain : demolition, carrelage, plomberie, peinture, installation sanitaire. Equipe qualifiee, finitions soignees.", pricingType: "SUR_DEVIS", categorySlug: "renovation-generale", inclusions: ["Conception", "Main d'oeuvre complete", "Nettoyage"], exclusions: ["Fournitures (carrelage, sanitaire)"] },
-
-  // Demenagement
-  { title: "Demenagement appartement F3", description: "Demenagement complet d'un appartement F3 dans le Grand Tunis. Camion avec hayon, 2 demenageurs, protection des meubles. Montage et demontage des meubles simples inclus.", pricingType: "FIXED", fixedPrice: 250, durationMinutes: 360, categorySlug: "demenagement-local", inclusions: ["Camion", "2 demenageurs", "Protection meubles", "Montage/demontage"], exclusions: ["Emballage cartons", "Stockage"] },
-  { title: "Transport meuble volumineux", description: "Transport d'un meuble volumineux (armoire, canape, lit) d'un point A a B dans le Grand Tunis. Deux manutentionnaires et camionnette adaptee.", pricingType: "FIXED", fixedPrice: 80, durationMinutes: 120, categorySlug: "transport-meubles", inclusions: ["Transport", "2 manutentionnaires", "Protection"], exclusions: ["Montage si demonte"] },
-
-  // Jardinage
-  { title: "Entretien mensuel jardin", description: "Entretien complet de votre jardin une fois par mois : tonte pelouse, desherbage, taille arbustes, ramassage feuilles. Jardin jusqu'a 200m2.", pricingType: "FIXED", fixedPrice: 60, durationMinutes: 180, categorySlug: "entretien-jardin", inclusions: ["Tonte", "Desherbage", "Taille", "Nettoyage"], exclusions: ["Engrais", "Evacuation dechets verts"] },
-  { title: "Taille de haies et arbustes", description: "Taille professionnelle de haies, arbustes et petits arbres. Jusqu'a 20 metres lineaires de haie. Forme au choix, nettoyage des coupes inclus.", pricingType: "FIXED", fixedPrice: 45, durationMinutes: 120, categorySlug: "taille-haies", inclusions: ["Taille", "Nettoyage coupes"], exclusions: ["Evacuation dechets", "Arbres grands > 4m"] },
-  { title: "Creation jardin mediterraneen", description: "Conception et realisation d'un jardin mediterraneen adapte au climat tunisien. Choix des plantes, systeme d'arrosage automatique, paillage.", pricingType: "SUR_DEVIS", categorySlug: "amenagement-paysager", inclusions: ["Conception", "Plan 3D", "Conseil plantes"], exclusions: ["Plantes et fournitures", "Arrosage automatique"] },
-
-  // Climatisation
-  { title: "Installation split climatiseur", description: "Installation d'un split (unite interieure + exterieure). Percage, passage de tuyauterie, raccordement electrique, mise sous vide et test de fonctionnement.", pricingType: "FIXED", fixedPrice: 180, durationMinutes: 240, categorySlug: "installation-clim", inclusions: ["Installation", "Raccordement", "Mise en service", "Garantie 1 an"], exclusions: ["Climatiseur (fourniture client)", "Support mural exterieur si specifique"] },
-  { title: "Entretien annuel climatiseur", description: "Nettoyage complet du climatiseur : filtres, echangeur, bac a condensat. Verification du gaz refrigerant et des performances. Prolonge la duree de vie de votre appareil.", pricingType: "FIXED", fixedPrice: 50, durationMinutes: 60, categorySlug: "entretien-clim", inclusions: ["Nettoyage complet", "Verification gaz", "Rapport"], exclusions: ["Recharge gaz", "Pieces de rechange"] },
-  { title: "Reparation climatiseur en panne", description: "Diagnostic et reparation de climatiseur : pas de froid, bruit anormal, fuite d'eau, erreur affichee. Toutes marques. Pieces d'origine si remplacement necessaire.", pricingType: "FIXED", fixedPrice: 70, durationMinutes: 90, categorySlug: "reparation-clim", inclusions: ["Diagnostic", "Reparation", "Essais"], exclusions: ["Pieces de rechange", "Recharge gaz"] },
-
-  // Serrurerie
-  { title: "Ouverture de porte claquee", description: "Ouverture de porte claquee ou fermee sans cle. Technique non destructive privilegiee. Disponible 24h/24, intervention en 30 minutes dans le Grand Tunis.", pricingType: "FIXED", fixedPrice: 60, durationMinutes: 30, categorySlug: "ouverture-porte", inclusions: ["Deplacement", "Ouverture non destructive"], exclusions: ["Remplacement serrure si necessaire"] },
-  { title: "Changement serrure 3 points", description: "Remplacement de votre serrure par une serrure de securite 3 points. Installation, reglage et remise de 3 jeux de cles. Marques europeennes de qualite.", pricingType: "FIXED", fixedPrice: 150, durationMinutes: 60, categorySlug: "changement-serrure", inclusions: ["Serrure 3 points", "Installation", "3 jeux de cles"], exclusions: ["Blindage de porte"] },
-
-  // Informatique & Tech
-  { title: "Reparation PC lent/virus", description: "Diagnostic et optimisation de votre PC : suppression des virus et malwares, nettoyage systeme, mise a jour, acceleration du demarrage. Sauvegarde de vos donnees.", pricingType: "FIXED", fixedPrice: 40, durationMinutes: 120, categorySlug: "reparation-pc", inclusions: ["Diagnostic", "Nettoyage virus", "Optimisation"], exclusions: ["Remplacement pieces hardware", "Reinstallation Windows"] },
-  { title: "Installation reseau WiFi maison", description: "Installation et configuration de votre reseau WiFi domestique. Routeur, repeteur si necessaire, securisation du reseau. Configuration de tous vos appareils.", pricingType: "FIXED", fixedPrice: 55, durationMinutes: 90, categorySlug: "installation-reseau", inclusions: ["Installation", "Configuration", "Securisation"], exclusions: ["Materiel (routeur, repeteur)"] },
-  { title: "Assistance informatique domicile", description: "Aide informatique a domicile : installation logiciels, configuration email, transfer de donnees, formation basique. Patiente et pedagogique.", pricingType: "FIXED", fixedPrice: 30, durationMinutes: 60, categorySlug: "assistance-informatique", inclusions: ["Deplacement", "1h d'assistance"], exclusions: ["Logiciels payants", "Materiel"] },
-
-  // Extra services for variety
-  { title: "Menage bureau professionnel", description: "Nettoyage de bureaux et espaces professionnels. Aspiration, lavage sols, nettoyage bureaux, sanitaires et cuisine. Service regulier ou ponctuel.", pricingType: "FIXED", fixedPrice: 90, durationMinutes: 180, categorySlug: "menage-domicile", inclusions: ["Nettoyage complet", "Produits fournis"], exclusions: ["Nettoyage moquette specialise"] },
-  { title: "Cours de francais FLE", description: "Cours de francais langue etrangere. Grammaire, expression orale et ecrite, comprehension. Preparation aux examens DELF/DALF. Professeur diplome.", pricingType: "FIXED", fixedPrice: 35, durationMinutes: 60, categorySlug: "langues", inclusions: ["Cours personnalise", "Supports"], exclusions: [] },
-  { title: "Pose de carrelage sol", description: "Pose de carrelage au sol : preparation du support, pose droite ou diagonale, joints. Surface jusqu'a 20m2. Finitions propres et soignees.", pricingType: "FIXED", fixedPrice: 220, durationMinutes: 480, categorySlug: "renovation-generale", inclusions: ["Preparation sol", "Pose", "Joints"], exclusions: ["Carrelage (fourniture client)", "Depose ancien carrelage"] },
-  { title: "Installation camera surveillance", description: "Installation de systeme de video-surveillance pour maison ou commerce. Configuration, acces distant sur smartphone, stockage cloud ou local.", pricingType: "SUR_DEVIS", categorySlug: "installation-reseau", inclusions: ["Installation", "Configuration", "Formation"], exclusions: ["Cameras et enregistreur"] },
-];
-
-// ============================================================
-// FRENCH REVIEW COMMENTS
-// ============================================================
-
-const REVIEW_COMMENTS = [
-  "Excellent travail ! Ahmed est arrive a l'heure et a repare la fuite en moins d'une heure. Tres professionnel, je recommande vivement.",
-  "Service impeccable. L'appartement n'a jamais ete aussi propre. Fatma est tres minutieuse et agreable.",
-  "Mehdi a diagnostique le probleme electrique rapidement. Tres competent, prix raisonnable. Merci !",
-  "Tres bonne enseignante. Ma fille a progresse de 2 points en maths grace aux cours d'Amira.",
-  "Karim a fait un travail magnifique sur la peinture du salon. Couleurs parfaites, murs lisses. Bravo !",
-  "Leila est ponctuelle et tres efficace. La maison est toujours nickel apres son passage.",
-  "Demenagement rapide et sans casse. L'equipe de Nabil est serieuse et bien organisee.",
-  "Sonia a transforme notre jardin ! C'est devenu un vrai espace de detente. Merci pour les conseils.",
-  "Installation du climatiseur faite dans les regles de l'art. Bilel connait bien son metier.",
-  "Omar est venu en urgence a 23h pour ouvrir ma porte claquee. Rapide et efficace. Sauveur !",
-  "Ines a repare mon PC qui etait tres lent. Elle a tout explique clairement. Tres patiente.",
-  "Travail soigne et rapide. La salle de bain est comme neuve. Equipe respectueuse et propre.",
-  "Les cours d'anglais avec Hana sont excellents. Pedagogie adaptee et bonne humeur au rendez-vous.",
-  "Debouchage efficace, plus aucun probleme depuis l'intervention. Ahmed est un vrai pro.",
-  "Nettoyage des vitres parfait, pas une trace ! Je suis vraiment satisfaite du resultat.",
-  "Le menage de printemps etait exactement ce dont on avait besoin. Tout brille maintenant.",
-  "Installation rapide du reseau WiFi. Enfin du WiFi partout dans la maison ! Merci Ines.",
-  "Bon cours de physique, mon fils comprend enfin la mecanique. Professeur claire et organisee.",
-  "Taille de haies impeccable. Le jardin a retrouve une belle forme. Sonia est vraiment douee.",
-  "Entretien du climatiseur fait rapidement. Il refroidit beaucoup mieux maintenant.",
-  "Super prestataire ! Le demenagement s'est passe sans stress. Tout est arrive intact.",
-  "Reparation du chauffe-eau efficace. Plus de panne depuis. Tres bon rapport qualite-prix.",
-  "Cours de maths tres bien structures. Les notes de ma fille remontent enfin. Merci Amira !",
-  "Changement de serrure fait proprement. Omar a meme nettoye la porte apres. Top !",
-  "Excellente prestation de peinture. Karim est meticuleux et les finitions sont parfaites.",
-  "La facade de la maison est comme neuve. Travail propre et bien fait malgre la chaleur.",
-  "Menage du bureau impeccable comme d'habitude. On compte sur Fatma chaque semaine.",
-  "Assistance informatique au top ! Configuration de la tablette pour ma mere en toute patience.",
-];
-
-// ============================================================
-// MESSAGE TEMPLATES
-// ============================================================
-
-const MESSAGE_THREADS = [
-  [
-    { fromClient: true, content: "Bonjour, je voudrais reserver votre service de plomberie pour une fuite au robinet de la cuisine." },
-    { fromClient: false, content: "Bonjour ! Bien sur, pouvez-vous m'envoyer une photo de la fuite ? Est-ce que ca goutte en continu ?" },
-    { fromClient: true, content: "Oui ca goutte sans arret. Je vous envoie une photo des que possible. C'est un robinet mitigeur." },
-    { fromClient: false, content: "D'accord, c'est probablement le joint ou la cartouche. Je peux passer demain matin vers 9h, ca vous convient ?" },
-    { fromClient: true, content: "Parfait pour demain 9h. Merci pour votre reactivite !" },
-  ],
-  [
-    { fromClient: true, content: "Bonjour Fatma, est-ce que vous etes disponible samedi pour un menage complet de mon appartement ?" },
-    { fromClient: false, content: "Bonjour ! Samedi matin je suis libre. C'est un appartement de quelle surface environ ?" },
-    { fromClient: true, content: "Environ 90m2, 3 chambres, salon, cuisine et 2 salles de bain." },
-    { fromClient: false, content: "Parfait, je serai la vers 8h30. Comptez environ 4 heures. Est-ce que vous avez un aspirateur ?" },
-    { fromClient: true, content: "Oui j'ai tout le materiel. A samedi alors, merci !" },
-  ],
-  [
-    { fromClient: true, content: "Bonjour, mon disjoncteur saute regulierement depuis 2 jours. Pouvez-vous intervenir ?" },
-    { fromClient: false, content: "Bonjour, ca ressemble a un court-circuit ou une surcharge. Ne touchez a rien, je peux venir cet apres-midi." },
-    { fromClient: true, content: "Merci beaucoup ! Je suis disponible a partir de 14h." },
-  ],
-  [
-    { fromClient: true, content: "Bonjour Amira, ma fille est en 2eme annee secondaire et elle a beaucoup de difficultes en maths. Quels sont vos tarifs ?" },
-    { fromClient: false, content: "Bonjour ! Pour le lycee c'est 30 DT la seance de 1h30. On peut commencer par une seance d'evaluation gratuite pour identifier les lacunes." },
-    { fromClient: true, content: "C'est tres gentil ! On peut fixer la seance d'evaluation pour ce mercredi ?" },
-    { fromClient: false, content: "Mercredi 16h chez vous ? Apportez les derniers controles et le cahier de cours. A mercredi !" },
-  ],
-  [
-    { fromClient: true, content: "Bonjour, j'ai besoin d'un demenagement pour un F3 de La Marsa vers Ariana. C'est possible ce weekend ?" },
-    { fromClient: false, content: "Bonjour ! Ce samedi oui. Avez-vous des meubles tres lourds ou volumineux ? Un piano, un coffre-fort ?" },
-    { fromClient: true, content: "Non, mobilier classique : salon, 2 chambres, cuisine. Et quelques cartons." },
-    { fromClient: false, content: "Parfait, je viendrai avec mon camion et 2 gars. Debut a 7h du matin pour eviter la chaleur. Ca vous va ?" },
-    { fromClient: true, content: "7h c'est parfait. Combien de temps ca va prendre ?" },
-    { fromClient: false, content: "Entre La Marsa et Ariana, comptez 5 a 6 heures tout compris. Je vous confirme samedi matin." },
-  ],
-];
 
 // ============================================================
 // HELPERS
@@ -435,6 +20,10 @@ function randomDate(start: Date, end: Date): Date {
 
 function randomElement<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)]!;
+}
+
+function randomInt(min: number, max: number): number {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 function daysAgo(days: number): Date {
@@ -449,224 +38,528 @@ function daysFromNow(days: number): Date {
   return d;
 }
 
+function hoursAfter(base: Date, hours: number): Date {
+  return new Date(base.getTime() + hours * 60 * 60 * 1000);
+}
+
+function minutesAfter(base: Date, minutes: number): Date {
+  return new Date(base.getTime() + minutes * 60 * 1000);
+}
+
+// ============================================================
+// SEED DATA CONSTANTS
+// ============================================================
+
+const PASSWORD = "Test1234!";
+const SEED_DOMAIN = "@seed.tn";
+
+// Emails to NEVER delete (real accounts)
+const PROTECTED_EMAILS = [
+  "admin@tawa.tn",
+];
+
+// 8 providers — all KYC APPROVED, isActive, verified
+const PROVIDERS = [
+  { email: "mohamed.hammami@test.tn", name: "Mohamed Hammami", display: "Mohamed Plomberie", phone: "+21620100001", bio: "Plombier certifie avec 10 ans d'experience", photoUrl: "https://randomuser.me/api/portraits/men/32.jpg", exp: 10, langs: ["Francais", "Arabe"], catSlug: "plomberie", kyc: "APPROVED" as const, featured: true, city: "Tunis", rating: 4.8, missions: 45 },
+  { email: "fatma.gharbi@test.tn", name: "Fatma Gharbi", display: "Fatma Nettoyage Pro", phone: "+21620100002", bio: "Specialiste du nettoyage professionnel", photoUrl: "https://randomuser.me/api/portraits/women/44.jpg", exp: 8, langs: ["Francais", "Arabe"], catSlug: "menage-nettoyage", kyc: "APPROVED" as const, featured: true, city: "Sousse", rating: 4.6, missions: 120 },
+  { email: "ahmed.khalil@test.tn", name: "Ahmed Khalil", display: "Ahmed Electricite", phone: "+21620100003", bio: "Electricien agree, interventions rapides", photoUrl: "https://randomuser.me/api/portraits/men/55.jpg", exp: 15, langs: ["Francais", "Arabe", "Anglais"], catSlug: "electricite", kyc: "APPROVED" as const, featured: true, city: "Sfax", rating: 4.9, missions: 67 },
+  { email: "nour.belhadj@test.tn", name: "Nour Belhadj", display: "Nour Cours Particuliers", phone: "+21620100004", bio: "Professeure agregee de mathematiques", photoUrl: "https://randomuser.me/api/portraits/women/28.jpg", exp: 6, langs: ["Francais", "Arabe", "Anglais"], catSlug: "cours-particuliers", kyc: "APPROVED" as const, featured: false, city: "Tunis", rating: 4.7, missions: 89 },
+  { email: "karim.sahli@test.tn", name: "Karim Sahli", display: "Karim Climatisation", phone: "+21620100005", bio: "Technicien frigoriste certifie", photoUrl: "https://randomuser.me/api/portraits/men/41.jpg", exp: 11, langs: ["Francais", "Arabe"], catSlug: "climatisation", kyc: "APPROVED" as const, featured: false, city: "Nabeul", rating: 4.5, missions: 34 },
+  { email: "leila.mansour@test.tn", name: "Leila Mansour", display: "Leila Peinture & Deco", phone: "+21620100006", bio: "Peintre decoratrice d'interieur", photoUrl: "https://randomuser.me/api/portraits/women/65.jpg", exp: 7, langs: ["Francais", "Arabe"], catSlug: "peinture-renovation", kyc: "APPROVED" as const, featured: false, city: "Tunis", rating: 4.3, missions: 28 },
+  { email: "riadh.bouslama@test.tn", name: "Riadh Bouslama", display: "Riadh Jardinage", phone: "+21620100007", bio: "Paysagiste et entretien espaces verts", photoUrl: "https://randomuser.me/api/portraits/men/22.jpg", exp: 9, langs: ["Francais", "Arabe"], catSlug: "jardinage", kyc: "APPROVED" as const, featured: false, city: "Sousse", rating: 4.4, missions: 52 },
+  { email: "salma.khelifi@test.tn", name: "Salma Khelifi", display: "Salma Coiffure", phone: "+21620100008", bio: "Coiffeuse et maquilleuse professionnelle", photoUrl: "https://randomuser.me/api/portraits/women/35.jpg", exp: 5, langs: ["Francais", "Arabe"], catSlug: "coiffure", kyc: "APPROVED" as const, featured: true, city: "Tunis", rating: 4.7, missions: 95 },
+];
+
+// 4 clients — realistic Tunisian names, varied cities
+const CLIENTS = [
+  { email: "yasmine.client@test.tn", name: "Yasmine Ben Ali", phone: "+21623000001", city: "Tunis" },
+  { email: "sami@test.tn", name: "Sami Trabelsi", phone: "+21698000002", city: "Sousse" },
+  { email: "ines@test.tn", name: "Ines Mejri", phone: "+21655000003", city: "Sfax" },
+  { email: "amira@test.tn", name: "Amira Chaabane", phone: "+21629000004", city: "Nabeul" },
+];
+
+// City → delegation names mapping (for assigning provider zones)
+const CITY_DELEGATIONS: Record<string, string[]> = {
+  "Tunis": ["Tunis Ville", "Le Bardo", "La Marsa", "Sidi Bou Said", "Carthage", "La Goulette"],
+  "Ariana": ["Ariana Ville", "La Soukra", "Raoued", "Sidi Thabet", "Ettadhamen"],
+  "Ben Arous": ["Ben Arous", "Hammam Lif", "Hammam Chott", "Rades", "Megrine", "Ezzahra"],
+  "La Marsa": ["La Marsa", "Sidi Bou Said", "Carthage", "Tunis Ville", "Le Bardo"],
+  "Sousse": ["Sousse Ville", "Sousse Jawhara", "Sousse Riadh", "Hammam Sousse", "Akouda"],
+  "Sfax": ["Sfax Ville", "Sfax Ouest", "Sfax Sud", "Sakiet Ezzit", "Sakiet Eddaier"],
+  "Nabeul": ["Nabeul", "Hammamet", "Kelibia", "Korba", "Dar Chaabane"],
+  "Hammamet": ["Hammamet", "Nabeul", "Korba", "Grombalia", "Soliman"],
+  "Monastir": ["Monastir", "Sahline", "Moknine", "Ksar Hellal", "Jemmal"],
+  "Bizerte": ["Bizerte Nord", "Bizerte Sud", "Menzel Bourguiba", "Mateur"],
+  "Kairouan": ["Kairouan Nord", "Kairouan Sud", "Haffouz", "Sbikha"],
+  "Manouba": ["Manouba", "Den Den", "Douar Hicher", "Oued Ellil"],
+};
+
+// ============================================================
+// SERVICE TEMPLATES — realistic TND prices
+// ============================================================
+
+interface ServiceTemplate {
+  title: string;
+  description: string;
+  pricingType: "FIXED" | "SUR_DEVIS";
+  fixedPrice?: number;
+  durationMinutes?: number;
+  categorySlug: string;
+  providerIdx: number;
+  photoUrls: string[];
+  inclusions: string[];
+  exclusions: string[];
+}
+
+const SERVICE_TEMPLATES: ServiceTemplate[] = [
+  // Mohamed (idx 0) — Plomberie
+  { title: "Reparation fuite d'eau", description: "Intervention rapide pour tout type de fuite d'eau : robinet, tuyauterie, chasse d'eau. Diagnostic precis avec remplacement des pieces defectueuses et verification complete de l'etancheite.", pricingType: "FIXED", fixedPrice: 80, durationMinutes: 90, categorySlug: "reparation-fuite", providerIdx: 0, photoUrls: ["https://images.unsplash.com/photo-1585704032915-c3400ca199e7?w=600&q=80"], inclusions: ["Deplacement", "Diagnostic", "Pieces standards"], exclusions: ["Pieces speciales", "Travaux de maconnerie"] },
+  { title: "Installation robinet", description: "Pose et raccordement de robinet mitigeur pour cuisine ou salle de bain. Includes la depose de l'ancien, le raccordement aux arrivees d'eau et les tests d'etancheite.", pricingType: "FIXED", fixedPrice: 120, durationMinutes: 120, categorySlug: "installation-sanitaire", providerIdx: 0, photoUrls: ["https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=600&q=80"], inclusions: ["Depose ancien", "Pose", "Test etancheite"], exclusions: ["Robinet (fourniture client)"] },
+  { title: "Debouchage canalisation", description: "Debouchage professionnel de canalisations bouchees avec furet mecanique et produits adaptes. Intervention sur evier, lavabo, douche ou WC avec nettoyage complet.", pricingType: "FIXED", fixedPrice: 60, durationMinutes: 60, categorySlug: "debouchage", providerIdx: 0, photoUrls: ["https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?w=600&q=80"], inclusions: ["Deplacement", "Furet mecanique", "Produits"], exclusions: ["Camera inspection", "Remplacement tuyauterie"] },
+
+  // Fatma (idx 1) — Ménage & Nettoyage
+  { title: "Menage appartement", description: "Nettoyage complet de votre appartement : sols, sanitaires, cuisine, chambres et salon. Produits professionnels eco-responsables fournis. Resultat impeccable garanti.", pricingType: "FIXED", fixedPrice: 50, durationMinutes: 180, categorySlug: "menage-domicile", providerIdx: 1, photoUrls: ["https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=600&q=80"], inclusions: ["Produits fournis", "Toutes les pieces", "Materiel"], exclusions: ["Repassage", "Nettoyage terrasse"] },
+  { title: "Nettoyage apres demenagement", description: "Nettoyage en profondeur apres un demenagement. Retrait des traces, lavage des murs, nettoyage des sols et sanitaires pour rendre le logement impeccable au nouveau locataire.", pricingType: "FIXED", fixedPrice: 150, durationMinutes: 360, categorySlug: "nettoyage-chantier", providerIdx: 1, photoUrls: ["https://images.unsplash.com/photo-1628177142898-93e36e4e3a50?w=600&q=80"], inclusions: ["Nettoyage complet", "Produits", "Equipe de 2"], exclusions: ["Peinture", "Reparations"] },
+  { title: "Repassage a domicile", description: "Service de repassage professionnel a domicile. Chemises, pantalons, robes, linge de maison. Repassage soigne avec pliage et rangement sur cintres.", pricingType: "FIXED", fixedPrice: 30, durationMinutes: 120, categorySlug: "menage-domicile", providerIdx: 1, photoUrls: ["https://images.unsplash.com/photo-1489274495757-95c7c837b101?w=600&q=80"], inclusions: ["Jusqu'a 20 pieces", "Cintres fournis"], exclusions: ["Linge delicat", "Detachage special"] },
+
+  // Ahmed (idx 2) — Électricité
+  { title: "Installation prise electrique", description: "Pose d'une prise electrique encastree ou en saillie aux normes tunisiennes. Tirage de cable si necessaire, raccordement au tableau et verification de securite.", pricingType: "FIXED", fixedPrice: 70, durationMinutes: 60, categorySlug: "installation-electrique", providerIdx: 2, photoUrls: ["https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=600&q=80"], inclusions: ["Prise", "Cable", "Raccordement"], exclusions: ["Saignee dans mur porteur"] },
+  { title: "Depannage tableau electrique", description: "Diagnostic et reparation de panne sur tableau electrique : disjoncteur defaillant, court-circuit, surcharge. Intervention rapide avec remise aux normes si necessaire.", pricingType: "FIXED", fixedPrice: 100, durationMinutes: 90, categorySlug: "depannage-electrique", providerIdx: 2, photoUrls: ["https://images.unsplash.com/photo-1555963966-b7ae5404b6ed?w=600&q=80"], inclusions: ["Diagnostic", "Reparation", "Test securite"], exclusions: ["Remplacement tableau complet"] },
+  { title: "Installation lustre", description: "Pose et branchement de lustre ou plafonnier. Fixation securisee, raccordement electrique et mise en service. Nettoyage du chantier apres intervention.", pricingType: "FIXED", fixedPrice: 90, durationMinutes: 60, categorySlug: "eclairage", providerIdx: 2, photoUrls: ["https://images.unsplash.com/photo-1524484485831-a92ffc0de03f?w=600&q=80"], inclusions: ["Fixation", "Branchement", "Nettoyage"], exclusions: ["Lustre (fourniture client)"] },
+
+  // Nour (idx 3) — Cours particuliers
+  { title: "Cours maths lycee", description: "Cours particuliers de mathematiques pour lycéens. Algebre, analyse, geometrie et preparation au baccalaureat. Methode structuree avec exercices corriges et suivi personnalise.", pricingType: "FIXED", fixedPrice: 40, durationMinutes: 90, categorySlug: "mathematiques", providerIdx: 3, photoUrls: ["https://images.unsplash.com/photo-1596495577886-d920f1fb7238?w=600&q=80"], inclusions: ["Support de cours", "Exercices", "Suivi WhatsApp"], exclusions: [] },
+  { title: "Cours physique", description: "Cours de physique pour college et lycee. Mecanique, electricite, optique et thermodynamique. Approche pratique avec des exemples concrets pour faciliter la comprehension.", pricingType: "FIXED", fixedPrice: 40, durationMinutes: 90, categorySlug: "sciences", providerIdx: 3, photoUrls: ["https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=600&q=80"], inclusions: ["Cours", "Exercices", "Preparation examens"], exclusions: [] },
+  { title: "Aide devoirs primaire", description: "Accompagnement scolaire pour eleves du primaire en toutes matieres. Methode ludique et bienveillante pour developper l'autonomie et la confiance de votre enfant.", pricingType: "FIXED", fixedPrice: 25, durationMinutes: 60, categorySlug: "mathematiques", providerIdx: 3, photoUrls: ["https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=600&q=80"], inclusions: ["Toutes matieres", "Aide aux devoirs", "Fiches resumees"], exclusions: [] },
+
+  // Karim (idx 4) — Climatisation
+  { title: "Entretien climatiseur", description: "Maintenance complete de votre climatiseur : nettoyage filtres, verification du gaz refrigerant, controle des performances et desinfection de l'unite interieure.", pricingType: "FIXED", fixedPrice: 60, durationMinutes: 60, categorySlug: "entretien-clim", providerIdx: 4, photoUrls: ["https://images.unsplash.com/photo-1566093097221-ac2335b09e70?w=600&q=80"], inclusions: ["Nettoyage filtres", "Verification gaz", "Desinfection"], exclusions: ["Recharge gaz", "Pieces de rechange"] },
+  { title: "Installation climatiseur", description: "Installation complete d'un split mural : percage, passage tuyauterie, raccordement electrique, mise sous vide et mise en service. Garantie 1 an sur l'installation.", pricingType: "FIXED", fixedPrice: 250, durationMinutes: 240, categorySlug: "installation-clim", providerIdx: 4, photoUrls: ["https://images.unsplash.com/photo-1625961332771-3f40b0e2bdcf?w=600&q=80"], inclusions: ["Installation complete", "Raccordement", "Mise en service"], exclusions: ["Climatiseur (fourniture client)", "Support specifique"] },
+  { title: "Reparation climatiseur", description: "Diagnostic et reparation de climatiseur en panne : pas de froid, bruit anormal, fuite d'eau, code erreur. Intervention sur toutes les marques avec pieces d'origine.", pricingType: "FIXED", fixedPrice: 120, durationMinutes: 120, categorySlug: "reparation-clim", providerIdx: 4, photoUrls: ["https://images.unsplash.com/photo-1621905252507-b35492cc74b4?w=600&q=80"], inclusions: ["Diagnostic", "Main d'oeuvre", "Deplacement"], exclusions: ["Pieces de rechange", "Recharge gaz"] },
+
+  // Leila (idx 5) — Peinture & Rénovation
+  { title: "Peinture chambre", description: "Peinture complete d'une chambre jusqu'a 15m2. Preparation des murs, application d'un enduit de lissage et deux couches de peinture lavable. Couleur au choix du client.", pricingType: "FIXED", fixedPrice: 200, durationMinutes: 480, categorySlug: "peinture-interieure", providerIdx: 5, photoUrls: ["https://images.unsplash.com/photo-1562259949-e8e7689d7828?w=600&q=80"], inclusions: ["Preparation murs", "Enduit", "2 couches peinture"], exclusions: ["Peinture (fourniture client)", "Fissures profondes"] },
+  { title: "Peinture salon", description: "Mise en peinture complete d'un salon jusqu'a 30m2. Protection du mobilier, preparation des surfaces, application de peinture decorative haute qualite avec finitions soignees.", pricingType: "FIXED", fixedPrice: 350, durationMinutes: 600, categorySlug: "peinture-interieure", providerIdx: 5, photoUrls: ["https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600&q=80"], inclusions: ["Protection mobilier", "Preparation", "Peinture 2 couches", "Nettoyage"], exclusions: ["Peinture (fourniture client)"] },
+  { title: "Ravalement facade", description: "Ravalement et peinture de facade exterieure. Nettoyage haute pression, traitement anti-humidite, application d'enduit et peinture exterieure resistante aux intemperies.", pricingType: "SUR_DEVIS", categorySlug: "peinture-exterieure", providerIdx: 5, photoUrls: ["https://images.unsplash.com/photo-1594988930347-30d449190da0?w=600&q=80"], inclusions: ["Nettoyage facade", "Traitement", "Devis gratuit"], exclusions: ["Echafaudage (si > 2 etages)"] },
+
+  // Riadh (idx 6) — Jardinage
+  { title: "Tonte pelouse", description: "Tonte de pelouse pour jardin jusqu'a 300m2. Coupe reguliere, ramassage de l'herbe et finitions aux bordures. Entretien soigne pour un gazon impeccable toute l'annee.", pricingType: "FIXED", fixedPrice: 40, durationMinutes: 120, categorySlug: "entretien-jardin", providerIdx: 6, photoUrls: ["https://images.unsplash.com/photo-1558904541-efa843a96f01?w=600&q=80"], inclusions: ["Tonte", "Ramassage herbe", "Bordures"], exclusions: ["Engrais", "Traitement pelouse"] },
+  { title: "Taille haie", description: "Taille professionnelle de haies jusqu'a 20 metres lineaires. Mise en forme, nettoyage des coupes et ramassage des dechets vegetaux. Resultat net et uniforme.", pricingType: "FIXED", fixedPrice: 60, durationMinutes: 150, categorySlug: "taille-haies", providerIdx: 6, photoUrls: ["https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=600&q=80"], inclusions: ["Taille", "Mise en forme", "Nettoyage"], exclusions: ["Evacuation dechets verts", "Arbres > 4m"] },
+  { title: "Amenagement jardin", description: "Conception et realisation d'amenagement paysager complet. Choix des plantes adaptees au climat tunisien, installation de systeme d'arrosage et mise en place du paillage.", pricingType: "SUR_DEVIS", categorySlug: "amenagement-paysager", providerIdx: 6, photoUrls: ["https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?w=600&q=80"], inclusions: ["Conception", "Plan d'amenagement", "Conseil plantes"], exclusions: ["Plantes et fournitures", "Arrosage automatique"] },
+
+  // Salma (idx 7) — Coiffure (uses menage-domicile as fallback category)
+  { title: "Coupe femme", description: "Coupe de cheveux femme a domicile selon vos envies. Consultation coiffure, shampoing, coupe et coiffage. Conseils personnalises pour l'entretien au quotidien.", pricingType: "FIXED", fixedPrice: 35, durationMinutes: 60, categorySlug: "menage-domicile", providerIdx: 7, photoUrls: ["https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&q=80"], inclusions: ["Consultation", "Shampoing", "Coupe", "Coiffage"], exclusions: ["Coloration", "Meches"] },
+  { title: "Brushing", description: "Brushing professionnel a domicile pour tous types de cheveux. Shampoing, soin demelant et mise en forme au sechoir. Resultat lisse et brillant garanti.", pricingType: "FIXED", fixedPrice: 25, durationMinutes: 45, categorySlug: "menage-domicile", providerIdx: 7, photoUrls: ["https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600&q=80"], inclusions: ["Shampoing", "Soin", "Brushing"], exclusions: ["Lissage permanent"] },
+  { title: "Maquillage mariage", description: "Maquillage professionnel pour mariee et cortege. Essai prealable inclus, produits haut de gamme longue tenue. Disponible pour les preparations du jour J a domicile.", pricingType: "FIXED", fixedPrice: 150, durationMinutes: 120, categorySlug: "menage-domicile", providerIdx: 7, photoUrls: ["https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=600&q=80"], inclusions: ["Essai prealable", "Maquillage jour J", "Retouches"], exclusions: ["Coiffure (en supplement)"] },
+];
+
+// ============================================================
+// MESSAGE THREADS — realistic conversations in French
+// ============================================================
+
+// Conv 1: Yasmine + Mohamed (plumbing) — 4 messages — maps to B1 (demo booking, already has conv from 3e)
+// Conv 2: Sami + Fatma (cleaning) — 3 messages — maps to B2
+// Conv 3: Ines + Ahmed (electrical) — 3 messages — maps to B3
+// Conv 4: Amira + Salma (wedding hair) — 5 messages — maps to B8
+const CONVERSATION_THREADS: {
+  bookingIdx: number;
+  messages: { fromClient: boolean; content: string }[];
+}[] = [
+  // Conv 2: Sami + Fatma — confirming cleaning schedule (B2, idx 1)
+  {
+    bookingIdx: 1,
+    messages: [
+      { fromClient: true, content: "Bonjour Fatma, je confirme pour le menage de samedi. L'appartement fait 80m2, est-ce que 50 DT c'est bon ?" },
+      { fromClient: false, content: "Bonjour Sami ! Oui c'est parfait pour 80m2. Je serai la a 9h. Est-ce que vous avez des produits ou je ramene tout ?" },
+      { fromClient: true, content: "Ramenez tout s'il vous plait. A samedi, merci !" },
+    ],
+  },
+  // Conv 3: Ines + Ahmed — asking about electrical work (B3, idx 2)
+  {
+    bookingIdx: 2,
+    messages: [
+      { fromClient: true, content: "Bonjour Ahmed, le disjoncteur saute encore ce matin. C'est de pire en pire, vous pouvez venir aujourd'hui ?" },
+      { fromClient: false, content: "Bonjour Ines, oui je peux passer vers 14h. En attendant, debranchez les gros appareils (four, lave-linge) pour eviter les coupures." },
+      { fromClient: true, content: "D'accord, je debranche tout. Merci pour la reactivite, a tout a l'heure !" },
+    ],
+  },
+  // Conv 4: Amira + Salma — planning wedding styling (B8, idx 7)
+  {
+    bookingIdx: 7,
+    messages: [
+      { fromClient: true, content: "Bonjour Salma ! Je vous contacte pour la coiffure de mon mariage prevu dans 3 semaines. Est-ce que vous faites aussi le maquillage ?" },
+      { fromClient: false, content: "Bonjour Amira, felicitations ! Oui je fais coiffure et maquillage. On peut fixer un essai cette semaine pour voir ce qui vous plait ?" },
+      { fromClient: true, content: "Oui super ! Je suis libre mercredi apres-midi. J'aimerais un chignon bas avec des fleurs et un maquillage naturel." },
+      { fromClient: false, content: "Parfait, mercredi 15h chez vous ? Apportez des photos d'inspiration si vous en avez. Pour les fleurs, je travaille avec une fleuriste a Nabeul." },
+      { fromClient: true, content: "Genial ! Je prepare les photos. A mercredi alors, j'ai trop hate !" },
+    ],
+  },
+];
+
+// ============================================================
+// CATEGORIES DATA — to find existing category slugs
+// ============================================================
+
+const PARENT_CATEGORY_SLUGS = [
+  "plomberie", "electricite", "menage-nettoyage", "cours-particuliers",
+  "peinture-renovation", "demenagement", "jardinage", "climatisation",
+  "serrurerie", "informatique-tech",
+];
+
 // ============================================================
 // MAIN SEED FUNCTION
 // ============================================================
 
 async function main() {
-  const passwordHash = await hash(PASSWORD, 12);
+  console.log("========================================");
+  console.log("TAWA SERVICES — COMPREHENSIVE SEED");
+  console.log("========================================\n");
 
   // ----------------------------------------------------------
-  // 1. GOUVERNORATS & DELEGATIONS
+  // STEP 1: CLEAN OLD SEED DATA
   // ----------------------------------------------------------
-  console.log("Seeding gouvernorats & delegations...");
-  const delegationMap: Record<string, string> = {}; // name -> id
+  console.log("STEP 1: Cleaning old seed data...");
 
-  for (const gov of GOUVERNORATS_DATA) {
-    const created = await prisma.gouvernorat.upsert({
-      where: { name: gov.name },
-      update: {},
-      create: { name: gov.name, code: gov.code },
-    });
-
-    for (const delName of gov.delegations) {
-      const del = await prisma.delegation.upsert({
-        where: { name_gouvernoratId: { name: delName, gouvernoratId: created.id } },
-        update: {},
-        create: { name: delName, gouvernoratId: created.id },
-      });
-      delegationMap[delName] = del.id;
-    }
-  }
-  console.log(`  -> ${GOUVERNORATS_DATA.length} gouvernorats seeded`);
-
-  // ----------------------------------------------------------
-  // 2. CATEGORIES
-  // ----------------------------------------------------------
-  console.log("Seeding categories...");
-  const categoryMap: Record<string, string> = {}; // slug -> id
-
-  for (let i = 0; i < CATEGORIES_DATA.length; i++) {
-    const cat = CATEGORIES_DATA[i]!;
-    const parent = await prisma.category.upsert({
-      where: { slug: cat.slug },
-      update: {},
-      create: { name: cat.name, slug: cat.slug, icon: cat.icon, sortOrder: i },
-    });
-    categoryMap[cat.slug] = parent.id;
-
-    for (let j = 0; j < cat.children.length; j++) {
-      const child = cat.children[j]!;
-      const childCat = await prisma.category.upsert({
-        where: { slug: child.slug },
-        update: {},
-        create: { name: child.name, slug: child.slug, parentId: parent.id, sortOrder: j },
-      });
-      categoryMap[child.slug] = childCat.id;
-    }
-  }
-  console.log(`  -> ${CATEGORIES_DATA.length} parent categories seeded`);
-
-  // ----------------------------------------------------------
-  // 3. ADMIN USER
-  // ----------------------------------------------------------
-  console.log("Seeding admin user...");
-  const admin = await prisma.user.upsert({
-    where: { email: ADMIN_USER.email },
-    update: {},
-    create: {
-      email: ADMIN_USER.email,
-      name: ADMIN_USER.name,
-      phone: ADMIN_USER.phone,
-      passwordHash,
-      role: "ADMIN",
-      emailVerified: true,
-      phoneVerified: true,
+  // Find all seed users (emails ending with @seed.tn or @test.tn), excluding protected
+  const seedUsers = await prisma.user.findMany({
+    where: {
+      OR: [
+        { email: { endsWith: "@seed.tn" } },
+        { email: { endsWith: "@test.tn" } },
+      ],
+      NOT: { email: { in: PROTECTED_EMAILS } },
     },
+    select: { id: true, email: true },
   });
-  console.log(`  -> Admin: ${admin.email}`);
+
+  // Also find old @tawa.tn seed users (from previous seed script), EXCEPT admin@tawa.tn
+  const oldSeedUsers = await prisma.user.findMany({
+    where: {
+      email: { endsWith: "@tawa.tn" },
+      NOT: { email: { in: PROTECTED_EMAILS } },
+    },
+    select: { id: true, email: true },
+  });
+
+  const allSeedUsers = [...seedUsers, ...oldSeedUsers];
+  const seedUserIds = allSeedUsers.map(u => u.id);
+
+  if (seedUserIds.length > 0) {
+    console.log(`  Found ${allSeedUsers.length} seed users to clean (${seedUsers.length} @seed.tn/@test.tn + ${oldSeedUsers.length} old @tawa.tn)`);
+
+    // Find seed providers
+    const seedProviders = await prisma.provider.findMany({
+      where: { userId: { in: seedUserIds } },
+      select: { id: true },
+    });
+    const seedProviderIds = seedProviders.map(p => p.id);
+
+    // Find bookings involving seed users (as client or via seed provider)
+    const seedBookings = await prisma.booking.findMany({
+      where: {
+        OR: [
+          { clientId: { in: seedUserIds } },
+          ...(seedProviderIds.length > 0 ? [{ providerId: { in: seedProviderIds } }] : []),
+        ],
+      },
+      select: { id: true },
+    });
+    const seedBookingIds = seedBookings.map(b => b.id);
+
+    // Find conversations for those bookings
+    const seedConversations = await prisma.conversation.findMany({
+      where: { bookingId: { in: seedBookingIds } },
+      select: { id: true },
+    });
+    const seedConvIds = seedConversations.map(c => c.id);
+
+    // Delete in FK order
+    if (seedConvIds.length > 0) {
+      const msgDel = await prisma.message.deleteMany({ where: { conversationId: { in: seedConvIds } } });
+      console.log(`  Deleted ${msgDel.count} messages`);
+      const convDel = await prisma.conversation.deleteMany({ where: { id: { in: seedConvIds } } });
+      console.log(`  Deleted ${convDel.count} conversations`);
+    }
+
+    const notifDel = await prisma.notification.deleteMany({ where: { userId: { in: seedUserIds } } });
+    console.log(`  Deleted ${notifDel.count} notifications`);
+
+    // Delete notification preferences
+    await prisma.notificationPreference.deleteMany({ where: { userId: { in: seedUserIds } } });
+
+    const reportDel = await prisma.report.deleteMany({
+      where: { OR: [{ reporterId: { in: seedUserIds } }, { reportedId: { in: seedUserIds } }] },
+    });
+    console.log(`  Deleted ${reportDel.count} reports`);
+
+    if (seedBookingIds.length > 0) {
+      const revDel = await prisma.review.deleteMany({ where: { bookingId: { in: seedBookingIds } } });
+      console.log(`  Deleted ${revDel.count} reviews`);
+
+      // Delete withdrawal requests via payments
+      const seedPayments = await prisma.payment.findMany({
+        where: { bookingId: { in: seedBookingIds } },
+        select: { id: true },
+      });
+      if (seedPayments.length > 0) {
+        await prisma.withdrawalRequest.deleteMany({ where: { paymentId: { in: seedPayments.map(p => p.id) } } });
+      }
+
+      const payDel = await prisma.payment.deleteMany({ where: { bookingId: { in: seedBookingIds } } });
+      console.log(`  Deleted ${payDel.count} payments`);
+
+      const bookDel = await prisma.booking.deleteMany({ where: { id: { in: seedBookingIds } } });
+      console.log(`  Deleted ${bookDel.count} bookings`);
+    }
+
+    // Delete quotes by seed users
+    const quoteDel = await prisma.quote.deleteMany({ where: { clientId: { in: seedUserIds } } });
+    console.log(`  Deleted ${quoteDel.count} quotes`);
+
+    // Delete favorites by seed users
+    await prisma.favorite.deleteMany({ where: { userId: { in: seedUserIds } } });
+
+    // Delete services by seed providers
+    if (seedProviderIds.length > 0) {
+      const svcDel = await prisma.service.deleteMany({ where: { providerId: { in: seedProviderIds } } });
+      console.log(`  Deleted ${svcDel.count} services`);
+
+      // Delete provider related data
+      await prisma.kYCDocument.deleteMany({ where: { providerId: { in: seedProviderIds } } });
+      await prisma.trustBadge.deleteMany({ where: { providerId: { in: seedProviderIds } } });
+      await prisma.availability.deleteMany({ where: { providerId: { in: seedProviderIds } } });
+      await prisma.blockedDate.deleteMany({ where: { providerId: { in: seedProviderIds } } });
+      await prisma.certification.deleteMany({ where: { providerId: { in: seedProviderIds } } });
+      await prisma.providerDelegation.deleteMany({ where: { providerId: { in: seedProviderIds } } });
+      await prisma.portfolioPhoto.deleteMany({ where: { providerId: { in: seedProviderIds } } });
+
+      const provDel = await prisma.provider.deleteMany({ where: { id: { in: seedProviderIds } } });
+      console.log(`  Deleted ${provDel.count} providers`);
+    }
+
+    // Delete auth-related records for seed users
+    await prisma.emailVerification.deleteMany({ where: { userId: { in: seedUserIds } } });
+    await prisma.passwordReset.deleteMany({ where: { userId: { in: seedUserIds } } });
+    await prisma.loginRecord.deleteMany({ where: { userId: { in: seedUserIds } } });
+    await prisma.account.deleteMany({ where: { userId: { in: seedUserIds } } });
+    await prisma.session.deleteMany({ where: { userId: { in: seedUserIds } } });
+
+    const userDel = await prisma.user.deleteMany({ where: { id: { in: seedUserIds } } });
+    console.log(`  Deleted ${userDel.count} users`);
+  } else {
+    console.log("  No old seed data found, starting fresh.");
+  }
+
+  // Clean old seed FAQs, banners, contact messages
+  await prisma.faq.deleteMany({});
+  await prisma.banner.deleteMany({});
+  await prisma.contactMessage.deleteMany({});
+  console.log("  Cleaned FAQs, banners, contact messages\n");
 
   // ----------------------------------------------------------
-  // 4. CLIENTS
+  // STEP 2: QUERY EXISTING CATEGORIES & DELEGATIONS FROM DB
   // ----------------------------------------------------------
-  console.log("Seeding 20 client users...");
+  console.log("STEP 2: Querying existing categories & delegations...");
+
+  // Build category slug → id map
+  const allCategories = await prisma.category.findMany({
+    where: { isDeleted: false },
+    select: { id: true, slug: true, name: true, parentId: true },
+  });
+  const categoryMap: Record<string, string> = {};
+  for (const cat of allCategories) {
+    categoryMap[cat.slug] = cat.id;
+  }
+  console.log(`  Found ${allCategories.length} categories (${allCategories.filter(c => !c.parentId).length} parents)`);
+
+  // Verify required categories exist
+  const missingCats = PARENT_CATEGORY_SLUGS.filter(s => !categoryMap[s]);
+  if (missingCats.length > 0) {
+    console.error(`  ERROR: Missing categories: ${missingCats.join(", ")}. Run the old seed first to create categories.`);
+    process.exit(1);
+  }
+
+  // Build delegation name → id map
+  const allDelegations = await prisma.delegation.findMany({
+    where: { isDeleted: false },
+    select: { id: true, name: true },
+  });
+  const delegationMap: Record<string, string> = {};
+  for (const del of allDelegations) {
+    delegationMap[del.name] = del.id;
+  }
+  console.log(`  Found ${allDelegations.length} delegations\n`);
+
+  // ----------------------------------------------------------
+  // STEP 3: CREATE SEED DATA
+  // ----------------------------------------------------------
+  const passwordHash = await hash(PASSWORD, 10);
+
+  // ==================== 3.PRE: FIX ADMIN PASSWORD ====================
+  // Ensure admin@tawa.tn exists and has the correct password
+  const existingAdmin = await prisma.user.findUnique({ where: { email: "admin@tawa.tn" } });
+  if (existingAdmin) {
+    await prisma.user.update({
+      where: { email: "admin@tawa.tn" },
+      data: { passwordHash, failedLoginAttempts: 0, lockedUntil: null },
+    });
+    console.log("  Updated admin@tawa.tn password");
+  } else {
+    await prisma.user.create({
+      data: {
+        email: "admin@tawa.tn",
+        name: "Admin Tawa",
+        passwordHash,
+        role: "ADMIN",
+        emailVerified: true,
+        emailVerifiedAt: new Date(),
+        isActive: true,
+      },
+    });
+    console.log("  Created admin@tawa.tn");
+  }
+
+  // ==================== 3a. CLIENTS ====================
+  console.log("Creating 4 client users...");
   const clientIds: string[] = [];
 
-  for (const c of CLIENTS_DATA) {
-    const user = await prisma.user.upsert({
-      where: { email: c.email },
-      update: {},
-      create: {
+  for (const c of CLIENTS) {
+    const user = await prisma.user.create({
+      data: {
         email: c.email,
         name: c.name,
         phone: c.phone,
         passwordHash,
         role: "CLIENT",
         emailVerified: true,
-        phoneVerified: Math.random() > 0.3,
+        emailVerifiedAt: daysAgo(randomInt(10, 60)),
+        phoneVerified: true,
+        phoneVerifiedAt: daysAgo(randomInt(10, 60)),
       },
     });
     clientIds.push(user.id);
   }
-  console.log(`  -> ${clientIds.length} clients seeded`);
+  console.log(`  -> ${clientIds.length} clients created`);
 
-  // ----------------------------------------------------------
-  // 5. PROVIDERS
-  // ----------------------------------------------------------
-  console.log("Seeding 15 providers...");
+  // ==================== 3b. PROVIDERS ====================
+  console.log(`Creating ${PROVIDERS.length} providers...`);
   const providerIds: string[] = [];
   const providerUserIds: string[] = [];
   const providerCategorySlugs: string[] = [];
+  const providerDisplayNames: string[] = [];
 
-  for (const p of PROVIDERS_DATA) {
-    const user = await prisma.user.upsert({
-      where: { email: p.email },
-      update: {},
-      create: {
+  for (const p of PROVIDERS) {
+    const user = await prisma.user.create({
+      data: {
         email: p.email,
         name: p.name,
         phone: p.phone,
         passwordHash,
         role: "PROVIDER",
         emailVerified: true,
+        emailVerifiedAt: daysAgo(randomInt(30, 90)),
         phoneVerified: true,
+        phoneVerifiedAt: daysAgo(randomInt(30, 90)),
       },
     });
     providerUserIds.push(user.id);
 
-    // Upsert provider profile
-    const provider = await prisma.provider.upsert({
-      where: { userId: user.id },
-      update: {},
-      create: {
+    const provider = await prisma.provider.create({
+      data: {
         userId: user.id,
-        displayName: p.displayName,
+        displayName: p.display,
         bio: p.bio,
+        photoUrl: p.photoUrl,
         phone: p.phone,
-        kycStatus: p.kycStatus,
-        kycSubmittedAt: p.kycStatus !== "NOT_SUBMITTED" ? daysAgo(30) : undefined,
-        kycApprovedAt: p.kycStatus === "APPROVED" ? daysAgo(25) : undefined,
-        yearsExperience: p.experience,
-        languages: p.languages,
-        rating: p.kycStatus === "APPROVED" ? parseFloat((3.5 + Math.random() * 1.5).toFixed(1)) : 0,
-        ratingCount: p.kycStatus === "APPROVED" ? Math.floor(5 + Math.random() * 30) : 0,
-        completedMissions: p.kycStatus === "APPROVED" ? Math.floor(10 + Math.random() * 50) : 0,
+        kycStatus: p.kyc,
+        kycSubmittedAt: daysAgo(randomInt(30, 60)),
+        kycApprovedAt: daysAgo(randomInt(20, 50)),
+        yearsExperience: p.exp,
+        languages: p.langs,
+        rating: p.rating,
+        ratingCount: Math.round(p.missions * 0.7),
+        completedMissions: p.missions,
         responseTimeHours: parseFloat((0.5 + Math.random() * 3).toFixed(1)),
         responseRate: parseFloat((80 + Math.random() * 20).toFixed(0)),
-        isFeatured: p.isFeatured,
+        isFeatured: p.featured,
         isActive: true,
       },
     });
     providerIds.push(provider.id);
-    providerCategorySlugs.push(p.categorySlug);
+    providerCategorySlugs.push(p.catSlug);
+    providerDisplayNames.push(p.display);
 
-    // Assign delegations (2-4 random ones from Tunis region)
-    const tunisDelegations = ["Tunis Ville", "Le Bardo", "La Marsa", "Sidi Bou Said", "Carthage", "La Goulette", "Ariana Ville", "La Soukra", "Ben Arous", "Rades"];
-    const numDelegations = 2 + Math.floor(Math.random() * 3);
-    const shuffled = tunisDelegations.sort(() => Math.random() - 0.5);
-    for (let d = 0; d < numDelegations; d++) {
+    // Assign delegations based on city
+    const cityDels = CITY_DELEGATIONS[p.city] || CITY_DELEGATIONS["Tunis"]!;
+    const numDels = randomInt(2, Math.min(4, cityDels.length));
+    const shuffled = [...cityDels].sort(() => Math.random() - 0.5);
+    for (let d = 0; d < numDels; d++) {
       const delId = delegationMap[shuffled[d]!];
       if (delId) {
-        await prisma.providerDelegation.upsert({
-          where: { providerId_delegationId: { providerId: provider.id, delegationId: delId } },
-          update: {},
-          create: { providerId: provider.id, delegationId: delId },
+        await prisma.providerDelegation.create({
+          data: { providerId: provider.id, delegationId: delId },
         });
       }
     }
 
-    // Availability (Mon-Sat 8:00-18:00)
+    // Availability (Mon-Sat, varied hours)
     for (let day = 1; day <= 6; day++) {
-      await prisma.availability.upsert({
-        where: { providerId_dayOfWeek: { providerId: provider.id, dayOfWeek: day } },
-        update: {},
-        create: {
-          providerId: provider.id,
-          dayOfWeek: day,
-          startTime: "08:00",
-          endTime: day === 6 ? "13:00" : "18:00",
-        },
+      const startHour = day === 6 ? "09:00" : "08:00";
+      const endHour = day === 6 ? "13:00" : "18:00";
+      await prisma.availability.create({
+        data: { providerId: provider.id, dayOfWeek: day, startTime: startHour, endTime: endHour },
       });
     }
 
-    // Trust badges for approved providers
-    if (p.kycStatus === "APPROVED") {
-      await prisma.trustBadge.upsert({
-        where: { providerId_badgeType: { providerId: provider.id, badgeType: "IDENTITY_VERIFIED" } },
-        update: {},
-        create: { providerId: provider.id, badgeType: "IDENTITY_VERIFIED" },
+    // Trust badges (all providers are APPROVED)
+    await prisma.trustBadge.create({
+      data: { providerId: provider.id, badgeType: "IDENTITY_VERIFIED" },
+    });
+    if (p.featured) {
+      await prisma.trustBadge.create({
+        data: { providerId: provider.id, badgeType: "TOP_PROVIDER" },
       });
-      if (p.isFeatured) {
-        await prisma.trustBadge.upsert({
-          where: { providerId_badgeType: { providerId: provider.id, badgeType: "TOP_PROVIDER" } },
-          update: {},
-          create: { providerId: provider.id, badgeType: "TOP_PROVIDER" },
-        });
-      }
+    }
+    if (parseFloat(provider.responseTimeHours?.toString() || "3") < 1.5) {
+      await prisma.trustBadge.create({
+        data: { providerId: provider.id, badgeType: "QUICK_RESPONSE" },
+      });
     }
 
-    // KYC documents for approved and pending providers
-    if (p.kycStatus === "APPROVED" || p.kycStatus === "PENDING") {
-      for (const docType of ["CIN_RECTO", "CIN_VERSO", "SELFIE"]) {
-        await prisma.kYCDocument.upsert({
-          where: { id: `kyc-${provider.id}-${docType}` },
-          update: {},
-          create: {
-            id: `kyc-${provider.id}-${docType}`,
+    // KYC documents
+    {
+      for (const docType of ["CIN_RECTO", "CIN_VERSO", "SELFIE", "PROOF_OF_ADDRESS"]) {
+        await prisma.kYCDocument.create({
+          data: {
             providerId: provider.id,
             docType,
-            fileUrl: `/uploads/kyc/${docType.toLowerCase()}_placeholder.jpg`,
+            fileUrl: `/uploads/kyc/${docType.toLowerCase()}_${provider.id.slice(-6)}.jpg`,
           },
         });
       }
     }
-  }
-  console.log(`  -> ${providerIds.length} providers seeded`);
 
-  // ----------------------------------------------------------
-  // 6. SERVICES (50+)
-  // ----------------------------------------------------------
-  console.log("Seeding services...");
+    // Blocked dates (a few random ones for some providers)
+    if (Math.random() > 0.5) {
+      const numBlocked = randomInt(1, 3);
+      for (let b = 0; b < numBlocked; b++) {
+        const blockedDate = daysFromNow(randomInt(3, 30));
+        try {
+          await prisma.blockedDate.create({
+            data: {
+              providerId: provider.id,
+              date: blockedDate,
+              reason: randomElement(["Conge personnel", "Rendez-vous medical", "Jour ferie"]),
+            },
+          });
+        } catch { /* skip duplicate dates */ }
+      }
+    }
+  }
+  console.log(`  -> ${providerIds.length} providers created`);
+
+  // ==================== 3c. SERVICES ====================
+  console.log("Creating services...");
   const serviceIds: string[] = [];
   const serviceProviderMap: Record<string, number> = {}; // serviceId -> provider index
 
@@ -675,480 +568,899 @@ async function main() {
     const catId = categoryMap[tmpl.categorySlug];
     if (!catId) continue;
 
-    // Find a matching provider for this category
-    const parentCatSlug = CATEGORIES_DATA.find(c => c.children.some(ch => ch.slug === tmpl.categorySlug))?.slug || tmpl.categorySlug;
-    let providerIdx = providerCategorySlugs.findIndex(s => s === parentCatSlug);
-    if (providerIdx < 0) providerIdx = i % providerIds.length;
+    const providerIdx = tmpl.providerIdx;
+    const providerId = providerIds[providerIdx]!;
+    const service = await prisma.service.create({
+      data: {
+        providerId,
+        categoryId: catId,
+        title: tmpl.title,
+        description: tmpl.description,
+        pricingType: tmpl.pricingType,
+        fixedPrice: tmpl.fixedPrice ?? null,
+        durationMinutes: tmpl.durationMinutes ?? null,
+        inclusions: tmpl.inclusions,
+        exclusions: tmpl.exclusions,
+        photoUrls: tmpl.photoUrls,
+        status: "ACTIVE",
+        viewCount: randomInt(15, 250),
+      },
+    });
+    serviceIds.push(service.id);
+    serviceProviderMap[service.id] = providerIdx;
+  }
+  console.log(`  -> ${serviceIds.length} services created`);
 
-    // Some services have a second provider offering them
-    const providerIndices = [providerIdx];
-    // Find if there's another provider for the same category
-    const secondIdx = providerCategorySlugs.findIndex((s, idx) => s === parentCatSlug && idx !== providerIdx);
-    if (secondIdx >= 0 && i % 3 === 0) providerIndices.push(secondIdx);
+  // ==================== 3d. BOOKINGS (20 bookings) ====================
+  console.log("Creating 20 bookings...");
+  interface BookingMeta { id: string; clientIdx: number; providerIdx: number; serviceId: string; status: string; scheduledAt: Date }
+  const bookingMeta: BookingMeta[] = [];
 
-    for (const pIdx of providerIndices) {
-      const providerId = providerIds[pIdx]!;
-      const service = await prisma.service.create({
+  // Helper: find a service by provider index
+  const svcByProvider = (pIdx: number) => serviceIds.find(sid => serviceProviderMap[sid] === pIdx) || serviceIds[0]!;
+  // Helper: find nth service by provider index
+  const svcByProviderN = (pIdx: number, n: number) => {
+    const matches = serviceIds.filter(sid => serviceProviderMap[sid] === pIdx);
+    return matches[n % matches.length] || serviceIds[0]!;
+  };
+
+  // Helper: create booking + optional payment, returns booking id
+  async function createBooking(opts: {
+    clientIdx: number; providerIdx: number; serviceId: string;
+    status: "PENDING" | "ACCEPTED" | "IN_PROGRESS" | "COMPLETED" | "CANCELLED";
+    scheduledAt: Date; amount: number; createdAt: Date;
+    completedAt?: Date; cancelledBy?: string; cancelReason?: string;
+    clientNote?: string; providerNote?: string; quoteId?: string;
+    payment?: { status: "PENDING" | "HELD" | "RELEASED" | "REFUNDED"; method: "CARD" | "D17" | "FLOUCI" | "CASH" };
+  }) {
+    const booking = await prisma.booking.create({
+      data: {
+        clientId: clientIds[opts.clientIdx]!,
+        providerId: providerIds[opts.providerIdx]!,
+        serviceId: opts.serviceId,
+        status: opts.status,
+        scheduledAt: opts.scheduledAt,
+        completedAt: opts.completedAt ?? null,
+        cancelledAt: opts.cancelledBy ? daysAgo(randomInt(1, 5)) : null,
+        cancelledBy: opts.cancelledBy ?? null,
+        cancelReason: opts.cancelReason ?? null,
+        totalAmount: opts.amount,
+        clientNote: opts.clientNote ?? null,
+        providerNote: opts.providerNote ?? null,
+        quoteId: opts.quoteId ?? null,
+        createdAt: opts.createdAt,
+      },
+    });
+
+    if (opts.payment) {
+      const commission = parseFloat((opts.amount * 0.12).toFixed(2));
+      const providerEarning = parseFloat((opts.amount - commission).toFixed(2));
+      const paidAt = new Date(opts.scheduledAt.getTime() - randomInt(1, 24) * 60 * 60 * 1000);
+
+      await prisma.payment.create({
         data: {
-          providerId,
-          categoryId: catId,
-          title: tmpl.title,
-          description: tmpl.description,
-          pricingType: tmpl.pricingType,
-          fixedPrice: tmpl.fixedPrice ?? null,
-          durationMinutes: tmpl.durationMinutes ?? null,
-          inclusions: tmpl.inclusions,
-          exclusions: tmpl.exclusions,
-          status: "ACTIVE",
-          viewCount: Math.floor(10 + Math.random() * 200),
+          bookingId: booking.id,
+          method: opts.payment.method,
+          status: opts.payment.status,
+          amount: opts.amount,
+          commission,
+          providerEarning,
+          paidAt,
+          heldAt: opts.payment.status !== "PENDING" ? hoursAfter(paidAt, 1) : null,
+          releasedAt: opts.payment.status === "RELEASED" ? hoursAfter(opts.scheduledAt, randomInt(2, 6)) : null,
+          refundedAt: opts.payment.status === "REFUNDED" ? hoursAfter(paidAt, randomInt(24, 48)) : null,
+          refundAmount: opts.payment.status === "REFUNDED" ? opts.amount : null,
         },
       });
-      serviceIds.push(service.id);
-      serviceProviderMap[service.id] = pIdx;
     }
+
+    bookingMeta.push({
+      id: booking.id, clientIdx: opts.clientIdx, providerIdx: opts.providerIdx,
+      serviceId: opts.serviceId, status: opts.status, scheduledAt: opts.scheduledAt,
+    });
+    return booking.id;
   }
-  console.log(`  -> ${serviceIds.length} services seeded`);
 
-  // ----------------------------------------------------------
-  // 7. BOOKINGS (40+) — all statuses
-  // ----------------------------------------------------------
-  console.log("Seeding bookings...");
-  const bookingIds: string[] = [];
-  const bookingMeta: { id: string; clientIdx: number; providerIdx: number; serviceId: string; status: string }[] = [];
+  // --- 5 COMPLETED bookings (past dates, payments RELEASED) ---
 
-  // Status distribution for realism
-  const statusDistribution: { status: "PENDING" | "ACCEPTED" | "IN_PROGRESS" | "COMPLETED" | "REJECTED" | "CANCELLED"; count: number }[] = [
-    { status: "COMPLETED", count: 18 },
-    { status: "ACCEPTED", count: 6 },
-    { status: "PENDING", count: 6 },
-    { status: "IN_PROGRESS", count: 5 },
-    { status: "REJECTED", count: 3 },
-    { status: "CANCELLED", count: 4 },
-  ];
+  // B1: Yasmine -> Mohamed (Reparation fuite 80 TND) — 45 days ago
+  await createBooking({
+    clientIdx: 0, providerIdx: 0, serviceId: svcByProviderN(0, 0),
+    status: "COMPLETED", amount: 80, scheduledAt: daysAgo(45), createdAt: daysAgo(48),
+    completedAt: daysAgo(45), clientNote: "Fuite sous l'evier de la cuisine, merci de venir avec les outils necessaires.",
+    payment: { status: "RELEASED", method: "FLOUCI" },
+  });
 
-  let bookingIndex = 0;
-  for (const { status, count } of statusDistribution) {
-    for (let i = 0; i < count; i++) {
-      const clientIdx = bookingIndex % clientIds.length;
-      const serviceId = serviceIds[bookingIndex % serviceIds.length]!;
-      const providerIdx = serviceProviderMap[serviceId] ?? 0;
-      const service = await prisma.service.findUnique({ where: { id: serviceId } });
-      const amount = service?.fixedPrice ?? (50 + Math.floor(Math.random() * 200));
+  // B2: Sami -> Fatma (Menage appartement 50 TND) — 30 days ago
+  await createBooking({
+    clientIdx: 1, providerIdx: 1, serviceId: svcByProviderN(1, 0),
+    status: "COMPLETED", amount: 50, scheduledAt: daysAgo(30), createdAt: daysAgo(33),
+    completedAt: daysAgo(30), clientNote: "Appartement S+2, produits fournis par vos soins.",
+    payment: { status: "RELEASED", method: "CARD" },
+  });
 
-      const scheduledAt = status === "COMPLETED" || status === "REJECTED" || status === "CANCELLED"
-        ? randomDate(daysAgo(60), daysAgo(5))
-        : randomDate(daysFromNow(1), daysFromNow(30));
+  // B3: Ines -> Ahmed (Depannage tableau 100 TND) — 20 days ago
+  await createBooking({
+    clientIdx: 2, providerIdx: 2, serviceId: svcByProviderN(2, 1),
+    status: "COMPLETED", amount: 100, scheduledAt: daysAgo(20), createdAt: daysAgo(23),
+    completedAt: daysAgo(20), clientNote: "Le disjoncteur saute regulierement, surtout le soir.",
+    payment: { status: "RELEASED", method: "D17" },
+  });
 
-      const booking = await prisma.booking.create({
-        data: {
-          clientId: clientIds[clientIdx]!,
-          providerId: providerIds[providerIdx]!,
-          serviceId,
-          status,
-          scheduledAt,
-          completedAt: status === "COMPLETED" ? new Date(scheduledAt.getTime() + 2 * 60 * 60 * 1000) : null,
-          cancelledAt: status === "CANCELLED" ? new Date(scheduledAt.getTime() - 24 * 60 * 60 * 1000) : null,
-          cancelledBy: status === "CANCELLED" ? (Math.random() > 0.5 ? "CLIENT" : "PROVIDER") : null,
-          cancelReason: status === "CANCELLED" ? "Imprevus personnels" : null,
-          totalAmount: amount,
-          clientNote: i % 3 === 0 ? "Merci de sonner a l'interphone, appartement 3B." : null,
-        },
-      });
+  // B4: Amira -> Nour (Cours maths 40 TND) — 15 days ago
+  await createBooking({
+    clientIdx: 3, providerIdx: 3, serviceId: svcByProviderN(3, 0),
+    status: "COMPLETED", amount: 40, scheduledAt: daysAgo(15), createdAt: daysAgo(18),
+    completedAt: daysAgo(15),
+    payment: { status: "RELEASED", method: "CASH" },
+  });
 
-      bookingIds.push(booking.id);
-      bookingMeta.push({ id: booking.id, clientIdx, providerIdx, serviceId, status });
+  // B5: Yasmine -> Karim (Entretien climatiseur 60 TND) — 10 days ago
+  await createBooking({
+    clientIdx: 0, providerIdx: 4, serviceId: svcByProviderN(4, 0),
+    status: "COMPLETED", amount: 60, scheduledAt: daysAgo(10), createdAt: daysAgo(13),
+    completedAt: daysAgo(10), clientNote: "Climatiseur Samsung dans le salon, il refroidit mal.",
+    payment: { status: "RELEASED", method: "FLOUCI" },
+  });
 
-      // Create payment for accepted, in_progress, completed, cancelled (with held/released/refunded)
-      if (status !== "PENDING" && status !== "REJECTED") {
-        const commission = parseFloat((amount * 0.12).toFixed(2));
-        const providerEarning = parseFloat((amount - commission).toFixed(2));
-        const paymentMethod = randomElement(["CARD", "D17", "FLOUCI", "CASH"] as const);
+  // --- 3 ACCEPTED bookings (upcoming dates, payments HELD) ---
 
-        let paymentStatus: "PENDING" | "HELD" | "RELEASED" | "REFUNDED" = "PENDING";
-        if (status === "COMPLETED") paymentStatus = "RELEASED";
-        else if (status === "IN_PROGRESS" || status === "ACCEPTED") paymentStatus = "HELD";
-        else if (status === "CANCELLED") paymentStatus = "REFUNDED";
+  // B6: Sami -> Leila (Peinture chambre 200 TND) — in 5 days
+  await createBooking({
+    clientIdx: 1, providerIdx: 5, serviceId: svcByProviderN(5, 0),
+    status: "ACCEPTED", amount: 200, scheduledAt: daysFromNow(5), createdAt: daysAgo(3),
+    clientNote: "Chambre de 12m2, couleur beige souhaitee.",
+    payment: { status: "HELD", method: "CARD" },
+  });
 
-        await prisma.payment.create({
-          data: {
-            bookingId: booking.id,
-            method: paymentMethod,
-            status: paymentStatus,
-            amount,
-            commission,
-            providerEarning,
-            paidAt: daysAgo(Math.floor(Math.random() * 30)),
-            heldAt: paymentStatus !== "PENDING" ? daysAgo(Math.floor(Math.random() * 25)) : null,
-            releasedAt: paymentStatus === "RELEASED" ? daysAgo(Math.floor(Math.random() * 10)) : null,
-            refundedAt: paymentStatus === "REFUNDED" ? daysAgo(Math.floor(Math.random() * 5)) : null,
-            refundAmount: paymentStatus === "REFUNDED" ? amount * 0.5 : null,
-          },
-        });
-      }
+  // B7: Ines -> Riadh (Tonte pelouse 40 TND) — in 7 days
+  await createBooking({
+    clientIdx: 2, providerIdx: 6, serviceId: svcByProviderN(6, 0),
+    status: "ACCEPTED", amount: 40, scheduledAt: daysFromNow(7), createdAt: daysAgo(2),
+    payment: { status: "HELD", method: "FLOUCI" },
+  });
 
-      bookingIndex++;
-    }
-  }
-  console.log(`  -> ${bookingIds.length} bookings seeded`);
+  // B8: Amira -> Salma (Coupe femme 35 TND) — in 3 days
+  await createBooking({
+    clientIdx: 3, providerIdx: 7, serviceId: svcByProviderN(7, 0),
+    status: "ACCEPTED", amount: 35, scheduledAt: daysFromNow(3), createdAt: daysAgo(1),
+    clientNote: "Coupe mi-longue avec degrade.",
+    payment: { status: "HELD", method: "D17" },
+  });
 
-  // ----------------------------------------------------------
-  // 8. DEMO SCENARIO: Salma → Ahmed plumber flow
-  // ----------------------------------------------------------
-  console.log("Seeding demo scenario: Salma -> Ahmed...");
-  const salmaId = clientIds[0]!; // Salma is the first client
-  const ahmedProviderIdx = 0; // Ahmed is the first provider
-  const ahmedProviderId = providerIds[ahmedProviderIdx]!;
-  // Find Ahmed's plumbing service
-  const ahmedServiceId = serviceIds.find(sid => serviceProviderMap[sid] === ahmedProviderIdx) || serviceIds[0]!;
+  // --- 3 IN_PROGRESS bookings (current week) ---
 
-  const demoBooking = await prisma.booking.create({
+  // B9: Yasmine -> Fatma (Nettoyage apres demenagement 150 TND) — today
+  await createBooking({
+    clientIdx: 0, providerIdx: 1, serviceId: svcByProviderN(1, 1),
+    status: "IN_PROGRESS", amount: 150, scheduledAt: daysAgo(0), createdAt: daysAgo(4),
+    clientNote: "Appartement S+3 a La Marsa, ancien locataire parti hier.",
+    payment: { status: "HELD", method: "CARD" },
+  });
+
+  // B10: Sami -> Ahmed (Installation lustre 90 TND) — yesterday
+  await createBooking({
+    clientIdx: 1, providerIdx: 2, serviceId: svcByProviderN(2, 2),
+    status: "IN_PROGRESS", amount: 90, scheduledAt: daysAgo(1), createdAt: daysAgo(5),
+    clientNote: "Lustre deja achete, poids environ 8 kg.",
+    payment: { status: "HELD", method: "FLOUCI" },
+  });
+
+  // B11: Amira -> Mohamed (Installation robinet 120 TND) — 2 days ago, still ongoing
+  await createBooking({
+    clientIdx: 3, providerIdx: 0, serviceId: svcByProviderN(0, 1),
+    status: "IN_PROGRESS", amount: 120, scheduledAt: daysAgo(2), createdAt: daysAgo(6),
+    providerNote: "Attente piece de rechange, intervention en 2 temps.",
+    payment: { status: "HELD", method: "D17" },
+  });
+
+  // --- 2 PENDING bookings (just created, no payment yet) ---
+
+  // B12: Ines -> Nour (Cours physique 40 TND) — in 10 days
+  await createBooking({
+    clientIdx: 2, providerIdx: 3, serviceId: svcByProviderN(3, 1),
+    status: "PENDING", amount: 40, scheduledAt: daysFromNow(10), createdAt: daysAgo(0),
+    clientNote: "Mon fils est en 2eme annee lycee, preparation bac.",
+  });
+
+  // B13: Yasmine -> Salma (Maquillage mariage 150 TND) — in 20 days
+  await createBooking({
+    clientIdx: 0, providerIdx: 7, serviceId: svcByProviderN(7, 2),
+    status: "PENDING", amount: 150, scheduledAt: daysFromNow(20), createdAt: daysAgo(0),
+    clientNote: "Mariage de ma soeur, maquillage pour la mariee et 2 demoiselles d'honneur.",
+  });
+
+  // --- 2 CANCELLED bookings ---
+
+  // B14: Sami -> Karim (Installation climatiseur 250 TND) — cancelled by client
+  await createBooking({
+    clientIdx: 1, providerIdx: 4, serviceId: svcByProviderN(4, 1),
+    status: "CANCELLED", amount: 250, scheduledAt: daysAgo(8), createdAt: daysAgo(15),
+    cancelledBy: "CLIENT", cancelReason: "Changement de programme, le proprietaire a decide de s'en occuper lui-meme.",
+    payment: { status: "REFUNDED", method: "CARD" },
+  });
+
+  // B15: Amira -> Riadh (Amenagement jardin 300 TND) — cancelled by provider
+  await createBooking({
+    clientIdx: 3, providerIdx: 6, serviceId: svcByProviderN(6, 2),
+    status: "CANCELLED", amount: 300, scheduledAt: daysAgo(5), createdAt: daysAgo(12),
+    cancelledBy: "PROVIDER", cancelReason: "Indisponibilite de l'equipe suite a un chantier prolonge sur un autre site.",
+    payment: { status: "REFUNDED", method: "FLOUCI" },
+  });
+
+  // --- 2 bookings via QUOTE flow ---
+
+  // Quote 1: Yasmine demande devis ravalement facade -> Leila repond -> COMPLETED
+  const quote1 = await prisma.quote.create({
     data: {
-      clientId: salmaId,
-      providerId: ahmedProviderId,
-      serviceId: ahmedServiceId,
-      status: "COMPLETED",
-      scheduledAt: daysAgo(3),
-      completedAt: daysAgo(2),
-      totalAmount: 45,
-      clientNote: "Fuite au robinet de la cuisine, merci de venir avec les outils necessaires.",
+      clientId: clientIds[0]!,
+      serviceId: svcByProviderN(5, 2), // Ravalement facade (SUR_DEVIS)
+      status: "ACCEPTED",
+      description: "Bonjour, j'ai une facade d'environ 80m2 qui a besoin d'un ravalement complet. La peinture actuelle s'ecaille et il y a des traces d'humidite.",
+      address: "12 Rue des Jasmins, La Marsa",
+      city: "La Marsa",
+      preferredDate: daysAgo(25),
+      budget: 450,
+      proposedPrice: 500,
+      proposedDelay: "5 a 7 jours ouvrables",
+      respondedAt: daysAgo(28),
+      acceptedAt: daysAgo(27),
+      expiresAt: daysAgo(20),
+      createdAt: daysAgo(30),
     },
   });
 
-  // Payment for demo booking
-  await prisma.payment.create({
+  // B16: Booking from accepted quote 1
+  await createBooking({
+    clientIdx: 0, providerIdx: 5, serviceId: svcByProviderN(5, 2),
+    status: "COMPLETED", amount: 500, scheduledAt: daysAgo(25), createdAt: daysAgo(27),
+    completedAt: daysAgo(20), quoteId: quote1.id,
+    clientNote: "Facade cote rue, acces par le jardin.",
+    payment: { status: "RELEASED", method: "CARD" },
+  });
+
+  // Quote 2: Ines demande devis amenagement jardin -> Riadh, PENDING response
+  await prisma.quote.create({
     data: {
-      bookingId: demoBooking.id,
-      method: "FLOUCI",
-      status: "RELEASED",
-      amount: 45,
-      commission: 5.40,
-      providerEarning: 39.60,
-      paidAt: daysAgo(3),
-      heldAt: daysAgo(3),
-      releasedAt: daysAgo(2),
+      clientId: clientIds[2]!,
+      serviceId: svcByProviderN(6, 2), // Amenagement jardin (SUR_DEVIS)
+      status: "PENDING",
+      description: "Je souhaite amenager mon jardin de 150m2 avec des plantes mediterraneennes et un coin detente. Besoin d'un plan complet avec systeme d'arrosage.",
+      address: "45 Avenue de la Republique, Sfax",
+      city: "Sfax",
+      preferredDate: daysFromNow(15),
+      budget: 280,
+      expiresAt: daysFromNow(7),
+      createdAt: daysAgo(2),
     },
   });
 
-  // Salma's 5-star review for Ahmed
+  // --- 3 bookings with SUR_DEVIS pricing (amount from negotiation) ---
+
+  // B17: Sami -> Leila (Ravalement facade SUR_DEVIS -> 450 TND negocié)
+  await createBooking({
+    clientIdx: 1, providerIdx: 5, serviceId: svcByProviderN(5, 2),
+    status: "ACCEPTED", amount: 450, scheduledAt: daysFromNow(12), createdAt: daysAgo(5),
+    clientNote: "Facade arriere de la maison, environ 60m2.",
+    payment: { status: "HELD", method: "CARD" },
+  });
+
+  // B18: Ines -> Riadh (Amenagement jardin SUR_DEVIS -> 320 TND negocié)
+  await createBooking({
+    clientIdx: 2, providerIdx: 6, serviceId: svcByProviderN(6, 2),
+    status: "COMPLETED", amount: 320, scheduledAt: daysAgo(35), createdAt: daysAgo(42),
+    completedAt: daysAgo(33),
+    clientNote: "Petit jardin 50m2, plantes resistantes a la secheresse.",
+    payment: { status: "RELEASED", method: "D17" },
+  });
+
+  // B19: Amira -> Leila (Peinture salon SUR_DEVIS -> 380 TND negocié)
+  await createBooking({
+    clientIdx: 3, providerIdx: 5, serviceId: svcByProviderN(5, 1),
+    status: "IN_PROGRESS", amount: 380, scheduledAt: daysAgo(1), createdAt: daysAgo(7),
+    clientNote: "Salon de 25m2, on veut un blanc casse sur tous les murs.",
+    payment: { status: "HELD", method: "FLOUCI" },
+  });
+
+  console.log(`  -> ${bookingMeta.length} bookings created`);
+
+  // ==================== 3e. DEMO SCENARIO (Yasmine -> Mohamed) ====================
+  // The first completed booking (B1) serves as the demo scenario
+  console.log("Setting up demo scenario...");
+  const yasmineId = clientIds[0]!;
+  const mohamedProviderIdx = 0;
+  const mohamedUserId = providerUserIds[mohamedProviderIdx]!;
+  const demoBookingId = bookingMeta[0]!.id;
+
+  // Yasmine's 5-star review for Mohamed
   await prisma.review.create({
     data: {
-      bookingId: demoBooking.id,
-      authorId: salmaId,
-      targetId: (await prisma.provider.findUnique({ where: { id: ahmedProviderId } }))!.userId,
+      bookingId: demoBookingId,
+      authorId: yasmineId,
+      targetId: mohamedUserId,
       authorRole: "CLIENT",
       stars: 5,
       qualityRating: 5,
       punctualityRating: 5,
       communicationRating: 5,
       cleanlinessRating: 5,
-      text: "Excellent travail ! Ahmed est arrive a l'heure et a repare la fuite en moins d'une heure. Tres professionnel, je recommande vivement. La Marsa a enfin un bon plombier de confiance !",
+      text: "Excellent travail ! Mohamed est arrive a l'heure et a repare la fuite en moins d'une heure. Tres professionnel, je recommande vivement.",
       published: true,
-      publishedAt: daysAgo(1),
+      publishedAt: daysAgo(44),
+      sentiment: "POSITIVE",
     },
   });
 
-  // Conversation for demo scenario
-  const demoConversation = await prisma.conversation.create({
-    data: { bookingId: demoBooking.id },
-  });
-
-  const demoMessages = [
-    { senderId: salmaId, content: "Bonjour Ahmed, j'ai une fuite au robinet de la cuisine. Est-ce que vous pouvez passer cette semaine ?" },
-    { senderId: (await prisma.provider.findUnique({ where: { id: ahmedProviderId } }))!.userId, content: "Bonjour Salma ! Bien sur, je suis disponible demain matin. La fuite est au niveau du robinet ou sous l'evier ?" },
-    { senderId: salmaId, content: "C'est le robinet qui goutte en permanence. Meme quand il est bien ferme." },
-    { senderId: (await prisma.provider.findUnique({ where: { id: ahmedProviderId } }))!.userId, content: "D'accord, c'est probablement la cartouche ou le joint. Je passerai demain a 9h avec tout le necessaire." },
-    { senderId: salmaId, content: "Parfait ! Je suis a La Marsa, rue du Lac Malaren. Je vous envoie la localisation." },
-    { senderId: (await prisma.provider.findUnique({ where: { id: ahmedProviderId } }))!.userId, content: "Bien recu. A demain, bonne soiree !" },
-    { senderId: salmaId, content: "Merci Ahmed, le robinet ne fuit plus du tout ! Excellent travail." },
-    { senderId: (await prisma.provider.findUnique({ where: { id: ahmedProviderId } }))!.userId, content: "Merci Salma ! N'hesitez pas si vous avez besoin de quoi que ce soit. Bonne journee !" },
+  // Demo conversation
+  const demoConv = await prisma.conversation.create({ data: { bookingId: demoBookingId } });
+  const demoMsgs = [
+    { senderId: yasmineId, content: "Bonjour Mohamed, j'ai une fuite sous l'evier de la cuisine. Est-ce que vous pouvez passer cette semaine ?" },
+    { senderId: mohamedUserId, content: "Bonjour Yasmine ! Bien sur, je suis disponible demain matin. La fuite est au niveau du robinet ou sous l'evier ?" },
+    { senderId: yasmineId, content: "C'est sous l'evier, ca goutte en permanence. Meme quand le robinet est ferme." },
+    { senderId: mohamedUserId, content: "D'accord, c'est probablement un joint ou un raccord. Je passerai demain a 9h avec tout le necessaire." },
+    { senderId: yasmineId, content: "Parfait ! Je suis a La Marsa, rue du Lac Malaren. Je vous envoie la localisation." },
+    { senderId: mohamedUserId, content: "Bien recu. A demain, bonne soiree !" },
+    { senderId: yasmineId, content: "Merci Mohamed, plus aucune fuite ! Excellent travail." },
+    { senderId: mohamedUserId, content: "Merci Yasmine ! N'hesitez pas si vous avez besoin de quoi que ce soit. Bonne journee !" },
   ];
-
-  for (let i = 0; i < demoMessages.length; i++) {
+  for (let i = 0; i < demoMsgs.length; i++) {
     await prisma.message.create({
       data: {
-        conversationId: demoConversation.id,
-        senderId: demoMessages[i]!.senderId,
-        content: demoMessages[i]!.content,
+        conversationId: demoConv.id,
+        senderId: demoMsgs[i]!.senderId,
+        content: demoMsgs[i]!.content,
         isRead: true,
-        readAt: daysAgo(3 - Math.floor(i / 2)),
-        createdAt: new Date(daysAgo(4).getTime() + i * 30 * 60 * 1000),
+        readAt: daysAgo(44 - Math.floor(i / 2)),
+        createdAt: minutesAfter(daysAgo(46), i * 35),
       },
     });
   }
-  console.log("  -> Demo scenario created (Salma -> Ahmed -> 5 stars)");
+  console.log("  -> Demo scenario created (Yasmine -> Mohamed -> 5 stars)");
 
-  // ----------------------------------------------------------
-  // 9. REVIEWS (25+) — French comments
-  // ----------------------------------------------------------
-  console.log("Seeding reviews...");
+  // ==================== 3f. REVIEWS (15 total) ====================
+  console.log("Creating reviews...");
   let reviewCount = 0;
-  const completedBookings = bookingMeta.filter(b => b.status === "COMPLETED");
 
-  for (let i = 0; i < Math.min(completedBookings.length, REVIEW_COMMENTS.length); i++) {
-    const b = completedBookings[i]!;
-    const comment = REVIEW_COMMENTS[i]!;
-    const stars = 3 + Math.floor(Math.random() * 3); // 3-5 stars
+  // --- 10 Positive client reviews on completed bookings ---
+  // B1 (demo) already has a review from section 3e, so we use B2-B5, B16, B18 + some accepted/in-progress that were completed
+  const positiveClientReviews: {
+    bookingIdx: number; text: string; stars: number;
+    quality: number; punctuality: number; communication: number; cleanliness: number;
+  }[] = [
+    // Review 1: B2 — Sami -> Fatma (Menage)
+    { bookingIdx: 1, text: "Appartement impeccable, Fatma fait un travail remarquable", stars: 5, quality: 5, punctuality: 5, communication: 5, cleanliness: 5 },
+    // Review 2: B3 — Ines -> Ahmed (Electricite)
+    { bookingIdx: 2, text: "Installation rapide et propre, merci Ahmed!", stars: 4, quality: 4, punctuality: 4, communication: 5, cleanliness: 4 },
+    // Review 3: B4 — Amira -> Nour (Cours maths)
+    { bookingIdx: 3, text: "Très bon cours, ma fille a beaucoup progressé en maths", stars: 5, quality: 5, punctuality: 5, communication: 5, cleanliness: 5 },
+    // Review 4: B5 — Yasmine -> Karim (Climatisation)
+    { bookingIdx: 4, text: "Bon service de climatisation, Karim connaît son métier", stars: 4, quality: 4, punctuality: 4, communication: 4, cleanliness: 4 },
+    // Review 5: B16 — Yasmine -> Leila (Ravalement facade)
+    { bookingIdx: 15, text: "Peinture magnifique, Leila a un vrai talent", stars: 5, quality: 5, punctuality: 5, communication: 5, cleanliness: 4 },
+    // Review 6: B18 — Ines -> Riadh (Amenagement jardin)
+    { bookingIdx: 17, text: "Jardin transformé, Riadh est un artiste", stars: 4, quality: 5, punctuality: 4, communication: 4, cleanliness: 4 },
+    // Review 7: B1 already has demo review, so use B1 for provider->client direction (handled below)
+    // For the remaining 4 positive reviews, we use the same completed bookings for provider->client reviews
+    // Review 7: "Bon travail dans l'ensemble, rien à redire" — assign to B2 as a 2nd perspective (provider->client)
+    // Actually, we need 10 CLIENT reviews total. We only have 6 completed bookings besides demo.
+    // We'll assign extra reviews to B1 (provider reviewing client) — but B1 is unique(bookingId, authorId)
+    // So reviews 7-10 must go to unique booking+author combos. Let's use the demo booking for provider->client,
+    // and create a few more on the completed bookings we have.
+  ];
 
-    try {
-      await prisma.review.create({
+  // Create the 6 client reviews on completed bookings (B2-B5, B16, B18)
+  for (const rev of positiveClientReviews) {
+    const b = bookingMeta[rev.bookingIdx]!;
+    await prisma.review.create({
+      data: {
+        bookingId: b.id,
+        authorId: clientIds[b.clientIdx]!,
+        targetId: providerUserIds[b.providerIdx]!,
+        authorRole: "CLIENT",
+        stars: rev.stars,
+        qualityRating: rev.quality,
+        punctualityRating: rev.punctuality,
+        communicationRating: rev.communication,
+        cleanlinessRating: rev.cleanliness,
+        text: rev.text,
+        published: true,
+        publishedAt: daysAgo(randomInt(1, 20)),
+        sentiment: "POSITIVE",
+      },
+    });
+    reviewCount++;
+  }
+
+  // Reviews 7-10: Provider reviews on those same completed bookings (bidirectional)
+  const providerReviewsOnCompleted: {
+    bookingIdx: number; text: string; stars: number;
+  }[] = [
+    { bookingIdx: 1, text: "Bon travail dans l'ensemble, rien à redire", stars: 4 },
+    { bookingIdx: 2, text: "Service correct et rapide", stars: 4 },
+    { bookingIdx: 3, text: "Client respectueux et ponctuel, conditions ideales pour le cours", stars: 5 },
+    { bookingIdx: 4, text: "Cliente agreable, logement bien prepare pour l'intervention", stars: 4 },
+  ];
+
+  for (const rev of providerReviewsOnCompleted) {
+    const b = bookingMeta[rev.bookingIdx]!;
+    await prisma.review.create({
+      data: {
+        bookingId: b.id,
+        authorId: providerUserIds[b.providerIdx]!,
+        targetId: clientIds[b.clientIdx]!,
+        authorRole: "PROVIDER",
+        stars: rev.stars,
+        qualityRating: rev.stars,
+        punctualityRating: Math.max(3, rev.stars - randomInt(0, 1)),
+        communicationRating: rev.stars,
+        cleanlinessRating: rev.stars,
+        text: rev.text,
+        published: true,
+        publishedAt: daysAgo(randomInt(1, 18)),
+        sentiment: "POSITIVE",
+      },
+    });
+    reviewCount++;
+  }
+
+  console.log(`  -> ${reviewCount} positive reviews created (10 total: 6 client + 4 provider)`);
+
+  // --- 3 Mixed/Negative client reviews ---
+  const mixedNegativeReviews: {
+    bookingIdx: number; text: string; stars: number;
+  }[] = [
+    // B16 provider->client direction (Leila reviewing Yasmine) — 3 stars
+    { bookingIdx: 15, text: "Travail correct mais arrivé en retard de 30 minutes", stars: 3 },
+    // B18 provider->client direction (Riadh reviewing Ines) — 3 stars
+    { bookingIdx: 17, text: "Le résultat est moyen, je m'attendais à mieux pour le prix", stars: 3 },
+    // B6 provider->client direction (Leila reviewing Sami) — 2 stars
+    { bookingIdx: 5, text: "Pas terrible, travail bâclé et attitude désagréable", stars: 2 },
+  ];
+
+  for (const rev of mixedNegativeReviews) {
+    const b = bookingMeta[rev.bookingIdx]!;
+    const analysis = analyzeReview(rev.text, rev.stars);
+    const review = await prisma.review.create({
+      data: {
+        bookingId: b.id,
+        authorId: providerUserIds[b.providerIdx]!,
+        targetId: clientIds[b.clientIdx]!,
+        authorRole: "PROVIDER",
+        stars: rev.stars,
+        qualityRating: rev.stars,
+        punctualityRating: Math.max(1, rev.stars - randomInt(0, 1)),
+        communicationRating: rev.stars,
+        cleanlinessRating: Math.max(1, rev.stars + randomInt(-1, 0)),
+        text: rev.text,
+        published: true,
+        publishedAt: daysAgo(randomInt(1, 15)),
+        sentiment: analysis.sentiment,
+        flagged: analysis.flagged,
+        flaggedReason: analysis.flagged ? analysis.reasons.join(", ") : null,
+      },
+    });
+
+    if (analysis.flagged && analysis.severity) {
+      const slaHoursMap = { CRITICAL: 2, IMPORTANT: 24, MINOR: 48 };
+      const slaHours = slaHoursMap[analysis.severity];
+      await prisma.report.create({
         data: {
-          bookingId: b.id,
-          authorId: clientIds[b.clientIdx]!,
-          targetId: providerUserIds[b.providerIdx]!,
-          authorRole: "CLIENT",
-          stars,
-          qualityRating: Math.max(3, stars - Math.floor(Math.random() * 2)),
-          punctualityRating: Math.max(3, stars - Math.floor(Math.random() * 2)),
-          communicationRating: Math.min(5, stars + Math.floor(Math.random() * 2)),
-          cleanlinessRating: Math.max(3, stars - Math.floor(Math.random() * 2)),
-          text: comment,
-          published: Math.random() > 0.1,
-          publishedAt: Math.random() > 0.1 ? daysAgo(Math.floor(Math.random() * 20)) : null,
-          flagged: Math.random() > 0.9,
+          reporterId: providerUserIds[b.providerIdx]!,
+          reportedId: clientIds[b.clientIdx]!,
+          type: "REVIEW",
+          reason: analysis.reasons.join(", "),
+          description: `Auto-signalement IA: ${analysis.reasons.join(", ")}. Sentiment: ${analysis.sentiment}. Severite: ${analysis.severity}.`,
+          priority: analysis.severity,
+          status: "OPEN",
+          referenceId: review.id,
+          slaDeadline: new Date(Date.now() + slaHours * 60 * 60 * 1000),
         },
       });
-      reviewCount++;
-    } catch {
-      // Skip duplicate bookingId+authorId pairs
+      console.log(`    -> Auto-report created for review (severity: ${analysis.severity})`);
     }
+    reviewCount++;
   }
-  console.log(`  -> ${reviewCount} reviews seeded`);
+  console.log(`  -> 3 mixed/negative reviews created`);
 
-  // ----------------------------------------------------------
-  // 10. CONVERSATIONS & MESSAGES
-  // ----------------------------------------------------------
-  console.log("Seeding conversations & messages...");
+  // --- 2 Flagged reviews for testing auto-report ---
+  // These use completed bookings that don't yet have a provider->client review in this direction
+  const flaggedReviews: {
+    bookingIdx: number; text: string; stars: number;
+    expectedFlag: string;
+  }[] = [
+    // Client review on B18 (Ines->Riadh already has client review, so use B5 client->provider 2nd review is not possible — unique constraint)
+    // Use B16 for a NEW client reviewing — but Yasmine already reviewed B16 as client.
+    // We need bookings without a client review yet. B1 demo has one. B2-B5, B16, B18 have client reviews.
+    // No completed bookings left without client reviews. So we add these as provider reviews on B1 (demo) and B5.
+    // B1: Mohamed (provider) reviewing Yasmine (client) — flagged IMPORTANT (insults)
+    { bookingIdx: 0, text: "Service nul, c'est une arnaque complète, ce prestataire est un escroc", stars: 1, expectedFlag: "IMPORTANT" },
+    // B5: Yasmine already got a provider review from Karim above (2 stars). Need another booking.
+    // B18: Ines->Riadh. Riadh already reviewed Ines above (3 stars mixed).
+    // Let's use B16: Leila already reviewed Yasmine above (3 stars mixed).
+    // Remaining: B2 has provider review (4 stars). B3 has provider review (4 stars). B4 has provider review (5 stars).
+    // We need a unique bookingId+authorId. The only completed booking provider->client combos NOT yet used:
+    // B1: Mohamed->Yasmine (not yet), B5: Karim->Yasmine (used above), B16: Leila->Yasmine (used above), B18: Riadh->Ines (used above)
+    // So B1 Mohamed->Yasmine is available for the 1-star flagged.
+    // For the 2nd flagged, we need another booking. All completed provider->client slots are taken except B1.
+    // Let's make the 2nd flagged a CLIENT review on a booking that has no client review yet... but all completed bookings have client reviews.
+    // Alternative: make it a client review replacing an existing one? No, unique constraint.
+    // Best option: create it as a client->provider on an ACCEPTED booking that got completed early or just accept we need it on a non-completed booking.
+    // Actually re-checking: B18 has client review (Ines->Riadh "Jardin transformé"). Provider review is "Le résultat est moyen" above.
+    // B1 has client demo review (Yasmine->Mohamed). No provider review yet. Let's use B1 for BOTH flagged reviews:
+    // B1 provider->client (Mohamed->Yasmine) for the 1-star insult flagged.
+    // For the 2nd one, we need a different booking. Let's use it as a CLIENT review on a booking without one.
+    // Hmm, all 7 completed bookings have client reviews.
+    // Simplest: add the 2nd flagged review as provider->client on B5 — wait, B5 already has Karim->Yasmine (2 stars) above.
+    // OK so truly the only open slot is B1 provider->client.
+    // Let's just use B1 for the insult one, and for the contact-info one, create it on a non-review booking or just skip the constraint.
+    // Actually, I realize I should check: is the unique constraint bookingId+authorId? Yes: @@unique([bookingId, authorId])
+    // Remaining open (bookingId, authorId) on completed bookings:
+    // B1: (bookingId, mohamedUserId) — open ✓
+    // B16: (bookingId, leilaUserId) — used above (3 stars mixed)
+    // B18: (bookingId, riadhUserId) — used above (3 stars mixed)
+    // B5: (bookingId, karimUserId) — used above (2 stars mixed)
+    // So only B1 provider->client is open. We only have 1 slot.
+    // For the 2nd flagged review: let's just add a client review on an ACCEPTED booking. It's seed data, it's fine.
+    // Use B6 (Sami->Leila, ACCEPTED) or B7 (Ines->Riadh, ACCEPTED)
+    { bookingIdx: 5, text: "Travail acceptable mais contact info: appelez-moi au 55123456", stars: 3, expectedFlag: "MINOR" },
+  ];
+
+  // Flagged review 1: B1 — Mohamed (provider) reviews Yasmine (client) — insult keywords
+  {
+    const b = bookingMeta[0]!; // B1 demo booking
+    const text = flaggedReviews[0]!.text;
+    const stars = flaggedReviews[0]!.stars;
+    const analysis = analyzeReview(text, stars);
+    const review = await prisma.review.create({
+      data: {
+        bookingId: b.id,
+        authorId: providerUserIds[b.providerIdx]!,
+        targetId: clientIds[b.clientIdx]!,
+        authorRole: "PROVIDER",
+        stars,
+        qualityRating: 1,
+        punctualityRating: 1,
+        communicationRating: 1,
+        cleanlinessRating: 1,
+        text,
+        published: false, // flagged reviews not published
+        sentiment: analysis.sentiment,
+        flagged: analysis.flagged,
+        flaggedReason: analysis.flagged ? analysis.reasons.join(", ") : null,
+      },
+    });
+
+    if (analysis.flagged && analysis.severity) {
+      const slaHoursMap = { CRITICAL: 2, IMPORTANT: 24, MINOR: 48 };
+      const slaHours = slaHoursMap[analysis.severity];
+      await prisma.report.create({
+        data: {
+          reporterId: providerUserIds[b.providerIdx]!,
+          reportedId: clientIds[b.clientIdx]!,
+          type: "REVIEW",
+          reason: analysis.reasons.join(", "),
+          description: `Auto-signalement IA: ${analysis.reasons.join(", ")}. Sentiment: ${analysis.sentiment}. Severite: ${analysis.severity}.`,
+          priority: analysis.severity,
+          status: "OPEN",
+          referenceId: review.id,
+          slaDeadline: new Date(Date.now() + slaHours * 60 * 60 * 1000),
+        },
+      });
+      console.log(`    -> Auto-report created: "${text.slice(0, 40)}..." => ${analysis.severity} (reasons: ${analysis.reasons.join(", ")})`);
+    }
+    reviewCount++;
+  }
+
+  // Flagged review 2: B6 — Sami (client) reviews Leila (provider) — contact info
+  {
+    const b = bookingMeta[5]!; // B6 (ACCEPTED booking)
+    const text = flaggedReviews[1]!.text;
+    const stars = flaggedReviews[1]!.stars;
+    const analysis = analyzeReview(text, stars);
+    const review = await prisma.review.create({
+      data: {
+        bookingId: b.id,
+        authorId: clientIds[b.clientIdx]!,
+        targetId: providerUserIds[b.providerIdx]!,
+        authorRole: "CLIENT",
+        stars,
+        qualityRating: 3,
+        punctualityRating: 3,
+        communicationRating: 3,
+        cleanlinessRating: 3,
+        text,
+        published: false, // flagged reviews not published
+        sentiment: analysis.sentiment,
+        flagged: analysis.flagged,
+        flaggedReason: analysis.flagged ? analysis.reasons.join(", ") : null,
+      },
+    });
+
+    if (analysis.flagged && analysis.severity) {
+      const slaHoursMap = { CRITICAL: 2, IMPORTANT: 24, MINOR: 48 };
+      const slaHours = slaHoursMap[analysis.severity];
+      await prisma.report.create({
+        data: {
+          reporterId: clientIds[b.clientIdx]!,
+          reportedId: providerUserIds[b.providerIdx]!,
+          type: "REVIEW",
+          reason: analysis.reasons.join(", "),
+          description: `Auto-signalement IA: ${analysis.reasons.join(", ")}. Sentiment: ${analysis.sentiment}. Severite: ${analysis.severity}.`,
+          priority: analysis.severity,
+          status: "OPEN",
+          referenceId: review.id,
+          slaDeadline: new Date(Date.now() + slaHours * 60 * 60 * 1000),
+        },
+      });
+      console.log(`    -> Auto-report created: "${text.slice(0, 40)}..." => ${analysis.severity} (reasons: ${analysis.reasons.join(", ")})`);
+    }
+    reviewCount++;
+  }
+
+  console.log(`  -> 2 flagged reviews created with auto-reports`);
+  console.log(`  -> TOTAL: ${reviewCount + 1} reviews (incl. demo)`);
+
+  // ==================== 3g. CONVERSATIONS & MESSAGES (4 conversations) ====================
+  // Conv 1 (Yasmine + Mohamed) is already created in section 3e (demo scenario) with 8 messages.
+  // Here we create Conv 2-4 from CONVERSATION_THREADS.
+  console.log("Creating 3 additional conversations (Conv 2-4)...");
   let messageCount = 0;
+  let convCount = 1; // demo conv already counts as 1
 
-  const bookingsForMessages = bookingMeta.filter(b =>
-    b.status === "ACCEPTED" || b.status === "IN_PROGRESS" || b.status === "COMPLETED"
-  ).slice(0, MESSAGE_THREADS.length);
-
-  for (let i = 0; i < bookingsForMessages.length; i++) {
-    const b = bookingsForMessages[i]!;
-    const thread = MESSAGE_THREADS[i]!;
+  for (const thread of CONVERSATION_THREADS) {
+    const b = bookingMeta[thread.bookingIdx]!;
 
     try {
-      const conversation = await prisma.conversation.create({
-        data: { bookingId: b.id },
-      });
+      const conversation = await prisma.conversation.create({ data: { bookingId: b.id } });
+      // Spread messages over the booking period
+      const baseTime = new Date(b.scheduledAt.getTime() - thread.messages.length * 45 * 60 * 1000);
 
-      for (let j = 0; j < thread.length; j++) {
-        const msg = thread[j]!;
+      for (let j = 0; j < thread.messages.length; j++) {
+        const msg = thread.messages[j]!;
         const senderId = msg.fromClient ? clientIds[b.clientIdx]! : providerUserIds[b.providerIdx]!;
+        const msgTime = minutesAfter(baseTime, j * randomInt(30, 90));
+
         await prisma.message.create({
           data: {
             conversationId: conversation.id,
             senderId,
             content: msg.content,
-            isRead: j < thread.length - 1,
-            readAt: j < thread.length - 1 ? daysAgo(Math.max(0, 5 - j)) : null,
-            createdAt: new Date(daysAgo(10).getTime() + j * 45 * 60 * 1000),
+            isRead: j < thread.messages.length - 1,
+            readAt: j < thread.messages.length - 1 ? minutesAfter(msgTime, randomInt(5, 30)) : null,
+            createdAt: msgTime,
           },
         });
         messageCount++;
       }
-    } catch {
-      // Skip if conversation already exists for this booking
-    }
+      convCount++;
+    } catch { /* skip if conversation already exists for this booking */ }
   }
-  console.log(`  -> ${messageCount} messages in ${bookingsForMessages.length} conversations`);
+  console.log(`  -> ${messageCount} messages in ${convCount - 1} new conversations (${convCount} total incl. demo)`);
 
-  // ----------------------------------------------------------
-  // 11. NOTIFICATIONS
-  // ----------------------------------------------------------
-  console.log("Seeding notifications...");
+  // ==================== 3h. NOTIFICATIONS (6 total) ====================
+  console.log("Creating 6 notifications...");
 
-  const notificationTemplates: { userId: string; type: "BOOKING_REQUEST" | "BOOKING_ACCEPTED" | "BOOKING_COMPLETED" | "PAYMENT_RECEIVED" | "REVIEW_RECEIVED" | "KYC_APPROVED" | "NEW_MESSAGE" | "SYSTEM"; title: string; body: string }[] = [
-    { userId: clientIds[0]!, type: "BOOKING_ACCEPTED", title: "Reservation acceptee", body: "Ahmed Plomberie a accepte votre reservation pour le 15 fevrier." },
-    { userId: clientIds[0]!, type: "BOOKING_COMPLETED", title: "Service termine", body: "Votre reservation avec Ahmed Plomberie est terminee. N'oubliez pas de laisser un avis !" },
-    { userId: clientIds[0]!, type: "NEW_MESSAGE", title: "Nouveau message", body: "Ahmed Plomberie vous a envoye un message." },
-    { userId: clientIds[1]!, type: "BOOKING_ACCEPTED", title: "Reservation acceptee", body: "Fatma Nettoyage Pro a accepte votre demande de menage." },
-    { userId: clientIds[2]!, type: "PAYMENT_RECEIVED", title: "Paiement confirme", body: "Votre paiement de 55.00 TND a ete confirme." },
-    { userId: providerUserIds[0]!, type: "BOOKING_REQUEST", title: "Nouvelle demande", body: "Salma Mejri souhaite reserver votre service de plomberie." },
-    { userId: providerUserIds[0]!, type: "REVIEW_RECEIVED", title: "Nouvel avis", body: "Salma Mejri vous a donne 5 etoiles ! Bravo !" },
-    { userId: providerUserIds[0]!, type: "PAYMENT_RECEIVED", title: "Paiement recu", body: "39.60 TND ont ete credites sur votre compte Tawa." },
-    { userId: providerUserIds[1]!, type: "BOOKING_REQUEST", title: "Nouvelle demande", body: "Mohamed Lahmar souhaite un menage complet de son appartement." },
-    { userId: providerUserIds[2]!, type: "KYC_APPROVED", title: "KYC approuve", body: "Felicitations ! Votre identite a ete verifiee. Vous pouvez maintenant recevoir des reservations." },
-    { userId: admin.id, type: "SYSTEM", title: "Nouveau prestataire", body: "Yassine Chaabane a soumis ses documents KYC. Verification en attente." },
-    { userId: admin.id, type: "SYSTEM", title: "Signalement recu", body: "Un nouveau signalement a ete soumis et necessite votre attention." },
+  const notifTemplates: { userId: string; type: "BOOKING_REQUEST" | "BOOKING_ACCEPTED" | "BOOKING_COMPLETED" | "PAYMENT_RECEIVED" | "REVIEW_RECEIVED" | "NEW_MESSAGE"; title: string; body: string; read: boolean; createdAt: Date }[] = [
+    // 1. Yasmine — booking accepted by Mohamed
+    { userId: clientIds[0]!, type: "BOOKING_ACCEPTED", title: "Reservation acceptee", body: `${PROVIDERS[0]!.display} a accepte votre reservation pour la reparation de fuite.`, read: true, createdAt: daysAgo(46) },
+    // 2. Mohamed — new review received (5 stars from Yasmine)
+    { userId: providerUserIds[0]!, type: "REVIEW_RECEIVED", title: "Nouvel avis", body: `${CLIENTS[0]!.name} vous a donne 5 etoiles ! Bravo !`, read: true, createdAt: daysAgo(44) },
+    // 3. Sami — new message from Fatma about cleaning
+    { userId: clientIds[1]!, type: "NEW_MESSAGE", title: "Nouveau message", body: `${PROVIDERS[1]!.display} vous a envoye un message concernant votre reservation de menage.`, read: false, createdAt: daysAgo(2) },
+    // 4. Ahmed — payment received for electrical work
+    { userId: providerUserIds[2]!, type: "PAYMENT_RECEIVED", title: "Paiement recu", body: "88.00 TND ont ete credites sur votre compte Tawa (apres commission 12%).", read: false, createdAt: daysAgo(20) },
+    // 5. Amira — booking completed with Nour (cours maths)
+    { userId: clientIds[3]!, type: "BOOKING_COMPLETED", title: "Service termine", body: `Votre cours avec ${PROVIDERS[3]!.display} est termine. N'oubliez pas de laisser un avis !`, read: true, createdAt: daysAgo(15) },
+    // 6. Ines — booking request from provider Ahmed accepted
+    { userId: clientIds[2]!, type: "BOOKING_ACCEPTED", title: "Reservation acceptee", body: `${PROVIDERS[2]!.display} interviendra pour le depannage electrique.`, read: true, createdAt: daysAgo(22) },
   ];
 
-  for (const notif of notificationTemplates) {
+  for (const notif of notifTemplates) {
     await prisma.notification.create({
       data: {
         userId: notif.userId,
         type: notif.type,
         title: notif.title,
         body: notif.body,
-        read: Math.random() > 0.4,
-        readAt: Math.random() > 0.4 ? daysAgo(Math.floor(Math.random() * 5)) : null,
-        createdAt: randomDate(daysAgo(15), new Date()),
+        read: notif.read,
+        readAt: notif.read ? hoursAfter(notif.createdAt, randomInt(1, 12)) : null,
+        createdAt: notif.createdAt,
       },
     });
   }
-  console.log(`  -> ${notificationTemplates.length} notifications seeded`);
+  console.log(`  -> ${notifTemplates.length} notifications created`);
 
-  // ----------------------------------------------------------
-  // 12. QUOTES (a few for SUR_DEVIS services)
-  // ----------------------------------------------------------
-  console.log("Seeding quotes...");
-  const surDevisServices = SERVICE_TEMPLATES.filter(s => s.pricingType === "SUR_DEVIS");
+  // Quotes already created inline with bookings (2 quotes in section 3d)
+  console.log("  -> 2 quotes created (inline with bookings)");
 
-  for (let i = 0; i < Math.min(5, surDevisServices.length); i++) {
-    const tmpl = surDevisServices[i]!;
-    const catId = categoryMap[tmpl.categorySlug];
-    if (!catId) continue;
+  // ==================== 3j. REPORTS ====================
+  console.log("Creating reports...");
 
-    const svc = await prisma.service.findFirst({ where: { categoryId: catId, pricingType: "SUR_DEVIS" } });
-    if (!svc) continue;
-
-    const statuses: ("PENDING" | "RESPONDED" | "ACCEPTED" | "EXPIRED")[] = ["PENDING", "RESPONDED", "ACCEPTED", "EXPIRED", "PENDING"];
-    const status = statuses[i]!;
-
-    await prisma.quote.create({
-      data: {
-        clientId: clientIds[(i + 5) % clientIds.length]!,
-        serviceId: svc.id,
-        status,
-        description: `Besoin de ${tmpl.title.toLowerCase()} pour mon domicile. Merci de me faire un devis detaille.`,
-        address: `Rue ${10 + i}, La Marsa`,
-        city: "La Marsa",
-        preferredDate: daysFromNow(7 + i * 3),
-        budget: 200 + i * 100,
-        proposedPrice: status === "RESPONDED" || status === "ACCEPTED" ? 250 + i * 80 : null,
-        proposedDelay: status === "RESPONDED" || status === "ACCEPTED" ? "3 a 5 jours ouvrables" : null,
-        expiresAt: status === "EXPIRED" ? daysAgo(2) : daysFromNow(2),
-        respondedAt: status === "RESPONDED" || status === "ACCEPTED" ? daysAgo(3) : null,
-        acceptedAt: status === "ACCEPTED" ? daysAgo(1) : null,
-      },
-    });
-  }
-  console.log("  -> 5 quotes seeded");
-
-  // ----------------------------------------------------------
-  // 13. REPORTS
-  // ----------------------------------------------------------
-  console.log("Seeding reports...");
-  await prisma.report.create({
-    data: {
+  const reports = [
+    {
       reporterId: clientIds[3]!,
-      reportedId: providerUserIds[11]!,
-      type: "USER",
+      reportedId: providerUserIds[1]!,
+      type: "USER" as const,
       reason: "Prestataire ne s'est pas presente au rendez-vous",
-      description: "J'avais reserve un service de plomberie pour 10h. Le prestataire n'est jamais venu et n'a pas repondu aux messages.",
-      priority: "IMPORTANT",
-      status: "OPEN",
+      description: "J'avais reserve un service de plomberie pour 10h. Le prestataire n'est jamais venu et n'a pas repondu aux messages pendant 3 heures.",
+      priority: "IMPORTANT" as const,
+      status: "OPEN" as const,
       slaDeadline: daysFromNow(1),
     },
-  });
-
-  await prisma.report.create({
-    data: {
-      reporterId: clientIds[5]!,
-      type: "SERVICE",
+    {
+      reporterId: clientIds[1]!,
+      type: "SERVICE" as const,
       reason: "Description trompeuse du service",
-      description: "Le tarif affiche ne correspond pas au prix demande lors de l'intervention. 45 DT annonce, 120 DT facture.",
-      priority: "MINOR",
-      status: "INVESTIGATING",
+      description: "Le tarif affiche ne correspond pas au prix demande lors de l'intervention. 45 DT annonces sur la plateforme, 120 DT factures sur place sans explication.",
+      priority: "MINOR" as const,
+      status: "INVESTIGATING" as const,
     },
-  });
-
-  await prisma.report.create({
-    data: {
+    {
       reporterId: providerUserIds[2]!,
-      reportedId: clientIds[7]!,
-      type: "USER",
+      reportedId: clientIds[3]!,
+      type: "USER" as const,
       reason: "Client irrespectueux",
-      description: "Le client a ete tres impoli et agressif pendant l'intervention. Environnement de travail hostile.",
-      priority: "MINOR",
-      status: "OPEN",
+      description: "Le client a ete tres impoli et agressif pendant l'intervention. Environnement de travail hostile. A crie sans raison.",
+      priority: "MINOR" as const,
+      status: "OPEN" as const,
     },
-  });
-  console.log("  -> 3 reports seeded");
-
-  // ----------------------------------------------------------
-  // 14. FAQ & LEGAL PAGES
-  // ----------------------------------------------------------
-  console.log("Seeding FAQs and legal pages...");
-
-  const faqs = [
-    { question: "Comment fonctionne Tawa Services ?", answer: "Tawa Services met en relation des clients avec des prestataires de services verifies en Tunisie. Recherchez un service, comparez les profils, reservez en ligne et payez en toute securite.", category: "general", sortOrder: 0 },
-    { question: "Comment devenir prestataire ?", answer: "Inscrivez-vous en tant que prestataire, completez votre profil, soumettez vos documents KYC (CIN + selfie) et attendez la validation de notre equipe. Une fois approuve, vous pouvez publier vos services.", category: "provider", sortOrder: 1 },
-    { question: "Quels sont les moyens de paiement acceptes ?", answer: "Nous acceptons les paiements par carte bancaire, D17 (Poste tunisienne), Flouci et especes. Le paiement est securise via notre systeme d'escrow.", category: "payment", sortOrder: 2 },
-    { question: "Quelle est la commission Tawa ?", answer: "Tawa preleve une commission de 12% sur chaque transaction. Ce montant couvre les frais de plateforme, l'assurance et le service client.", category: "payment", sortOrder: 3 },
-    { question: "Comment annuler une reservation ?", answer: "Vous pouvez annuler une reservation depuis votre espace client. Remboursement integral si l'annulation est faite plus de 48h avant le rendez-vous, 50% entre 24h et 48h.", category: "booking", sortOrder: 4 },
-    { question: "Comment laisser un avis ?", answer: "Apres chaque prestation terminee, vous avez 10 jours pour laisser un avis. Les avis sont publies une fois que les deux parties ont donne leur evaluation.", category: "general", sortOrder: 5 },
+    {
+      reporterId: clientIds[2]!,
+      type: "REVIEW" as const,
+      reason: "Avis potentiellement faux",
+      description: "Cet avis 5 etoiles semble ecrit par le prestataire lui-meme. Le style d'ecriture et les details sont suspects.",
+      priority: "MINOR" as const,
+      status: "OPEN" as const,
+    },
+    {
+      reporterId: clientIds[0]!,
+      reportedId: providerUserIds[3]!,
+      type: "USER" as const,
+      reason: "Demande de paiement en dehors de la plateforme",
+      description: "Le prestataire m'a demande de payer directement en especes pour eviter la commission Tawa. C'est contraire aux conditions.",
+      priority: "CRITICAL" as const,
+      status: "OPEN" as const,
+      slaDeadline: hoursAfter(new Date(), 2),
+    },
   ];
 
+  for (const r of reports) {
+    await prisma.report.create({ data: r });
+  }
+  console.log(`  -> ${reports.length} reports created`);
+
+  // ==================== 3k. FAVORITES ====================
+  console.log("Creating favorites...");
+  let favCount = 0;
+  for (let i = 0; i < 15; i++) {
+    const clientIdx = i % clientIds.length;
+    const serviceId = serviceIds[randomInt(0, serviceIds.length - 1)]!;
+    try {
+      await prisma.favorite.create({
+        data: { userId: clientIds[clientIdx]!, serviceId },
+      });
+      favCount++;
+    } catch { /* skip duplicate */ }
+  }
+  console.log(`  -> ${favCount} favorites created`);
+
+  // ==================== 3l. FAQs ====================
+  console.log("Creating FAQs...");
+  const faqs = [
+    { question: "Comment fonctionne Tawa Services ?", answer: "Tawa Services met en relation des clients avec des prestataires de services verifies en Tunisie. Recherchez un service, comparez les profils, reservez en ligne et payez en toute securite via notre systeme d'escrow.", category: "general", sortOrder: 0 },
+    { question: "L'inscription est-elle gratuite ?", answer: "Oui, l'inscription est entierement gratuite pour les clients et les prestataires. Seule une commission de 12% est prelevee sur chaque transaction realisee.", category: "general", sortOrder: 1 },
+    { question: "Comment devenir prestataire ?", answer: "Inscrivez-vous en tant que prestataire, completez votre profil professionnel, soumettez vos documents KYC (CIN recto/verso, selfie, justificatif de domicile) et attendez la validation de notre equipe. Une fois approuve, vous pouvez publier vos services.", category: "provider", sortOrder: 2 },
+    { question: "Quels sont les moyens de paiement acceptes ?", answer: "Nous acceptons les paiements par carte bancaire, D17 (Poste tunisienne), Flouci et especes. Le paiement est securise via notre systeme d'escrow : l'argent est retenu jusqu'a la completion du service.", category: "payment", sortOrder: 3 },
+    { question: "Quelle est la commission Tawa ?", answer: "Tawa preleve une commission de 12% sur chaque transaction terminee. Ce montant couvre les frais de plateforme, la mise en relation, le support client et la garantie de service.", category: "payment", sortOrder: 4 },
+    { question: "Comment annuler une reservation ?", answer: "Vous pouvez annuler une reservation depuis votre espace 'Mes reservations'. Remboursement integral si l'annulation est faite plus de 48h avant le rendez-vous, 50% entre 24h et 48h, pas de remboursement en dessous de 24h.", category: "booking", sortOrder: 5 },
+    { question: "Comment laisser un avis ?", answer: "Apres chaque prestation terminee, vous avez 10 jours pour laisser un avis. Les avis sont publies simultanement une fois que les deux parties (client et prestataire) ont donne leur evaluation.", category: "general", sortOrder: 6 },
+    { question: "Quand le prestataire recoit-il son paiement ?", answer: "Le paiement est libere au prestataire des que le service est marque comme termine. La commission de 12% est automatiquement deduite. Le prestataire peut ensuite demander un virement.", category: "payment", sortOrder: 7 },
+    { question: "Que faire en cas de probleme avec un prestataire ?", answer: "Utilisez le bouton 'Signaler' sur le profil du prestataire ou contactez-nous via la page Contact. Les signalements critiques sont traites sous 2 heures, les importants sous 24 heures.", category: "general", sortOrder: 8 },
+    { question: "Comment modifier mon profil prestataire ?", answer: "Connectez-vous a votre espace prestataire, allez dans 'Mon profil' et modifiez vos informations : bio, photo, zones d'intervention, disponibilites, langues parlees.", category: "provider", sortOrder: 9 },
+  ];
   for (const faq of faqs) {
     await prisma.faq.create({ data: faq });
   }
+  console.log(`  -> ${faqs.length} FAQs created`);
 
+  // ==================== 3m. LEGAL PAGES ====================
+  console.log("Creating legal pages...");
   await prisma.legalPage.upsert({
     where: { slug: "cgu" },
     update: {},
     create: {
       slug: "cgu",
       title: "Conditions Generales d'Utilisation",
-      content: "Les presentes Conditions Generales d'Utilisation regissent l'utilisation de la plateforme Tawa Services. En utilisant nos services, vous acceptez ces conditions dans leur integralite...",
-      updatedBy: admin.id,
+      content: "Les presentes Conditions Generales d'Utilisation regissent l'utilisation de la plateforme Tawa Services. En utilisant nos services, vous acceptez ces conditions dans leur integralite. Tawa Services est une plateforme de mise en relation entre clients et prestataires de services en Tunisie.",
     },
   });
-
   await prisma.legalPage.upsert({
     where: { slug: "privacy" },
     update: {},
     create: {
       slug: "privacy",
       title: "Politique de Confidentialite",
-      content: "Tawa Services s'engage a proteger vos donnees personnelles conformement a la legislation tunisienne en vigueur. Cette politique explique comment nous collectons et utilisons vos informations...",
-      updatedBy: admin.id,
+      content: "Tawa Services s'engage a proteger vos donnees personnelles conformement a la legislation tunisienne en vigueur (Loi organique n°2004-63). Cette politique explique comment nous collectons, utilisons et protegeons vos informations personnelles.",
     },
   });
-  console.log("  -> FAQs and legal pages seeded");
+  console.log("  -> Legal pages created");
 
-  // ----------------------------------------------------------
-  // 15. BANNERS
-  // ----------------------------------------------------------
-  console.log("Seeding banners...");
+  // ==================== 3n. BANNERS ====================
+  console.log("Creating banners...");
   await prisma.banner.create({
     data: {
       title: "Bienvenue sur Tawa Services !",
-      subtitle: "Trouvez le bon prestataire pres de chez vous en quelques clics.",
+      subtitle: "Trouvez le bon prestataire pres de chez vous en quelques clics. Plus de 50 services disponibles.",
       position: "homepage",
       isActive: true,
       sortOrder: 0,
     },
   });
-  console.log("  -> 1 banner seeded");
+  await prisma.banner.create({
+    data: {
+      title: "Devenez prestataire",
+      subtitle: "Rejoignez plus de 100 prestataires verifies et developpez votre activite.",
+      position: "homepage",
+      isActive: true,
+      sortOrder: 1,
+    },
+  });
+  console.log("  -> 2 banners created");
+
+  // ==================== 3o. CONTACT MESSAGES ====================
+  console.log("Creating sample contact messages...");
+  const contactMsgs = [
+    { name: "Samir Ben Ali", email: "samir.benali@gmail.com", subject: "Question sur les tarifs", message: "Bonjour, je souhaite savoir si les tarifs affiches sont TTC ou HT. Merci de votre reponse." },
+    { name: "Amina Sfaxi", email: "amina.sfaxi@yahoo.fr", subject: "Probleme de paiement", message: "J'ai effectue un paiement par carte mais la reservation n'a pas ete confirmee. Mon numero de carte a ete debite. Pouvez-vous verifier svp ?" },
+    { name: "Tarek Hammami", email: "tarek.h@gmail.com", subject: "Partenariat commercial", message: "Je suis responsable d'une entreprise de nettoyage et j'aimerais discuter d'un partenariat avec Tawa Services. Pouvons-nous organiser un rendez-vous ?" },
+  ];
+  for (const msg of contactMsgs) {
+    await prisma.contactMessage.create({
+      data: { ...msg, createdAt: randomDate(daysAgo(15), new Date()) },
+    });
+  }
+  console.log(`  -> ${contactMsgs.length} contact messages created`);
 
   // ----------------------------------------------------------
-  // SUMMARY
+  // STEP 10: SUMMARY
   // ----------------------------------------------------------
+  const totalMessages = messageCount + 8; // +8 from demo conv in section 3e
+  const totalReviews = reviewCount + 1;   // +1 demo review from section 3e
+  const totalReports = reports.length;     // manual reports (auto-reports from flagged reviews logged separately)
+
   console.log("\n========================================");
   console.log("SEED COMPLETE!");
   console.log("========================================");
-  console.log(`Admin:      ${ADMIN_USER.email} / ${PASSWORD}`);
-  console.log(`Clients:    ${CLIENTS_DATA.length} users (${CLIENTS_DATA[0]!.email} / ${PASSWORD})`);
-  console.log(`Providers:  ${PROVIDERS_DATA.length} users (${PROVIDERS_DATA[0]!.email} / ${PASSWORD})`);
-  console.log(`Services:   ${serviceIds.length}`);
-  console.log(`Bookings:   ${bookingIds.length} + 1 demo`);
-  console.log(`Reviews:    ${reviewCount} + 1 demo (5 stars)`);
-  console.log(`Messages:   ${messageCount} + 8 demo`);
+  console.log(`Clients:       ${CLIENTS.length} users`);
+  console.log(`Providers:     ${PROVIDERS.length} users`);
+  console.log(`Services:      ${serviceIds.length}`);
+  console.log(`Bookings:      ${bookingMeta.length}`);
+  console.log(`Reviews:       ${totalReviews} (10 positive + 3 mixed/negative + 2 flagged + 1 demo)`);
+  console.log(`Conversations: ${convCount} (1 demo + ${convCount - 1} new)`);
+  console.log(`Messages:      ${totalMessages}`);
+  console.log(`Notifications: ${notifTemplates.length}`);
+  console.log(`Quotes:        2`);
+  console.log(`Reports:       ${totalReports} manual + auto-reports from flagged reviews`);
+  console.log(`Favorites:     ${favCount}`);
+  console.log(`FAQs:          ${faqs.length}`);
+  console.log(`Contacts:      ${contactMsgs.length}`);
+  console.log(`Banners:       2`);
   console.log("========================================");
-  console.log("\nDemo scenario:");
-  console.log("Salma (salma.client@tawa.tn) cherche un plombier a La Marsa");
-  console.log("-> trouve Ahmed (ahmed.plombier@tawa.tn)");
-  console.log("-> reserve le service de reparation fuite");
-  console.log("-> Ahmed accepte -> service termine");
-  console.log("-> Salma note 5 etoiles");
+  console.log("\nDemo accounts:");
+  console.log(`  Admin:    admin@tawa.tn / ${PASSWORD}`);
+  console.log(`  Client:   ${CLIENTS[0]!.email} / ${PASSWORD}`);
+  console.log(`  Provider: ${PROVIDERS[0]!.email} / ${PASSWORD}`);
+  console.log("\nConversations:");
+  console.log("  Conv 1: Yasmine + Mohamed (plumbing) — 8 msgs");
+  console.log("  Conv 2: Sami + Fatma (cleaning) — 3 msgs");
+  console.log("  Conv 3: Ines + Ahmed (electrical) — 3 msgs");
+  console.log("  Conv 4: Amira + Salma (wedding hair) — 5 msgs");
   console.log("========================================\n");
 }
 
 main()
   .catch((e) => {
-    console.error(e);
+    console.error("SEED ERROR:", e);
     process.exit(1);
   })
   .finally(async () => {

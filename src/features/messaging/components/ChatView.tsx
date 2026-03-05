@@ -6,7 +6,7 @@
 //
 // Displays the full message history for a conversation:
 // - Initial load fetches 30 messages (newest-first → reversed for display)
-// - 5-second polling for new messages (setInterval)
+// - 15-second polling for new messages (setInterval)
 // - Auto-scroll to bottom on load and when new messages arrive
 //   (only if user was already near the bottom)
 // - Load older messages via "Charger les messages precedents" button
@@ -39,7 +39,7 @@ import { MessageBubble } from "./MessageBubble";
 // ────────────────────────────────────────────────
 
 export interface ChatViewHandle {
-  addOptimisticMessage: (content: string) => void;
+  addOptimisticMessage: (content: string, imageUrl?: string) => void;
 }
 
 // ────────────────────────────────────────────────
@@ -190,7 +190,7 @@ export const ChatView = forwardRef<ChatViewHandle, ChatViewProps>(
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isLoading]);
 
-    // ── 5-second polling ─────────────────────────────────────────
+    // ── 15-second polling ────────────────────────────────────────
     useEffect(() => {
       const interval = setInterval(async () => {
         const result = await getConversationMessagesAction({
@@ -271,12 +271,13 @@ export const ChatView = forwardRef<ChatViewHandle, ChatViewProps>(
 
     // ── Optimistic message (imperative handle) ────────────────────
     useImperativeHandle(ref, () => ({
-      addOptimisticMessage(content: string) {
+      addOptimisticMessage(content: string, imageUrl?: string) {
         const optimisticMsg: MessageItem = {
           id: `optimistic-${Date.now()}`,
           senderId: currentUserId,
           senderName: "Vous",
           content,
+          imageUrl: imageUrl ?? null,
           createdAt: new Date(),
           isRead: false,
           readAt: null,

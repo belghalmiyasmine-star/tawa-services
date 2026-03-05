@@ -23,6 +23,11 @@ const PUBLIC_PATHS = [
   "/services",
   "/categories",
   "/become-provider",
+  "/faq",
+  "/contact",
+  "/legal/cgu",
+  "/legal/privacy",
+  "/comment-ca-marche",
 ];
 
 // Provider routes — require PROVIDER or ADMIN role
@@ -65,7 +70,26 @@ export default async function middleware(request: NextRequest) {
   const pathnameWithoutLocale = localeMatch ? `/${localeMatch[2] ?? ""}` : pathname;
 
   // If this is a public path, allow without auth check
+  // Exception: redirect providers from client-browsing pages to their dashboard
   if (isPublicPath(pathnameWithoutLocale)) {
+    // Only check token for pages where we redirect providers — skip JWT decode for all other public pages
+    const clientBrowsingPaths = ["/", "/services", "/categories", "/providers"];
+    const isClientBrowsing = clientBrowsingPaths.some(
+      (p) => pathnameWithoutLocale === p || pathnameWithoutLocale.startsWith(p + "/"),
+    );
+
+    if (isClientBrowsing) {
+      const token = await getToken({
+        req: request,
+        secret: process.env.NEXTAUTH_SECRET,
+      });
+
+      if (token?.role === "PROVIDER") {
+        const dashboardUrl = new URL(`/${locale}/provider/dashboard`, request.url);
+        return NextResponse.redirect(dashboardUrl);
+      }
+    }
+
     return intlResponse;
   }
 
@@ -80,6 +104,16 @@ export default async function middleware(request: NextRequest) {
     const loginUrl = new URL(`/${locale}/auth/login`, request.url);
     loginUrl.searchParams.set("callbackUrl", request.url);
     return NextResponse.redirect(loginUrl);
+  }
+
+  // 2FA enforcement — redirect to /auth/2fa if user hasn't completed 2FA challenge
+  if (token.needs2fa === true && pathnameWithoutLocale !== "/auth/2fa") {
+    const twoFaUrl = new URL(`/${locale}/auth/2fa`, request.url);
+    twoFaUrl.searchParams.set("userId", token.id as string);
+    twoFaUrl.searchParams.set("method", (token.twoFactorMethod as string) ?? "TOTP");
+    if (token.phone) twoFaUrl.searchParams.set("phone", token.phone as string);
+    twoFaUrl.searchParams.set("callbackUrl", request.url);
+    return NextResponse.redirect(twoFaUrl);
   }
 
   const userRole = token.role as string | undefined;
@@ -113,5 +147,5 @@ export default async function middleware(request: NextRequest) {
 
 export const config = {
   // Matcher qui exclut les fichiers statiques et API routes
-  matcher: ["/((?!api|_next/static|_next/image|uploads|favicon.ico|robots.txt|sitemap.xml).*)"],
+  matcher: ["/((?!api|_next/static|_next/image|uploads|favicon.ico|robots.txt|sitemap.xml|.*\\.svg$|.*\\.png$|.*\\.jpg$|.*\\.jpeg$|.*\\.gif$|.*\\.ico$|.*\\.webp$).*)"],
 };

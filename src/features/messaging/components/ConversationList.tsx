@@ -10,7 +10,7 @@
 // - Last message preview (prefix "Vous: " if from current user)
 // - Relative timestamp (A l'instant, Il y a 5 min, Il y a 2h, Il y a 3j)
 // - Unread count badge (blue circle)
-// - 5-second polling to refresh conversation list
+// - 15-second polling to refresh conversation list
 // - Empty state when no conversations
 // ============================================================
 
@@ -91,7 +91,7 @@ export function ConversationList({
   const resolvedBasePath =
     basePath ?? (isProviderPath() ? "/provider/messages" : "/messages");
 
-  // ── 5-second polling ────────────────────────────────────────
+  // ── 15-second polling ───────────────────────────────────────
   useEffect(() => {
     const interval = setInterval(async () => {
       const result = await getConversationsAction();
@@ -166,9 +166,9 @@ export function ConversationList({
             <div className="min-w-0 flex-1">
               <div className="flex items-center justify-between gap-2">
                 <span
-                  className={`truncate text-sm ${conv.unreadCount > 0 ? "font-semibold text-foreground" : "font-medium text-foreground"}`}
+                  className={`truncate text-sm ${conv.unreadCount > 0 ? "font-bold text-foreground" : "font-semibold text-foreground"}`}
                 >
-                  {conv.otherUser.name}
+                  {conv.booking.serviceTitle}
                 </span>
                 {lastMsg && (
                   <span className="shrink-0 text-xs text-muted-foreground">
@@ -177,9 +177,9 @@ export function ConversationList({
                 )}
               </div>
 
-              {/* Service title */}
+              {/* Client/provider name */}
               <p className="truncate text-xs text-muted-foreground">
-                {conv.booking.serviceTitle}
+                {conv.otherUser.name}
               </p>
 
               {/* Last message preview */}

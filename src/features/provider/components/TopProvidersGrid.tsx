@@ -21,7 +21,7 @@ interface TopProvidersGridProps {
 }
 
 // ────────────────────────────────────────────────
-// STARS (read-only, fractional)
+// STARS
 // ────────────────────────────────────────────────
 
 function RatingStars({ rating }: { rating: number }) {
@@ -43,7 +43,7 @@ function RatingStars({ rating }: { rating: number }) {
       {Array.from({ length: empty }).map((_, i) => (
         <Star
           key={`e-${i}`}
-          className="h-3.5 w-3.5 fill-transparent text-gray-300 dark:text-gray-600"
+          className="h-3.5 w-3.5 fill-transparent text-gray-200 dark:text-gray-600"
         />
       ))}
     </div>
@@ -66,7 +66,7 @@ function ProviderCard({ provider }: { provider: TopProviderItem }) {
   return (
     <Link
       href={`/providers/${provider.id}`}
-      className="group flex flex-col items-center gap-3 rounded-xl border border-gray-100 bg-white p-6 shadow-sm transition-shadow hover:shadow-md dark:border-gray-700 dark:bg-gray-800"
+      className="card-elegant group flex flex-col items-center gap-3 rounded-2xl p-6"
     >
       {/* Avatar */}
       <div className="relative">
@@ -74,17 +74,17 @@ function ProviderCard({ provider }: { provider: TopProviderItem }) {
           <img
             src={provider.photoUrl}
             alt={provider.displayName}
-            className="h-20 w-20 rounded-full object-cover ring-2 ring-gray-100 transition-all group-hover:ring-primary/30 dark:ring-gray-700"
+            className="h-20 w-20 rounded-full object-cover ring-2 ring-gray-100 transition-all duration-300 group-hover:ring-primary/20 dark:ring-gray-700"
           />
         ) : (
-          <div className="flex h-20 w-20 items-center justify-center rounded-full bg-primary/10 text-xl font-bold text-primary ring-2 ring-gray-100 transition-all group-hover:ring-primary/30 dark:ring-gray-700">
+          <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gray-100 text-xl font-bold text-gray-500 ring-2 ring-gray-100 transition-all duration-300 group-hover:ring-primary/20 dark:bg-gray-700 dark:text-gray-300 dark:ring-gray-700">
             {initials || "P"}
           </div>
         )}
         {/* Verified badge */}
         {provider.isVerified && (
-          <div className="absolute -bottom-1 -right-1 rounded-full bg-white p-0.5 dark:bg-gray-800">
-            <BadgeCheck className="h-5 w-5 text-blue-500" />
+          <div className="absolute -bottom-1 -right-1 rounded-full bg-white p-0.5 shadow-sm dark:bg-gray-800">
+            <BadgeCheck className="h-5 w-5 text-primary" />
           </div>
         )}
       </div>
@@ -100,13 +100,13 @@ function ProviderCard({ provider }: { provider: TopProviderItem }) {
         <span className="text-xs font-medium text-gray-600 dark:text-gray-400">
           {provider.rating.toFixed(1)}
         </span>
-        <span className="text-xs text-muted-foreground">
+        <span className="text-xs text-gray-400">
           ({provider.ratingCount})
         </span>
       </div>
 
       {/* City + missions */}
-      <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-muted-foreground">
+      <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-gray-400">
         {provider.city && (
           <span className="flex items-center gap-1">
             <MapPin className="h-3 w-3" />

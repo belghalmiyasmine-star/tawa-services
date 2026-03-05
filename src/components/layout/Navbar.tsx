@@ -17,8 +17,10 @@ import { ThemeToggle } from "@/components/shared/ThemeToggle";
 import { LanguageSwitcher } from "@/components/shared/LanguageSwitcher";
 import { NotificationBell } from "@/features/notification/components/NotificationBell";
 import { SearchAutocomplete } from "@/features/search/components/SearchAutocomplete";
+import { Logo } from "@/components/shared/Logo";
 import { Link } from "@/i18n/routing";
 import { getUnreadCountAction } from "@/features/messaging/actions/conversation-queries";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 // ============================================================
 // TYPES
@@ -55,6 +57,9 @@ export function Navbar() {
   const t = useTranslations("navigation");
   const tAuth = useTranslations("auth");
   const tBooking = useTranslations("booking");
+
+  // Logout confirmation dialog
+  const [logoutOpen, setLogoutOpen] = useState(false);
 
   // DB-driven categories fetched from /api/search/categories on mount
   const [categories, setCategories] = useState<NavCategory[]>([]);
@@ -109,67 +114,68 @@ export function Navbar() {
     <header className="sticky top-0 z-50 hidden w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 md:block">
       <div className="container mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-            <span className="text-sm font-bold text-primary-foreground">T</span>
-          </div>
-          <span className="text-lg font-bold text-primary">Tawa Services</span>
+        <Link href="/" className="flex items-center">
+          <Logo />
         </Link>
 
-        {/* Categories Dropdown — DB-driven */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="flex items-center gap-1">
-              <Menu className="h-4 w-4" />
-              <span>{t("categories")}</span>
-              <ChevronDown className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56">
-            {!categoriesLoaded ? (
-              // Skeleton while loading
-              <div className="space-y-1 p-1">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <div
-                    key={i}
-                    className="h-8 animate-pulse rounded bg-gray-100 dark:bg-gray-700"
-                  />
-                ))}
-              </div>
-            ) : categories.length > 0 ? (
-              <>
-                {categories.map((cat) => (
-                  <DropdownMenuItem key={cat.id} asChild>
-                    <Link
-                      href={`/services?category=${cat.slug}` as never}
-                      className="flex items-center gap-2"
-                    >
-                      <span>{cat.name}</span>
+        {/* Categories Dropdown & Search Bar — only for non-provider users */}
+        {session?.user?.role !== "PROVIDER" && (
+          <>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="flex items-center gap-1">
+                  <Menu className="h-4 w-4" />
+                  <span>{t("categories")}</span>
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56">
+                {!categoriesLoaded ? (
+                  // Skeleton while loading
+                  <div className="space-y-1 p-1">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <div
+                        key={i}
+                        className="h-8 animate-pulse rounded bg-gray-100 dark:bg-gray-700"
+                      />
+                    ))}
+                  </div>
+                ) : categories.length > 0 ? (
+                  <>
+                    {categories.map((cat) => (
+                      <DropdownMenuItem key={cat.id} asChild>
+                        <Link
+                          href={`/services?category=${cat.slug}` as never}
+                          className="flex items-center gap-2"
+                        >
+                          <span>{cat.name}</span>
+                        </Link>
+                      </DropdownMenuItem>
+                    ))}
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                      <Link href="/services" className="flex items-center gap-2 font-medium">
+                        <span>{t("allCategories")}</span>
+                      </Link>
+                    </DropdownMenuItem>
+                  </>
+                ) : (
+                  // Fallback when no categories (empty DB)
+                  <DropdownMenuItem asChild>
+                    <Link href="/services" className="flex items-center gap-2">
+                      <span>{t("allCategories")}</span>
                     </Link>
                   </DropdownMenuItem>
-                ))}
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Link href="/services" className="flex items-center gap-2 font-medium">
-                    <span>{t("allCategories")}</span>
-                  </Link>
-                </DropdownMenuItem>
-              </>
-            ) : (
-              // Fallback when no categories (empty DB)
-              <DropdownMenuItem asChild>
-                <Link href="/services" className="flex items-center gap-2">
-                  <span>{t("allCategories")}</span>
-                </Link>
-              </DropdownMenuItem>
-            )}
-          </DropdownMenuContent>
-        </DropdownMenu>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
 
-        {/* Search Bar — autocomplete with live suggestions */}
-        <div className="hidden w-72 md:block lg:w-96">
-          <SearchAutocomplete />
-        </div>
+            {/* Search Bar — autocomplete with live suggestions */}
+            <div className="hidden w-72 md:block lg:w-96">
+              <SearchAutocomplete />
+            </div>
+          </>
+        )}
 
         {/* Right Actions */}
         <div className="flex items-center gap-2">
@@ -236,6 +242,20 @@ export function Navbar() {
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
+                  <Link
+                    href={(session.user.role === "PROVIDER" ? "/provider/messages" : "/messages") as never}
+                    className="flex items-center gap-2"
+                  >
+                    <MessageSquare className="h-4 w-4" />
+                    <span>{t("messages")}</span>
+                    {unreadMessages > 0 && (
+                      <span className="ml-auto flex h-5 min-w-[20px] items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-bold text-destructive-foreground">
+                        {unreadMessages > 99 ? "99+" : unreadMessages}
+                      </span>
+                    )}
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
                   <Link href="/settings/security" className="flex items-center gap-2">
                     <Settings className="h-4 w-4" />
                     <span>{t("settings")}</span>
@@ -244,7 +264,7 @@ export function Navbar() {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   className="flex items-center gap-2 text-destructive focus:text-destructive"
-                  onClick={() => signOut({ callbackUrl: "/" })}
+                  onClick={() => setLogoutOpen(true)}
                 >
                   <LogOut className="h-4 w-4" />
                   <span>{tAuth("logout")}</span>
@@ -263,6 +283,16 @@ export function Navbar() {
           )}
         </div>
       </div>
+
+      {/* Logout confirmation dialog */}
+      <ConfirmDialog
+        open={logoutOpen}
+        onOpenChange={setLogoutOpen}
+        title={tAuth("logout")}
+        description="Voulez-vous vraiment vous déconnecter ?"
+        onConfirm={() => signOut({ callbackUrl: "/" })}
+        variant="destructive"
+      />
     </header>
   );
 }

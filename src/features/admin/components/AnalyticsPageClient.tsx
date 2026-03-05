@@ -41,7 +41,8 @@ const UserGrowthAreaChart = dynamic(
   { ssr: false, loading: ChartSkeleton },
 );
 
-import type { AnalyticsData, GeographicBreakdownItem, TopCategoryItem } from "../actions/analytics-queries";
+import type { AnalyticsData, GeographicBreakdownItem, TopCategoryItem, SentimentStats } from "../actions/analytics-queries";
+import { SentimentStatsCard } from "./SentimentStatsCard";
 
 // ============================================================
 // EXPORT COLUMN DEFINITIONS
@@ -83,6 +84,7 @@ interface AnalyticsPageClientProps {
   analyticsData: AnalyticsData | null;
   geoData: GeographicBreakdownItem[];
   topCategories: TopCategoryItem[];
+  sentimentStats: SentimentStats | null;
   startDate: string;
   endDate: string;
 }
@@ -95,6 +97,7 @@ export function AnalyticsPageClient({
   analyticsData,
   geoData,
   topCategories,
+  sentimentStats,
   startDate,
   endDate,
 }: AnalyticsPageClientProps) {
@@ -144,6 +147,9 @@ export function AnalyticsPageClient({
 
       {/* KPI Cards */}
       <AnalyticsKpiCards kpis={kpis} />
+
+      {/* Sentiment Stats */}
+      <SentimentStatsCard stats={sentimentStats} />
 
       {/* Charts 2x2 grid */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">

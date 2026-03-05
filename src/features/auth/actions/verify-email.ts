@@ -28,12 +28,13 @@ export async function verifyEmailAction(token: string): Promise<ActionResult<voi
       return { success: false, error: "Token invalide" };
     }
 
+    // If email is already verified, return specific message
+    if (verification.user.emailVerified) {
+      return { success: false, error: "ALREADY_VERIFIED" };
+    }
+
     // Check if token has already been used
     if (verification.usedAt !== null) {
-      // If email is already verified (from this or another token), treat as success
-      if (verification.user.emailVerified) {
-        return { success: true, data: undefined };
-      }
       return { success: false, error: "Token deja utilise" };
     }
 
@@ -43,14 +44,15 @@ export async function verifyEmailAction(token: string): Promise<ActionResult<voi
     }
 
     // Mark email as verified and token as used (in a transaction)
+    const now = new Date();
     await prisma.$transaction([
       prisma.user.update({
         where: { id: verification.userId },
-        data: { emailVerified: true },
+        data: { emailVerified: true, emailVerifiedAt: now },
       }),
       prisma.emailVerification.update({
         where: { id: verification.id },
-        data: { usedAt: new Date() },
+        data: { usedAt: now },
       }),
     ]);
 

@@ -24,7 +24,7 @@ export default async function LoginPage() {
           <CardDescription>{t("loginSubtitle")}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          {/* OAuth buttons — Google and Facebook */}
+          {/* OAuth buttons — Google */}
           <OAuthButtons />
 
           {/* Email/password form */}

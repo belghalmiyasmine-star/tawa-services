@@ -1,7 +1,6 @@
 "use client";
 
 import { Calendar, User, MapPin, Star, Clock, CheckCircle } from "lucide-react";
-import Image from "next/image";
 
 import { Link } from "@/i18n/routing";
 import { Badge } from "@/components/ui/badge";
@@ -85,13 +84,12 @@ export function ProviderBookingCard({ booking }: ProviderBookingCardProps) {
         <CardContent className="p-4">
           <div className="flex gap-4">
             {/* Service thumbnail */}
-            <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg bg-muted">
+            <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg bg-muted">
               {photoUrl ? (
-                <Image
+                <img
                   src={photoUrl}
                   alt={booking.service.title}
-                  fill
-                  className="object-cover"
+                  className="h-full w-full object-cover"
                 />
               ) : (
                 <div className="flex h-full w-full items-center justify-center text-muted-foreground">

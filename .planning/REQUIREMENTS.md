@@ -26,32 +26,32 @@ Requirements for milestone v1.1 — Polish, Bug Fixes & PFE Readiness. Continues
 
 ### UX Improvements
 
-- [ ] **UX-01**: Homepage displays client reviews carousel (recent verified reviews with ratings)
-- [ ] **UX-02**: Homepage displays top-rated providers section (highest-rated verified providers)
-- [ ] **UX-03**: Client dashboard polished with stats cards (total bookings, total spent, reviews given, active bookings)
+- [x] **UX-01**: Homepage displays client reviews carousel (recent verified reviews with ratings)
+- [x] **UX-02**: Homepage displays top-rated providers section (highest-rated verified providers)
+- [x] **UX-03**: Client dashboard polished with stats cards (total bookings, total spent, reviews given, active bookings)
 
 ### Missing Pages
 
-- [ ] **PAGE-01**: FAQ page with categorized questions and answers (accessible from footer)
-- [ ] **PAGE-02**: Contact page with contact information or form (accessible from footer)
-- [ ] **PAGE-03**: CGU (Terms & Conditions / Conditions Generales d'Utilisation) page
-- [ ] **PAGE-04**: Privacy Policy (Politique de Confidentialite) page
-- [ ] **PAGE-05**: How it works (Comment ca marche) page explaining the platform flow
+- [x] **PAGE-01**: FAQ page with categorized questions and answers (accessible from footer)
+- [x] **PAGE-02**: Contact page with contact information or form (accessible from footer)
+- [x] **PAGE-03**: CGU (Terms & Conditions / Conditions Generales d'Utilisation) page
+- [x] **PAGE-04**: Privacy Policy (Politique de Confidentialite) page
+- [x] **PAGE-05**: How it works (Comment ca marche) page explaining the platform flow
 
 ### PFE Readiness
 
-- [ ] **PFE-01**: Seed script with realistic Tunisian demo data (10+ providers across categories/cities, 20+ services, 30+ bookings at various statuses, 50+ reviews, transaction history in TND)
-- [ ] **PFE-02**: Mobile responsiveness audit and fixes across all pages (375px mobile, 1280px desktop)
-- [ ] **PFE-03**: Language switcher UI component (Globe dropdown) in navbar — ready for AR/EN translations
-- [ ] **PFE-04**: Performance optimization (Suspense boundaries, lazy loading images, Next.js config tuning)
-- [ ] **PFE-05**: Accessibility & SEO audit (meta tags, robots.txt, sitemap.xml, aria labels, alt text)
-- [ ] **PFE-06**: E2E demo flow verification on seeded data (search → profile → booking → payment → review)
-- [ ] **PFE-07**: Technical documentation (DEPLOYMENT.md with setup guide, schema overview, demo accounts)
+- [x] **PFE-01**: Seed script with realistic Tunisian demo data (10+ providers across categories/cities, 20+ services, 30+ bookings at various statuses, 50+ reviews, transaction history in TND)
+- [x] **PFE-02**: Mobile responsiveness audit and fixes across all pages (375px mobile, 1280px desktop)
+- [x] **PFE-03**: Language switcher UI component (Globe dropdown) in navbar — ready for AR/EN translations
+- [x] **PFE-04**: Performance optimization (Suspense boundaries, lazy loading images, Next.js config tuning)
+- [x] **PFE-05**: Accessibility & SEO audit (meta tags, robots.txt, sitemap.xml, aria labels, alt text)
+- [x] **PFE-06**: E2E demo flow verification on seeded data (search → profile → booking → payment → review)
+- [x] **PFE-07**: Technical documentation (DEPLOYMENT.md with setup guide, schema overview, demo accounts)
 
 ### Integration Wiring
 
-- [ ] **INTG-01**: Payment flow navigation wiring (booking flow → checkout page, sidebar earnings link, confirmation redirects)
-- [ ] **INTG-02**: Notification dispatch wired into all transactional actions (booking, payment, review, KYC) + Contacter button opens messaging
+- [x] **INTG-01**: Payment flow navigation wiring (booking flow → checkout page, sidebar earnings link, confirmation redirects)
+- [x] **INTG-02**: Notification dispatch wired into all transactional actions (booking, payment, review, KYC) + Contacter button opens messaging
 
 ## v1.0 Requirements (Completed)
 
@@ -120,23 +120,23 @@ Deferred to future release. Tracked but not in current roadmap.
 | BUGF-12 | Phase 12 | Complete |
 | BUGF-13 | Phase 12 | Complete |
 | BUGF-14 | Phase 12 | Complete |
-| UX-01 | Phase 13 | Pending |
-| UX-02 | Phase 13 | Pending |
-| UX-03 | Phase 13 | Pending |
-| PAGE-01 | Phase 13 | Pending |
-| PAGE-02 | Phase 13 | Pending |
-| PAGE-03 | Phase 13 | Pending |
-| PAGE-04 | Phase 13 | Pending |
-| PAGE-05 | Phase 13 | Pending |
-| INTG-01 | Phase 14 | Pending |
-| INTG-02 | Phase 14 | Pending |
-| PFE-01 | Phase 15 | Pending |
-| PFE-02 | Phase 15 | Pending |
-| PFE-03 | Phase 15 | Pending |
-| PFE-04 | Phase 15 | Pending |
-| PFE-05 | Phase 15 | Pending |
-| PFE-06 | Phase 15 | Pending |
-| PFE-07 | Phase 15 | Pending |
+| UX-01 | Phase 13 | Complete |
+| UX-02 | Phase 13 | Complete |
+| UX-03 | Phase 13 | Complete |
+| PAGE-01 | Phase 13 | Complete |
+| PAGE-02 | Phase 13 | Complete |
+| PAGE-03 | Phase 13 | Complete |
+| PAGE-04 | Phase 13 | Complete |
+| PAGE-05 | Phase 13 | Complete |
+| INTG-01 | Phase 14 | Complete |
+| INTG-02 | Phase 14 | Complete |
+| PFE-01 | Phase 15 | Complete |
+| PFE-02 | Phase 15 | Complete |
+| PFE-03 | Phase 15 | Complete |
+| PFE-04 | Phase 15 | Complete |
+| PFE-05 | Phase 15 | Complete |
+| PFE-06 | Phase 15 | Complete |
+| PFE-07 | Phase 15 | Complete |
 
 **Coverage:**
 - v1.1 requirements: 31 total

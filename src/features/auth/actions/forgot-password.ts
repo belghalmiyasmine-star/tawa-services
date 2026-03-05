@@ -1,7 +1,10 @@
 "use server";
 
+import { headers } from "next/headers";
+
 import { sendPasswordResetEmail } from "@/lib/email";
 import { prisma } from "@/lib/prisma";
+import { rateLimit } from "@/lib/rate-limit";
 import { forgotPasswordSchema } from "@/lib/validations/auth";
 import type { ActionResult } from "@/types/api";
 
@@ -15,6 +18,14 @@ export async function forgotPasswordAction(
   data: unknown,
   locale: string = "fr",
 ): Promise<ActionResult<void>> {
+  // Rate limit: 3 reset requests per minute per IP
+  const hdrs = await headers();
+  const ip = hdrs.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+  const rl = rateLimit(`forgot:${ip}`, 3, 60_000);
+  if (!rl.allowed) {
+    return { success: false, error: "Trop de tentatives. Réessayez dans 1 minute." };
+  }
+
   // Validate input
   const parsed = forgotPasswordSchema.safeParse(data);
   if (!parsed.success) {

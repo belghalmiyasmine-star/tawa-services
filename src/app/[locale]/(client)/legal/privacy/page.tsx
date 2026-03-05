@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 
+export const revalidate = 3600;
+
 export const metadata: Metadata = {
   title: "Politique de Confidentialité | Tawa Services",
   description: "Politique de confidentialité et de protection des données personnelles de Tawa Services.",

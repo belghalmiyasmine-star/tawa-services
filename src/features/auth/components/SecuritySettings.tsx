@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { TwoFactorSetup } from "@/features/auth/components/TwoFactorSetup";
-import { disable2faAction } from "@/features/auth/actions/disable-2fa";
+import { changePasswordAction } from "@/features/auth/actions/change-password";
 
 interface LoginRecord {
   id: string;
@@ -78,28 +78,13 @@ export function SecuritySettings({
     }
 
     startTransition(async () => {
-      // Use disable2fa action pattern — verify old password, then update
-      // For now: call disable2fa with current password to verify it's valid,
-      // then update password separately (this is a simplified MVP flow).
-      // In a real app, create a dedicated changePasswordAction.
-      const result = await disable2faAction(currentPassword);
+      const result = await changePasswordAction(currentPassword, newPassword);
 
-      if (!result.success && result.error === "La 2FA n'est pas activee") {
-        // Password is valid, 2FA just not enabled — proceed with password update
-        // For MVP: this confirms password is correct
-        setPasswordSuccess(t("passwordChanged"));
-        setCurrentPassword("");
-        setNewPassword("");
-        setConfirmNewPassword("");
+      if (!result.success) {
+        setPasswordError(result.error ?? t("invalidCredentials"));
         return;
       }
 
-      if (!result.success && result.error === "Mot de passe incorrect") {
-        setPasswordError(t("invalidCredentials"));
-        return;
-      }
-
-      // If 2FA was disabled successfully or another error
       setPasswordSuccess(t("passwordChanged"));
       setCurrentPassword("");
       setNewPassword("");

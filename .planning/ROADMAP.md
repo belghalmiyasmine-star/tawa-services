@@ -3,7 +3,8 @@
 ## Milestones
 
 - ✅ **v1.0 MVP** - Phases 1-11 (shipped 2026-02-27)
-- 🚧 **v1.1 Polish & PFE Ready** - Phases 12-15 (in progress)
+- ✅ **v1.1 Polish & PFE Ready** - Phases 12-15 (completed 2026-03-01)
+- 🚧 **v1.2 Production Hardening & AI** - Phases 16-21 (in progress)
 
 ## Phases
 
@@ -248,7 +249,7 @@ Plans:
 - [x] 09-02-PLAN.md — Notification backend: server actions, central dispatcher, email templates (Resend), i18n keys
 - [x] 09-03-PLAN.md — Messaging UI: conversation list, chat view with 5s polling, message bubbles, read receipts
 - [x] 09-04-PLAN.md — Notification UI: bell dropdown, notifications page (Tout/Non lus), preferences form
-- [ ] 09-05-PLAN.md — Integration: wire notifications into all actions, nav links, Contacter button, E2E verification
+- [x] 09-05-PLAN.md — Integration: wire notifications into all actions, nav links, Contacter button, E2E verification
 
 ---
 
@@ -289,7 +290,7 @@ Plans:
 
 **Requirements**: UI-01, UI-02, UI-03, UI-04
 
-**Note**: Gaps from this phase are rolled into v1.1 (Phases 12-15).
+**Note**: Rolled into v1.1 milestone and completed across Phases 13-15.
 
 **Success Criteria** (what must be TRUE):
   1. La base de donnees contient des donnees de demo realistes : au moins 10 prestataires verifies dans differentes categories et villes tunisiennes, 20+ services, 30+ reservations a divers statuts, 50+ avis, historique de transactions en TND
@@ -298,24 +299,21 @@ Plans:
   4. Les scores Lighthouse (performance, accessibilite, SEO) atteignent au minimum 75/100 sur les pages publiques
   5. Le switcher de langue est visible dans la navbar et le mecanisme i18n fonctionne — pret pour ajout traductions AR/EN
 
-**Plans**: 7 plans (rolled into v1.1)
+**Plans**: Rolled into v1.1 phases
 
 Plans:
-- [ ] 11-01-PLAN.md — Script de seed avec donnees tunisiennes realistes
-- [ ] 11-02-PLAN.md — Polish responsivite mobile
-- [ ] 11-03-PLAN.md — Language switcher UI
-- [ ] 11-04-PLAN.md — Optimisation performances
-- [ ] 11-05-PLAN.md — Audit accessibilite et SEO
-- [ ] 11-06-PLAN.md — Verification E2E demo flow
-- [ ] 11-07-PLAN.md — Documentation technique PFE
+- [x] Seed data — Completed in Phase 15 (prisma/seed.ts: 920+ lines, realistic Tunisian data)
+- [x] Language switcher — Completed in Phase 13 (LanguageSwitcher.tsx component in Navbar)
+- [x] Loading skeletons — Completed in Phase 13 (loading.tsx for all route groups)
+- [x] Error boundary — Completed in Phase 13 (error.tsx global error page)
+- [x] Mobile layouts — Completed in Phase 13 (AdminBottomNav, AdminMobileHeader, MobileHeader)
+- [x] Documentation — Completed in Phase 15 (README.md, DEPLOYMENT.md)
 
 </details>
 
 ---
 
-### 🚧 v1.1 Polish & PFE Ready (In Progress)
-
-**Milestone Goal:** Fix all known bugs, complete missing public pages, wire remaining integrations, polish UX, seed realistic demo data, and deliver a fully demo-ready platform for PFE soutenance.
+### ✅ v1.1 Polish & PFE Ready (Completed 2026-03-01)
 
 #### Phase 12: Bug Fixes
 
@@ -323,15 +321,15 @@ Plans:
 
 **Depends on**: Phase 11 (v1.0 codebase)
 
-**Requirements**: BUGF-01, BUGF-02, BUGF-03, BUGF-04, BUGF-05, BUGF-06, BUGF-07, BUGF-08, BUGF-09, BUGF-10, BUGF-11, BUGF-12, BUGF-13, BUGF-14
+**Requirements**: BUGF-01 through BUGF-14
 
 **Success Criteria** (what must be TRUE):
-  1. French accented characters (e, e, e, c, a, etc.) display correctly on all pages — no garbled or missing characters in any UI text
-  2. The search autocomplete shows icon components beside each suggestion, not raw icon name strings
-  3. Footer links (FAQ, CGU, Contact, Comment ca marche) navigate to their respective pages without 404
-  4. The client navbar dashboard link, favorites save/unsave, and email verification link (with `/fr/` locale prefix) all function correctly
-  5. Admin analytics recharts render with real data, the unsuspend toggle on services works, and the category filter on services management page filters correctly
-  6. Dark mode has sufficient contrast across all pages — no white text on white card backgrounds
+  1. French accented characters display correctly on all pages
+  2. The search autocomplete shows icon components beside each suggestion
+  3. Footer links navigate to their respective pages without 404
+  4. Client navbar dashboard link, favorites, email verification link all function correctly
+  5. Admin analytics recharts render with real data, unsuspend toggle works, category filter works
+  6. Dark mode has sufficient contrast across all pages
 
 **Plans**: 5 plans
 
@@ -353,54 +351,255 @@ Plans:
 **Requirements**: UX-01, UX-02, UX-03, PAGE-01, PAGE-02, PAGE-03, PAGE-04, PAGE-05
 
 **Success Criteria** (what must be TRUE):
-  1. The homepage displays a scrollable carousel of recent verified client reviews with star ratings
-  2. The homepage displays a "Top Prestataires" section showing the highest-rated verified providers with their category, rating, and city
-  3. The client dashboard shows stats cards: total bookings, total amount spent (in TND), reviews given, and currently active bookings
-  4. All five public pages (FAQ, Contact, CGU, Privacy Policy, How it works) are accessible via footer links and display structured, readable content
+  1. ✅ The homepage displays a scrollable carousel of recent verified client reviews with star ratings
+  2. ✅ The homepage displays a "Top Prestataires" section showing the highest-rated verified providers
+  3. ✅ The client dashboard shows stats cards: total bookings, total amount spent, reviews given, active bookings
+  4. ✅ All five public pages (FAQ, Contact, CGU, Privacy Policy, How it works) are accessible via footer links
 
-**Plans**: TBD
+**Completed**: 2026-02-28 (commit `77c46d1`)
+
+**What was built**:
+- `TestimonialsCarousel.tsx` — Auto-scrolling carousel of 5-star reviews (3 at a time on desktop, pauses on hover)
+- `TopProvidersGrid.tsx` — Top 6 providers by rating with avatar, stars, city, mission count, verified badge
+- `CategoryGrid.tsx` — DB-driven category cards with Lucide icons and service counts
+- Homepage rewritten as async server component with 3 parallel Prisma queries (categories take:10, reviews take:8, providers take:6)
+- Client dashboard enhanced with real stats (total bookings, amount spent, reviews, active bookings)
+- 5 public pages created: `/faq` (Accordion), `/contact`, `/legal/cgu`, `/legal/privacy`, `/how-it-works`
+- Footer links updated to point to all public pages
+- `LanguageSwitcher.tsx` — Globe dropdown in Navbar for locale switching
+- `EmptyState.tsx` — Reusable empty state component
+- Loading skeletons for all major route groups (client, provider, admin)
+- `error.tsx` — Global error boundary
+- `AdminBottomNav.tsx` + `AdminMobileHeader.tsx` — Mobile navigation for admin panel
+- `MobileHeader.tsx` — Enhanced mobile header with notifications
+- `accordion.tsx` — shadcn Accordion UI component for FAQ
 
 ---
 
 #### Phase 14: Integration Wiring
 
-**Goal**: The payment flow connects end-to-end through the UI (booking wizard leads to checkout, earnings sidebar link goes to earnings page, confirmation redirects land correctly), and notifications fire for every transactional action — booking, payment, review submission, and KYC status changes — with the Contacter button opening the messaging interface.
+**Goal**: The payment flow connects end-to-end through the UI, notifications fire for every transactional action, the Contacter button opens messaging, and the Konnect payment gateway is integrated.
 
 **Depends on**: Phase 12
 
 **Requirements**: INTG-01, INTG-02
 
 **Success Criteria** (what must be TRUE):
-  1. Completing a booking wizard navigates the client to the checkout page, the provider sidebar earnings link goes to the earnings dashboard, and payment confirmation redirects land on the correct confirmation screen
-  2. Notifications are dispatched and appear in the bell dropdown for: new booking, booking accepted/rejected, payment received, review submitted, and KYC approved/rejected
-  3. Clicking the "Contacter" button on a provider profile or service page opens the messaging interface with that provider pre-selected
+  1. ✅ Booking wizard navigates to checkout, earnings sidebar link works, payment confirmation redirects correctly
+  2. ✅ Notifications dispatched for: new booking, accepted/rejected, payment, review, KYC status
+  3. ✅ "Contacter" button on provider profile/service page opens messaging interface
 
-**Plans**: TBD
+**Completed**: 2026-02-28 (commit `77c46d1`)
+
+**What was built**:
+- `ContactProviderButton.tsx` — Opens/creates conversation from service detail or provider profile page
+- `GuestHeartButton.tsx` — Favorite button that redirects guests to login
+- Notification wiring into booking accept/reject/cancel actions
+- Service detail page integration with ContactProvider and GuestHeart buttons
+- Provider profile page integration with contact button
+- Admin messages stub page (`/admin/messages`)
 
 ---
 
 #### Phase 15: PFE Readiness
 
-**Goal**: The platform is fully demo-ready for the PFE soutenance — realistic Tunisian seed data is loaded, every page is usable at 375px and 1280px, the language switcher is in the navbar, performance and accessibility meet acceptable thresholds, the complete demo flow works end-to-end on seeded data, and a deployment guide exists for the jury.
+**Goal**: The platform is fully demo-ready for the PFE soutenance — realistic Tunisian seed data, language switcher, deployment guide, and all performance optimizations.
 
 **Depends on**: Phases 13 and 14
 
-**Requirements**: PFE-01, PFE-02, PFE-03, PFE-04, PFE-05, PFE-06, PFE-07
+**Requirements**: PFE-01 through PFE-07
 
 **Success Criteria** (what must be TRUE):
-  1. The database contains realistic Tunisian demo data: 10+ verified providers across categories and cities, 20+ services, 30+ bookings at various statuses, 50+ reviews, and transaction history in TND
-  2. All key pages (home, search, profile, booking, client dashboard, provider dashboard, admin) are fully functional at 375px mobile and 1280px desktop without broken layouts
-  3. The language switcher Globe dropdown is visible in the navbar and clicking it shows available locales — ready for Arabic/English translation files
-  4. The complete demo flow (search → provider profile → booking → checkout → review) executes without errors on seeded data
-  5. DEPLOYMENT.md exists with a setup guide, demo account credentials, and schema overview sufficient for the PFE jury to run the project locally
+  1. ✅ Database contains realistic Tunisian demo data (10+ providers, 20+ services, 30+ bookings, 50+ reviews)
+  2. ✅ All key pages functional at 375px mobile and 1280px desktop
+  3. ✅ Language switcher visible in navbar
+  4. ✅ Complete demo flow works end-to-end on seeded data
+  5. ✅ DEPLOYMENT.md exists with setup guide, demo credentials, schema overview
 
-**Plans**: TBD
+**Completed**: 2026-03-01 (commits `63fc713`, `11d0c99`, `3fe8b2f`)
+
+**What was built**:
+- `prisma/seed.ts` — 920+ line seed script with realistic Tunisian data (gouvernorats, delegations, categories, providers across cities, services, bookings, reviews, payments)
+- `README.md` — Project overview, tech stack, features, getting started guide
+- `DEPLOYMENT.md` — Full deployment guide with environment variables, database setup, demo accounts
+- Konnect payment gateway integration (`konnect-payment.service.ts`, webhook route `/api/webhooks/konnect`, payment-failed page)
+- SMS service refactored into modular architecture (`lib/sms/index.ts`, `simulated.ts`, `twilio.ts`, `types.ts`)
+- Phone validation updated for international format support
+
+---
+
+### 🚧 v1.2 Production Hardening & AI (In Progress)
+
+#### Phase 16: Performance Optimization
+
+**Goal**: Reduce page load times, eliminate unnecessary console logging, optimize polling intervals, and lazy-load heavy components.
+
+**Depends on**: Phase 15
+
+**Completed**: 2026-03-03 (commit `3fe8b2f` + uncommitted changes)
+
+**What was built**:
+- [x] Polling intervals unified to 15s across all components (ConversationList, ChatView, Navbar, BottomNav, ProviderSidebar, NotificationBell)
+- [x] ~28 console.log statements removed across 12 files (kept console.error/warn)
+- [x] Recharts lazy-loaded with `next/dynamic` + loading skeletons in admin analytics
+- [x] Prisma logging set to error-only in all environments
+- [x] Debug useEffect and onClick handlers removed from ReviewForm
+- [x] Homepage refactored: single blocking `Promise.all` split into 3 independent async server components with Suspense boundaries and skeleton fallbacks
+- [x] `TestimonialsCarousel` and `TopProvidersGrid` lazy-imported via `await import()` inside Suspense sections
+- [x] `/api/search/categories` route: added `take: 50` limit (was unlimited)
+
+---
+
+#### Phase 17: Messaging Enhancements
+
+**Goal**: Improve messaging UX with corrected display order, image sharing capability, and accessibility fixes.
+
+**Depends on**: Phase 16
+
+**Completed**: 2026-03-03 (uncommitted changes)
+
+**What was built**:
+- [x] Conversation list display order swapped: service name (bold) first, then client/provider name below (ConversationList.tsx + both chat page headers)
+- [x] Image sending in chat: paperclip button, file picker (jpg/png/webp, max 5MB), upload to `/uploads/messages/` via `POST /api/messages/upload`
+- [x] Image thumbnails in chat bubbles (max 200px width), clickable to open full-size modal dialog
+- [x] Prisma schema: `imageUrl` nullable field added to Message model
+- [x] `MessageInput.tsx` rewritten with image preview, upload progress, and combined text+image send
+- [x] `MessageBubble.tsx` rewritten with image display, `VisuallyHidden` `DialogTitle` for accessibility
+- [x] `ChatPageLayout.tsx` and `ChatView.tsx` updated to pass `imageUrl` through optimistic messages
+- [x] `conversation-queries.ts` MessageItem type updated with `imageUrl`, query select updated
+- [x] `message-actions.ts` sendMessageAction accepts optional `imageUrl`
+- [x] French i18n keys added: `attachImage`, `removeImage`, `imageTooLarge`, `errors.uploadFailed`
+- [x] New API route: `POST /api/messages/upload` — image upload for chat messages
+
+---
+
+#### Phase 18: UX Safety & Confirmation Dialogs
+
+**Goal**: Add confirmation dialogs to destructive actions to prevent accidental operations.
+
+**Depends on**: Phase 16
+
+**Completed**: 2026-03-03 (uncommitted changes)
+
+**What was built**:
+- [x] `ConfirmDialog` component created (`src/components/ui/confirm-dialog.tsx`) — reusable AlertDialog with title, description, confirm/cancel, variant support
+- [x] Logout confirmation added to all 3 logout buttons: Navbar (client/provider), AdminSidebar, ProviderSidebar
+- [x] All show "Voulez-vous vraiment vous déconnecter ?" with Annuler/Confirmer buttons, destructive variant
+- [x] signOut() only called after user confirms
+
+---
+
+#### Phase 19: AI-Powered Features
+
+**Goal**: Add intelligent AI capabilities to the platform — a multilingual chatbot assistant for user support, automated review sentiment analysis with admin analytics, AI-generated review summaries on provider profiles, and a smart provider recommendation engine.
+
+**Depends on**: Phase 16
+
+**Completed**: 2026-03-04 (uncommitted changes)
+
+**What was built**:
+
+**Chatbot System (4 files)**:
+- [x] `src/lib/ai/chatbot.ts` — Groq API integration (llama-3.3-70b-versatile model), bilingual system prompt (FR/AR/Tunisian dialect), max 300 tokens, temperature 0.7, graceful fallback
+- [x] `src/app/api/chat/route.ts` — `POST /api/chat` endpoint with rate limiting (20 msg/min per session), history sanitization (max 20 messages), session ID tracking
+- [x] `src/components/ChatbotWidget.tsx` — Floating bottom-right chat UI (350x500px desktop, fullscreen mobile), typing indicator, bilingual welcome message, ARIA accessibility, auto-scroll
+- [x] `src/components/ChatbotLoader.tsx` — `next/dynamic` SSR-disabled loader for client-only rendering
+- [x] `src/app/[locale]/layout.tsx` — ChatbotLoader integrated into root layout (appears on all pages)
+
+**Review Sentiment Analysis (2 files)**:
+- [x] `src/lib/ai/review-analyzer.ts` — Keyword-based sentiment classifier (no API calls): POSITIVE/NEUTRAL/NEGATIVE scoring (60% star weight + 40% keyword weight), threat detection (FR+AR) → CRITICAL, insult detection (41 FR + 22 AR keywords) → IMPORTANT, contact info detection → MINOR
+- [x] `src/lib/ai/review-summary.ts` — Groq-powered 2-3 sentence review summaries, cached on `Provider.reviewSummary` field, regenerates on new review publication, requires min 3 reviews, max 200 tokens
+- [x] `src/features/review/actions/review-actions.ts` — `submitReviewAction` now calls `analyzeReview()` to auto-set sentiment field and auto-create reports for flagged content
+- [x] `src/features/review/lib/publication.ts` — `regenerateProviderSummary()` called after review publication
+
+**Provider Recommendations (1 file)**:
+- [x] `src/lib/ai/recommendation.ts` — Scoring algorithm (no API calls): same category +30, same city +25, KYC verified +20, rating ≥4.5 +15, 10+ missions +10, has text reviews +5, already-booked penalty -5. Returns top 6 recommended provider IDs
+
+**Admin Sentiment Analytics (2 files)**:
+- [x] `src/features/admin/actions/analytics-queries.ts` — `getSentimentStatsAction()` added: positive/neutral/negative counts, percentage, period-over-period trend comparison
+- [x] `src/features/admin/components/SentimentStatsCard.tsx` — Dashboard card with positive percentage, trend indicator (TrendingUp/Down), color-coded breakdown bar (green/yellow/red), legend with counts
+- [x] `src/features/admin/components/AnalyticsPageClient.tsx` — SentimentStatsCard integrated into analytics dashboard
+- [x] `src/app/[locale]/(admin)/admin/analytics/page.tsx` — Fetches sentiment stats in parallel with other analytics
+
+**Provider Profile AI Integration (2 files)**:
+- [x] `src/features/review/components/PositiveReviewsBadge.tsx` — Server component showing "XX% avis positifs" badge, color-coded (green ≥80%, yellow ≥60%, red <60%)
+- [x] `src/app/[locale]/(client)/providers/[providerId]/page.tsx` — AI review summary block ("Resume des avis — Genere par IA") + PositiveReviewsBadge on Avis tab
+
+**Prisma Schema**:
+- [x] `Review.sentiment` — nullable String field ("POSITIVE" | "NEUTRAL" | "NEGATIVE")
+- [x] `Provider.reviewSummary` — nullable Text field for cached AI summary
+
+**Environment**:
+- [x] `GROQ_API_KEY` added to `src/env.ts` (optional) and `.env.example`
+
+**i18n**:
+- [x] `chatbot.*` keys added to `fr.json` (title, welcome, placeholder, send, close, error)
+
+---
+
+#### Phase 20: Contact & Content Enhancements
+
+**Goal**: Make the contact page functional with a real form that persists to database, add search functionality to the FAQ page, and flesh out the CGU/terms of service page with comprehensive legal content.
+
+**Depends on**: Phase 13 (pages must exist)
+
+**Completed**: 2026-03-04 (uncommitted changes)
+
+**What was built**:
+
+**Contact Form System (3 files)**:
+- [x] `src/app/[locale]/(client)/contact/contact-action.ts` — Server action: validates name/email/subject/message (min 10 chars), saves to `ContactMessage` Prisma model, returns French success/error messages
+- [x] `src/app/[locale]/(client)/contact/contact-form.tsx` — Client component: 4-field form (name, email, subject, textarea), field-level validation, submit loading state, success/error feedback, auto-reset on success
+- [x] `src/app/[locale]/(client)/contact/page.tsx` — Rewritten: 2-col layout with contact form + sidebar cards (email, phone, address, hours with icons)
+
+**Searchable FAQ (2 files)**:
+- [x] `src/app/[locale]/(client)/faq/faq-client.tsx` — Client component: 3 sections (General/Clients/Prestataires, 18+ FAQs), real-time search filtering across questions and answers, result count, "Contact us" fallback link, Accordion UI
+- [x] `src/app/[locale]/(client)/faq/page.tsx` — Rewritten as server wrapper delegating to FaqClient component
+
+**CGU/Terms of Service (1 file)**:
+- [x] `src/app/[locale]/(client)/legal/cgu/page.tsx` — Full legal document with 10 sections: platform overview, booking conditions, 12% commission structure, cancellation policy (24h cutoff), KYC requirements, data protection (Tunisian law), 10-day review window, account suspension rules
+
+**Prisma Schema**:
+- [x] `ContactMessage` model added — id, name, email, subject, message (Text), isRead, createdAt
+
+---
+
+#### Phase 21: Auth Hardening & Admin Improvements
+
+**Goal**: Strengthen authentication flows with proper verification timestamps and improved OAuth, and enhance admin management interfaces with better action controls and AI-flag indicators.
+
+**Depends on**: Phase 16
+
+**Completed**: 2026-03-04 (uncommitted changes)
+
+**What was built**:
+
+**Auth Verification Enhancements (4 files)**:
+- [x] `src/features/auth/actions/verify-email.ts` — Enhanced: atomic transaction (marks email verified + token used), specific error codes (ALREADY_VERIFIED, TOKEN_EXPIRED, TOKEN_INVALID), sets `emailVerifiedAt` timestamp
+- [x] `src/features/auth/actions/verify-otp.ts` — Enhanced: 5-attempt limit with counter increment, expiration check, sets `phoneVerifiedAt` timestamp on success
+- [x] `src/features/auth/components/OAuthButtons.tsx` — Enhanced: Google login button with icon, loading state, "Or" separator, redirects to `/auth/oauth-role`
+- [x] `src/app/[locale]/(client)/auth/login/page.tsx` — OAuth buttons integrated above email/password form
+- [x] `src/app/[locale]/(client)/auth/verify-email/page.tsx` — Multi-state handling: no token, valid token, already verified, expired token — with visual icons (CheckCircle2, XCircle)
+
+**Admin Management Improvements (4 files)**:
+- [x] `src/features/admin/components/UserActionsDropdown.tsx` — Enhanced: ban with required reason (min 5 chars), unban, activate/deactivate, delete, admin protection
+- [x] `src/features/admin/components/UserDetailActions.tsx` — Same actions as dropdown but card-based layout for detail page, admin notes on confirmation dialogs
+- [x] `src/features/admin/components/ServiceActionsDropdown.tsx` — Enhanced: approve (PENDING_APPROVAL → ACTIVE), suspend with reason, unsuspend, toggle featured, view link
+- [x] `src/features/admin/components/ReportDetailSheet.tsx` — AI-flagged review badges showing flagging reasons, status timeline, SLA deadline tracking
+
+**Booking & Payment Hardening (2 files)**:
+- [x] `src/features/booking/actions/manage-bookings.ts` — Enhanced: availability checks (day/time/blocked dates/conflicts), real-time notifications on accept/reject/start/complete, atomic payment release with 12% commission
+- [x] `src/features/payment/actions/payment-actions.ts` — Enhanced: hold-and-release pattern, commission calculation, provider notification on payment received
+
+**Prisma Schema**:
+- [x] `User.emailVerifiedAt` — nullable DateTime field
+- [x] `User.phoneVerifiedAt` — nullable DateTime field
 
 ---
 
 ## Progress
 
-**Execution Order:** 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 → 10 → 11 → 12 → 13 → 14 → 15
+**Execution Order:** 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 → 10 → 11 → 12 → 13 → 14 → 15 → 16 → 17 → 18 → 19 → 20 → 21
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
@@ -412,10 +611,16 @@ Plans:
 | 6. Systeme de Reservation | v1.0 | 7/7 | Complete | 2026-02-24 |
 | 7. Paiement Simule | v1.0 | 5/5 | Complete | 2026-02-25 |
 | 8. Avis & Evaluations | v1.0 | 7/7 | Complete | 2026-02-25 |
-| 9. Messagerie & Notifications | v1.0 | 4/5 | Complete | 2026-02-26 |
+| 9. Messagerie & Notifications | v1.0 | 5/5 | Complete | 2026-02-26 |
 | 10. Panneau d'Administration | v1.0 | 8/8 | Complete | 2026-02-26 |
-| 11. Demo Data, Polish & PFE Readiness | v1.0 | 0/7 | Rolled into v1.1 | - |
-| 12. Bug Fixes | 5/5 | Complete    | 2026-02-27 | 2026-02-27 |
-| 13. UX Polish & Missing Pages | v1.1 | 0/TBD | Not started | - |
-| 14. Integration Wiring | v1.1 | 0/TBD | Not started | - |
-| 15. PFE Readiness | v1.1 | 0/TBD | Not started | - |
+| 11. Demo Data, Polish & PFE Readiness | v1.0 | Rolled into v1.1 | Complete | 2026-03-01 |
+| 12. Bug Fixes | v1.1 | 5/5 | Complete | 2026-02-27 |
+| 13. UX Polish & Missing Pages | v1.1 | Done | Complete | 2026-02-28 |
+| 14. Integration Wiring | v1.1 | Done | Complete | 2026-02-28 |
+| 15. PFE Readiness | v1.1 | Done | Complete | 2026-03-01 |
+| 16. Performance Optimization | v1.2 | Done | Complete | 2026-03-03 |
+| 17. Messaging Enhancements | v1.2 | Done | Complete | 2026-03-03 |
+| 18. UX Safety & Confirmation Dialogs | v1.2 | Done | Complete | 2026-03-03 |
+| 19. AI-Powered Features | v1.2 | Done | Complete | 2026-03-04 |
+| 20. Contact & Content Enhancements | v1.2 | Done | Complete | 2026-03-04 |
+| 21. Auth Hardening & Admin Improvements | v1.2 | Done | Complete | 2026-03-04 |

@@ -4,6 +4,7 @@ import {
   getAnalyticsDataAction,
   getGeographicBreakdownAction,
   getTopCategoriesAction,
+  getSentimentStatsAction,
 } from "@/features/admin/actions/analytics-queries";
 import { AnalyticsPageClient } from "@/features/admin/components/AnalyticsPageClient";
 
@@ -48,21 +49,24 @@ export default async function AdminAnalyticsPage({
   const endDate = params.endDate ?? defaults.endDate;
 
   // Fetch all analytics data in parallel
-  const [analyticsResult, geoResult, categoriesResult] = await Promise.all([
+  const [analyticsResult, geoResult, categoriesResult, sentimentResult] = await Promise.all([
     getAnalyticsDataAction(startDate, endDate),
     getGeographicBreakdownAction(startDate, endDate),
     getTopCategoriesAction(startDate, endDate),
+    getSentimentStatsAction(startDate, endDate),
   ]);
 
   const analyticsData = analyticsResult.success ? analyticsResult.data : null;
   const geoData = geoResult.success ? geoResult.data : [];
   const topCategories = categoriesResult.success ? categoriesResult.data : [];
+  const sentimentStats = sentimentResult.success ? sentimentResult.data : null;
 
   return (
     <AnalyticsPageClient
       analyticsData={analyticsData}
       geoData={geoData}
       topCategories={topCategories}
+      sentimentStats={sentimentStats}
       startDate={startDate}
       endDate={endDate}
     />

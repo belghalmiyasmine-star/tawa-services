@@ -26,6 +26,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 import { approveServiceAction, suspendServiceAction, toggleFeaturedAction, unsuspendServiceAction } from "../actions/admin-actions";
 
@@ -44,6 +45,7 @@ export function ServiceActionsDropdown({ service }: ServiceActionsDropdownProps)
   const t = useTranslations("admin.services");
   const { toast } = useToast();
   const [suspendOpen, setSuspendOpen] = useState(false);
+  const [unsuspendOpen, setUnsuspendOpen] = useState(false);
   const [suspendReason, setSuspendReason] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -162,7 +164,7 @@ export function ServiceActionsDropdown({ service }: ServiceActionsDropdownProps)
 
           {service.status === "SUSPENDED" && (
             <DropdownMenuItem
-              onClick={handleUnsuspend}
+              onClick={() => setUnsuspendOpen(true)}
               className="flex cursor-pointer items-center gap-2 text-green-600 focus:text-green-600"
             >
               <CheckCircle className="h-4 w-4" />
@@ -183,6 +185,17 @@ export function ServiceActionsDropdown({ service }: ServiceActionsDropdownProps)
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+
+      {/* Unsuspend ConfirmDialog */}
+      <ConfirmDialog
+        open={unsuspendOpen}
+        onOpenChange={setUnsuspendOpen}
+        title={t("confirmUnsuspend")}
+        description={service.title}
+        confirmLabel={t("unsuspend")}
+        onConfirm={handleUnsuspend}
+        loading={loading}
+      />
 
       {/* Suspend AlertDialog */}
       <AlertDialog open={suspendOpen} onOpenChange={setSuspendOpen}>

@@ -6,7 +6,6 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
-// Simple SVG icons for Google and Facebook
 function GoogleIcon() {
   return (
     <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -30,21 +29,9 @@ function GoogleIcon() {
   );
 }
 
-function FacebookIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path
-        d="M18 9C18 4.0294 13.9706 0 9 0C4.0294 0 0 4.0294 0 9C0 13.4916 3.2914 17.2149 7.5938 17.8907V11.6016H5.3086V9H7.5938V7.0195C7.5938 4.7617 8.9302 3.5156 10.9893 3.5156C11.9746 3.5156 13.0078 3.6914 13.0078 3.6914V5.9063H11.8711C10.7504 5.9063 10.4063 6.6 10.4063 7.3125V9H12.9023L12.5044 11.6016H10.4063V17.8907C14.7086 17.2149 18 13.4916 18 9Z"
-        fill="#1877F2"
-      />
-    </svg>
-  );
-}
-
 export function OAuthButtons() {
   const t = useTranslations("auth");
   const [loadingGoogle, setLoadingGoogle] = useState(false);
-  const [loadingFacebook, setLoadingFacebook] = useState(false);
 
   const handleGoogleSignIn = async () => {
     setLoadingGoogle(true);
@@ -55,15 +42,6 @@ export function OAuthButtons() {
     }
   };
 
-  const handleFacebookSignIn = async () => {
-    setLoadingFacebook(true);
-    try {
-      await signIn("facebook", { callbackUrl: "/auth/oauth-role" });
-    } finally {
-      setLoadingFacebook(false);
-    }
-  };
-
   return (
     <div className="space-y-3">
       <Button
@@ -71,21 +49,10 @@ export function OAuthButtons() {
         variant="outline"
         className="w-full gap-2"
         onClick={handleGoogleSignIn}
-        disabled={loadingGoogle || loadingFacebook}
+        disabled={loadingGoogle}
       >
         <GoogleIcon />
         {loadingGoogle ? t("loading") : t("continueGoogle")}
-      </Button>
-
-      <Button
-        type="button"
-        variant="outline"
-        className="w-full gap-2"
-        onClick={handleFacebookSignIn}
-        disabled={loadingGoogle || loadingFacebook}
-      >
-        <FacebookIcon />
-        {loadingFacebook ? t("loading") : t("continueFacebook")}
       </Button>
 
       <div className="relative">

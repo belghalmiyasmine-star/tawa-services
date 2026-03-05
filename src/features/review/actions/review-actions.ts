@@ -15,6 +15,7 @@ import {
 } from "../lib/publication";
 import { reviewSubmitSchema, type ReviewSubmitInput } from "../schemas/review";
 import { sendNotificationBatch } from "@/features/notification/lib/send-notification";
+import { analyzeReview } from "@/lib/ai/review-analyzer";
 
 // Re-export updateProviderRating so existing imports from this module continue to work
 export { updateProviderRating };
@@ -202,9 +203,16 @@ export async function submitReviewAction(
       };
     }
 
-    // 8. Run auto-moderation
+    // 8. Run auto-moderation + AI sentiment analysis
     const now = new Date();
     const moderation = moderateReviewContent(validData.text);
+    const analysis = analyzeReview(validData.text, validData.stars);
+
+    // Merge flagging: flagged if either moderation or AI flags it
+    const isFlagged = moderation.flagged || analysis.flagged;
+    const flaggedReason = [moderation.reason, ...analysis.reasons]
+      .filter(Boolean)
+      .join(" | ") || null;
 
     // 9. Determine targetId (who is being reviewed)
     // Client reviews the provider (target = provider's userId)
@@ -228,12 +236,39 @@ export async function submitReviewAction(
         cleanlinessRating: validData.cleanlinessRating,
         text: validData.text,
         photoUrls: validData.photoUrls,
-        flagged: moderation.flagged,
-        flaggedReason: moderation.reason,
-        moderatedAt: moderation.flagged ? now : null,
+        sentiment: analysis.sentiment,
+        flagged: isFlagged,
+        flaggedReason,
+        moderatedAt: isFlagged ? now : null,
         published: false, // Will be set to true when both parties review
       },
     });
+
+    // 10b. Auto-create report if AI flagged the review
+    if (analysis.flagged && analysis.severity) {
+      const priorityMap = {
+        CRITICAL: "CRITICAL" as const,
+        IMPORTANT: "IMPORTANT" as const,
+        MINOR: "MINOR" as const,
+      };
+      const slaHoursMap = { CRITICAL: 2, IMPORTANT: 24, MINOR: 48 };
+      const slaHours = slaHoursMap[analysis.severity];
+      const slaDeadline = new Date(now.getTime() + slaHours * 60 * 60 * 1000);
+
+      await prisma.report.create({
+        data: {
+          reporterId: authorId,
+          reportedId: targetId,
+          type: "REVIEW",
+          reason: analysis.reasons.join(", "),
+          description: `Auto-signalement IA: ${analysis.reasons.join(", ")}. Sentiment: ${analysis.sentiment}. Severite: ${analysis.severity}.`,
+          priority: priorityMap[analysis.severity],
+          status: "OPEN",
+          referenceId: review.id,
+          slaDeadline,
+        },
+      });
+    }
 
     // 11. Attempt double-blind publication:
     //     publishBothReviews checks internally if both CLIENT and PROVIDER reviews

@@ -12,6 +12,7 @@ import { PublicProfileHeader } from "@/features/provider/components/PublicProfil
 import { PublicProfileStats } from "@/features/provider/components/PublicProfileStats";
 import { PublicServiceCard } from "@/features/provider/components/PublicServiceCard";
 import { ReviewsList } from "@/features/review/components/ReviewsList";
+import { PositiveReviewsBadge } from "@/features/review/components/PositiveReviewsBadge";
 import { getProviderReviewsAction } from "@/features/review/actions/review-queries";
 import { ContactProviderButton } from "@/features/messaging/components/ContactProviderButton";
 
@@ -91,9 +92,9 @@ export default async function PublicProviderProfilePage({
       user: { select: { name: true, email: true } },
       trustBadges: { where: { isActive: true } },
       delegations: {
-        include: {
+        select: {
           delegation: {
-            include: { gouvernorat: true },
+            select: { id: true, name: true, gouvernorat: { select: { id: true, name: true } } },
           },
         },
       },
@@ -105,21 +106,7 @@ export default async function PublicProviderProfilePage({
       services: {
         where: { status: "ACTIVE", isDeleted: false },
         include: {
-          category: { include: { parent: true } },
-          provider: {
-            select: {
-              displayName: true,
-              photoUrl: true,
-              rating: true,
-              ratingCount: true,
-              delegations: {
-                include: {
-                  delegation: { include: { gouvernorat: true } },
-                },
-                take: 1,
-              },
-            },
-          },
+          category: { select: { id: true, name: true, slug: true, icon: true, parent: { select: { id: true, name: true, slug: true } } } },
         },
         orderBy: { createdAt: "desc" },
       },
@@ -200,7 +187,16 @@ export default async function PublicProviderProfilePage({
                 {provider.services.map((service) => (
                   <PublicServiceCard
                     key={service.id}
-                    service={service}
+                    service={{
+                      ...service,
+                      provider: {
+                        displayName: provider.displayName,
+                        photoUrl: provider.photoUrl,
+                        rating: provider.rating,
+                        ratingCount: provider.ratingCount,
+                        delegations: provider.delegations,
+                      },
+                    }}
                     isFavorited={session?.user?.id ? favoritedServiceIds.has(service.id) : undefined}
                   />
                 ))}
@@ -217,6 +213,30 @@ export default async function PublicProviderProfilePage({
 
           {/* Avis tab — real reviews with breakdown, criteria chart, sorting, pagination */}
           <TabsContent value="avis" className="mt-4">
+            {/* AI Review Summary */}
+            {provider.reviewSummary && (
+              <div className="mb-6 rounded-xl border border-blue-100 bg-blue-50/50 p-5 dark:border-blue-900/30 dark:bg-blue-950/20">
+                <div className="mb-2 flex items-center justify-between">
+                  <h3 className="text-sm font-semibold text-blue-900 dark:text-blue-200">
+                    Resume des avis
+                  </h3>
+                  <span className="rounded-full bg-blue-100 px-2 py-0.5 text-[10px] font-medium text-blue-600 dark:bg-blue-900/40 dark:text-blue-300">
+                    Genere par IA
+                  </span>
+                </div>
+                <p className="text-sm leading-relaxed text-blue-800 dark:text-blue-300">
+                  {provider.reviewSummary}
+                </p>
+              </div>
+            )}
+
+            {/* Positive reviews percentage badge */}
+            {initialReviewData && initialReviewData.total > 0 && (
+              <div className="mb-4">
+                <PositiveReviewsBadge providerId={provider.id} />
+              </div>
+            )}
+
             <ReviewsList
               providerId={provider.id}
               initialData={initialReviewData}

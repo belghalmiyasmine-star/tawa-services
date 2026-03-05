@@ -59,8 +59,11 @@
   "home": {
     "title": "Tawa Services",
     "subtitle": "La plateforme de services locaux en Tunisie",
-    "heroTitle": "Trouvez le bon prestataire près de chez vous",
-    "heroSubtitle": "Plombiers, électriciens, ménage, cours particuliers et bien plus — vérifiés et disponibles dans votre ville",
+    "heroTitle": "Trouvez le prestataire idéal",
+    "heroSubtitle": "Des services de qualité à domicile partout en Tunisie",
+    "statProviders": "Prestataires vérifiés",
+    "statServices": "Services réalisés",
+    "statSatisfaction": "Satisfaction client",
     "searchPlaceholder": "Quel service cherchez-vous ?",
     "searchButton": "Rechercher",
     "featuredCategories": "Catégories populaires",
@@ -72,10 +75,14 @@
     "step3Title": "Payez & Evaluez",
     "step3Description": "Payez en sécurité et laissez votre avis après le service",
     "becomeProvider": "Devenir prestataire",
+    "ctaTitle": "Prêt à transformer votre quotidien ?",
+    "ctaSubtitle": "Rejoignez des milliers de clients satisfaits et trouvez le prestataire parfait en quelques clics",
     "clientReviews": "Avis de nos clients",
     "clientReviewsSubtitle": "Ce que disent nos utilisateurs satisfaits",
     "topProviders": "Nos meilleurs prestataires",
-    "topProvidersSubtitle": "Des professionnels de confiance, vérifiés et bien notés"
+    "topProvidersSubtitle": "Des professionnels de confiance, vérifiés et bien notés",
+    "recommendedForYou": "Recommandé pour vous",
+    "recommendedSubtitle": "Des prestataires sélectionnés selon vos préférences"
   },
   "auth": {
     "login": "Se connecter",
@@ -119,7 +126,6 @@
     "rememberMe": "Se souvenir de moi",
     "orSeparator": "ou",
     "continueGoogle": "Continuer avec Google",
-    "continueFacebook": "Continuer avec Facebook",
     "invalidCredentials": "Email ou mot de passe incorrect",
     "accountLocked": "Compte temporairement verrouillé. Réessayez dans {minutes} minutes.",
     "captchaRequired": "Veuillez répondre au CAPTCHA",
@@ -764,12 +770,17 @@
     "messagesRead": "{count} message(s) marqué(s) comme lu(s)",
     "blockingInfo": "Les messages sont moderes avant la confirmation de la reservation.",
     "conversationCreated": "Conversation créée",
+    "attachImage": "Joindre une image",
+    "removeImage": "Supprimer l'image",
+    "imageTooLarge": "L'image ne doit pas dépasser 5 Mo",
+    "imageMessage": "Photo",
     "errors": {
       "sendFailed": "Échec de l'envoi du message",
       "loadFailed": "Échec du chargement des messages",
       "conversationNotFound": "Conversation introuvable",
       "notParticipant": "Vous n'êtes pas participant de cette conversation",
-      "contactInfoDetected": "Message bloqué: informations de contact détectées"
+      "contactInfoDetected": "Message bloqué: informations de contact détectées",
+      "uploadFailed": "Échec de l'envoi de l'image"
     }
   },
   "payment": {
@@ -951,6 +962,12 @@
       "confirmBan": "Confirmer le bannissement",
       "confirmBanMessage": "Êtes-vous sûr de vouloir bannir cet utilisateur ? Il ne pourra plus se connecter.",
       "banReason": "Motif du bannissement",
+      "confirmUnban": "Confirmer le débannissement",
+      "confirmUnbanMessage": "Êtes-vous sûr de vouloir débannir cet utilisateur ? Il pourra à nouveau se connecter.",
+      "confirmDeactivate": "Confirmer la désactivation",
+      "confirmDeactivateMessage": "Êtes-vous sûr de vouloir désactiver cet utilisateur ? Son compte sera temporairement inaccessible.",
+      "confirmActivate": "Confirmer l'activation",
+      "confirmActivateMessage": "Êtes-vous sûr de vouloir réactiver cet utilisateur ?",
       "confirmDelete": "Confirmer la suppression",
       "confirmDeleteMessage": "Cette action est irréversible. L'utilisateur sera définitivement supprimé.",
       "userDetail": "Detail utilisateur",
@@ -989,6 +1006,7 @@
       "approved_success": "Service approuvé avec succès",
       "suspended_success": "Service suspendu avec succès",
       "unsuspend": "Reactiver",
+      "confirmUnsuspend": "Confirmer la réactivation",
       "unsuspended_success": "Service reactivé"
     },
     "categories": {
@@ -1166,6 +1184,14 @@
       "to": "a",
       "total": "total"
     }
+  },
+  "chatbot": {
+    "title": "Tawa Assistant",
+    "welcome": "Bonjour! Je suis l'assistant Tawa. Comment puis-je vous aider?",
+    "placeholder": "Tapez votre message...",
+    "send": "Envoyer",
+    "close": "Fermer",
+    "error": "Désolé, je suis temporairement indisponible. Veuillez réessayer."
   },
   "clientDashboard": {
     "title": "Tableau de bord",

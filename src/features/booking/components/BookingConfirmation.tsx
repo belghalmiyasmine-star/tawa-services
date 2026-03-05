@@ -1,7 +1,6 @@
 "use client";
 
 import { Calendar, Clock, MapPin, User, DollarSign, Timer } from "lucide-react";
-import Image from "next/image";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -91,13 +90,12 @@ export function BookingConfirmation({
 
         {/* Provider */}
         <div className="flex items-center gap-3">
-          <div className="relative h-9 w-9 shrink-0 overflow-hidden rounded-full bg-muted">
+          <div className="h-9 w-9 shrink-0 overflow-hidden rounded-full bg-muted">
             {provider.photoUrl ? (
-              <Image
+              <img
                 src={provider.photoUrl}
                 alt={provider.displayName}
-                fill
-                className="object-cover"
+                className="h-full w-full object-cover"
               />
             ) : (
               <div className="flex h-full w-full items-center justify-center">

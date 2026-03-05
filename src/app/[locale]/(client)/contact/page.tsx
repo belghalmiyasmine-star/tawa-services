@@ -1,11 +1,15 @@
 import type { Metadata } from "next";
-import { Mail, MapPin, Clock } from "lucide-react";
+import { Mail, MapPin, Phone, Clock } from "lucide-react";
 
-import { Card, CardContent } from "@/components/ui/card";
+export const revalidate = 60;
+
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ContactForm } from "./contact-form";
 
 export const metadata: Metadata = {
   title: "Contact | Tawa Services",
-  description: "Contactez l'équipe Tawa Services pour toute question ou assistance.",
+  description:
+    "Contactez l'équipe Tawa Services pour toute question ou assistance.",
 };
 
 const contactInfo = [
@@ -14,6 +18,12 @@ const contactInfo = [
     title: "Email",
     detail: "support@tawa-services.tn",
     sub: "Réponse sous 24h",
+  },
+  {
+    icon: Phone,
+    title: "Téléphone",
+    detail: "+216 23 827 432",
+    sub: "Lun-Ven : 9h-18h",
   },
   {
     icon: MapPin,
@@ -31,7 +41,8 @@ const contactInfo = [
 
 export default function ContactPage() {
   return (
-    <div className="container mx-auto max-w-4xl px-4 py-12">
+    <div className="container mx-auto max-w-5xl px-4 py-12">
+      {/* Header */}
       <div className="mb-10 text-center">
         <h1 className="text-3xl font-bold">Nous contacter</h1>
         <p className="mt-3 text-muted-foreground">
@@ -39,22 +50,40 @@ export default function ContactPage() {
         </p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-3">
-        {contactInfo.map((info, index) => {
-          const Icon = info.icon;
-          return (
-            <Card key={index}>
-              <CardContent className="flex flex-col items-center p-6 text-center">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-                  <Icon className="h-6 w-6 text-primary" />
-                </div>
-                <h2 className="font-semibold">{info.title}</h2>
-                <p className="mt-1 text-sm">{info.detail}</p>
-                <p className="text-xs text-muted-foreground">{info.sub}</p>
-              </CardContent>
-            </Card>
-          );
-        })}
+      {/* Two-column layout: form + sidebar */}
+      <div className="grid gap-8 md:grid-cols-3">
+        {/* Contact form — 2 cols */}
+        <div className="md:col-span-2">
+          <Card>
+            <CardHeader>
+              <CardTitle>Envoyez-nous un message</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ContactForm />
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Sidebar — 1 col */}
+        <div className="space-y-4">
+          {contactInfo.map((info) => {
+            const Icon = info.icon;
+            return (
+              <Card key={info.title}>
+                <CardContent className="flex items-start gap-4 p-4">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10">
+                    <Icon className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold">{info.title}</p>
+                    <p className="text-sm">{info.detail}</p>
+                    <p className="text-xs text-muted-foreground">{info.sub}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
       </div>
     </div>
   );

@@ -60,10 +60,10 @@ export default async function ProviderChatPage({ params }: Props) {
         </Link>
         <div className="min-w-0 flex-1">
           <p className="truncate font-semibold text-foreground">
-            {conversation.otherUser.name}
+            {conversation.booking.serviceTitle}
           </p>
           <p className="truncate text-xs text-muted-foreground">
-            {conversation.booking.serviceTitle}
+            {conversation.otherUser.name}
           </p>
         </div>
       </div>

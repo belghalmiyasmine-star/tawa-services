@@ -49,6 +49,7 @@ export type AdminReportListItem = {
   reportedName: string | null;
   type: string;
   reason: string;
+  description: string | null;
   priority: string;
   status: string;
   slaDeadline: Date | null;
@@ -383,6 +384,7 @@ export async function getAdminReportsAction(
           id: true,
           type: true,
           reason: true,
+          description: true,
           priority: true,
           status: true,
           slaDeadline: true,
@@ -414,6 +416,7 @@ export async function getAdminReportsAction(
       reportedName: r.reported?.name ?? null,
       type: r.type,
       reason: r.reason,
+      description: r.description,
       priority: r.priority,
       status: r.status,
       slaDeadline: r.slaDeadline,

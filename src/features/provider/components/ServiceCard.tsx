@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import { Pencil, Eye, EyeOff, Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 
@@ -191,12 +190,10 @@ export function ServiceCard({ service, onToggle, onDelete }: ServiceCardProps) {
       {/* Photo area */}
       <div className="relative aspect-[4/3] bg-muted">
         {firstPhoto ? (
-          <Image
+          <img
             src={firstPhoto}
             alt={service.title}
-            fill
-            className="object-cover"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            className="h-full w-full object-cover"
           />
         ) : (
           <div className="flex h-full items-center justify-center">

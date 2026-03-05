@@ -9,7 +9,7 @@ import {
   createBookingSchema,
   rejectBookingSchema,
 } from "@/lib/validations/booking";
-import { sendNotification } from "@/features/notification/lib/send-notification";
+import { sendNotification, sendNotificationBatch } from "@/features/notification/lib/send-notification";
 
 // ============================================================
 // ACTION 1: createBookingAction
@@ -407,6 +407,9 @@ export async function startBookingAction(
         providerId: provider.id,
         isDeleted: false,
       },
+      include: {
+        service: { select: { title: true } },
+      },
     });
 
     if (!booking) {
@@ -423,6 +426,15 @@ export async function startBookingAction(
     await prisma.booking.update({
       where: { id: bookingId },
       data: { status: "IN_PROGRESS" },
+    });
+
+    // Fire-and-forget: notify client that service is in progress
+    void sendNotification({
+      userId: booking.clientId,
+      type: "BOOKING_ACCEPTED",
+      title: "Votre service est en cours",
+      body: booking.service.title,
+      data: { bookingId },
     });
 
     return { success: true, data: { success: true } };
@@ -534,14 +546,23 @@ export async function completeBookingAction(
       }
     });
 
-    // Fire-and-forget: notify client that booking was completed
-    void sendNotification({
-      userId: booking.clientId,
-      type: "BOOKING_COMPLETED",
-      title: "Service termine",
-      body: booking.service.title,
-      data: { bookingId },
-    });
+    // Fire-and-forget: notify both client and provider that booking was completed
+    void sendNotificationBatch([
+      {
+        userId: booking.clientId,
+        type: "BOOKING_COMPLETED",
+        title: "Service termine",
+        body: booking.service.title,
+        data: { bookingId },
+      },
+      {
+        userId: userId,
+        type: "BOOKING_COMPLETED",
+        title: "Service termine",
+        body: `${booking.service.title} — ${providerEarning.toFixed(2)} TND`,
+        data: { bookingId },
+      },
+    ]);
 
     return { success: true, data: { success: true } };
   } catch (error) {

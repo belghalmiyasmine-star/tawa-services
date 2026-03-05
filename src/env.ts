@@ -7,13 +7,12 @@ const serverSchema = z.object({
   NEXTAUTH_URL: z.string().url().optional(),
   GOOGLE_CLIENT_ID: z.string().optional(),
   GOOGLE_CLIENT_SECRET: z.string().optional(),
-  FACEBOOK_CLIENT_ID: z.string().optional(),
-  FACEBOOK_CLIENT_SECRET: z.string().optional(),
   RESEND_API_KEY: z.string().optional(),
   CRON_SECRET: z.string().optional(),
   KONNECT_API_KEY: z.string().optional(),
   KONNECT_API_URL: z.string().url().optional(),
   KONNECT_WALLET_ID: z.string().optional(),
+  GROQ_API_KEY: z.string().optional(),
 });
 
 const clientSchema = z.object({

@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /provider/dashboard
+Disallow: /provider/earnings
+Disallow: /provider/bookings
+Disallow: /uploads/kyc/
+
+Sitemap: https://tawa.tn/sitemap.xml
